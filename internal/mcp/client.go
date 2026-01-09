@@ -389,8 +389,8 @@ func (mc *ModelClient) GetAvailableModels() ([]string, error) {
 		}, nil
 	case ProviderGoogle:
 		return []string{
-			"gemini-pro",
-			"gemini-pro-vision",
+			"gemini-1.5-pro",
+			"gemini-1.5-flash",
 			"gemini-1.5-pro-latest",
 		}, nil
 	case ProviderOllama:
