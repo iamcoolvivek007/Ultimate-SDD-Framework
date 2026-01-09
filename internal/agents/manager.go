@@ -16,31 +16,51 @@ type Agent struct {
 	Personality string `yaml:"personality"`
 	Tone       string `yaml:"tone"`
 	Content    string `yaml:"-"`
+	IsRaw      bool   `yaml:"-"`
 }
 
 // AgentManager handles loading and managing agents
 type AgentManager struct {
-	agentsDir string
-	agents    map[string]*Agent
+	agentsDir    string
+	autoMakerDir string
+	agents       map[string]*Agent
 }
 
 // NewAgentManager creates a new agent manager
 func NewAgentManager(projectRoot string) *AgentManager {
 	return &AgentManager{
-		agentsDir: filepath.Join(projectRoot, ".agents"),
-		agents:    make(map[string]*Agent),
+		agentsDir:    filepath.Join(projectRoot, ".agents"),
+		autoMakerDir: filepath.Join(projectRoot, ".automaker", "system_prompts"),
+		agents:       make(map[string]*Agent),
 	}
 }
 
-// LoadAgents loads all agent definitions from the .agents directory
+// LoadAgents loads all agent definitions from directories
 func (am *AgentManager) LoadAgents() error {
-	if _, err := os.Stat(am.agentsDir); os.IsNotExist(err) {
-		return fmt.Errorf("agents directory not found: %s", am.agentsDir)
+	// Strategy: Load legacy first, then overwrite with AutoMaker so AutoMaker takes precedence.
+
+	// 1. Load from .agents (legacy/fallback)
+	if _, err := os.Stat(am.agentsDir); err == nil {
+		if err := am.loadFromDir(am.agentsDir, false); err != nil {
+			return fmt.Errorf("failed to load legacy agents: %w", err)
+		}
 	}
 
-	files, err := os.ReadDir(am.agentsDir)
+	// 2. Load from .automaker (override/add)
+	// Note: AutoMaker filenames might differ (engineer.md vs developer.md).
+	if _, err := os.Stat(am.autoMakerDir); err == nil {
+		if err := am.loadFromDir(am.autoMakerDir, true); err != nil {
+			return fmt.Errorf("failed to load automaker agents: %w", err)
+		}
+	}
+
+	return nil
+}
+
+func (am *AgentManager) loadFromDir(dir string, isRaw bool) error {
+	files, err := os.ReadDir(dir)
 	if err != nil {
-		return fmt.Errorf("failed to read agents directory: %w", err)
+		return err
 	}
 
 	for _, file := range files {
@@ -49,14 +69,22 @@ func (am *AgentManager) LoadAgents() error {
 		}
 
 		agentName := strings.TrimSuffix(file.Name(), ".md")
-		agent, err := am.loadAgent(filepath.Join(am.agentsDir, file.Name()))
+		var agent *Agent
+		var err error
+
+		filePath := filepath.Join(dir, file.Name())
+		if isRaw {
+			agent, err = am.loadRawAgent(filePath)
+		} else {
+			agent, err = am.loadAgent(filePath)
+		}
+
 		if err != nil {
 			return fmt.Errorf("failed to load agent %s: %w", agentName, err)
 		}
 
 		am.agents[agentName] = agent
 	}
-
 	return nil
 }
 
@@ -83,11 +111,21 @@ func (am *AgentManager) GetAgentForPhase(phase string) (*Agent, error) {
 	var agentName string
 	switch phase {
 	case "specify":
-		agentName = "pm"
+		// AutoMaker uses "pm", legacy might use "product_manager"
+		if _, ok := am.agents["pm"]; ok {
+			agentName = "pm"
+		} else {
+			agentName = "product_manager"
+		}
 	case "plan":
 		agentName = "architect"
 	case "task", "execute":
-		agentName = "developer"
+		// AutoMaker uses "engineer", legacy uses "developer"
+		if _, ok := am.agents["engineer"]; ok {
+			agentName = "engineer"
+		} else {
+			agentName = "developer"
+		}
 	case "review":
 		agentName = "qa"
 	default:
@@ -122,8 +160,26 @@ func (am *AgentManager) loadAgent(filePath string) (*Agent, error) {
 	return &agent, nil
 }
 
+// loadRawAgent loads a single agent from a markdown file without frontmatter
+func (am *AgentManager) loadRawAgent(filePath string) (*Agent, error) {
+	content, err := os.ReadFile(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Agent{
+		Content: string(content),
+		IsRaw:   true,
+		// Role and other fields might be inferred or left empty for raw agents
+		Role: "AutoMaker Agent",
+	}, nil
+}
+
 // GetSystemPrompt generates a system prompt for the agent
 func (a *Agent) GetSystemPrompt() string {
+	if a.IsRaw {
+		return a.Content
+	}
 	return fmt.Sprintf(`You are a %s agent with the following characteristics:
 
 ROLE: %s

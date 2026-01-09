@@ -53,7 +53,8 @@ Generates detailed performance reports with specific improvement suggestions.`,
 			projectRoot := "."
 
 			fmt.Println("⚡ Starting comprehensive performance analysis...")
-			fmt.Println("This may take a moment for large codebases.\n")
+			fmt.Println("This may take a moment for large codebases.")
+			fmt.Println()
 
 			// Create performance profiler
 			profiler := performance.NewPerformanceProfiler(projectRoot)
