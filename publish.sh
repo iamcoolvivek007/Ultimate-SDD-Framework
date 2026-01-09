@@ -64,7 +64,7 @@ print_status "Pre-flight checks passed!"
 
 # Build test
 print_step "Testing build..."
-if ! go build -o nexus ./cmd/sdd; then
+if ! go build -o viki ./cmd/sdd; then
     print_error "Build failed! Please fix build issues before publishing."
     exit 1
 fi
@@ -72,7 +72,7 @@ print_status "Build successful"
 
 # Test version command
 print_step "Testing version command..."
-if ! ./nexus version; then
+if ! ./viki version; then
     print_error "Version command failed!"
     exit 1
 fi
@@ -207,15 +207,15 @@ curl -L https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/releases/downl
 ```bash
 git clone https://github.com/iamcoolvivek007/Ultimate-SDD-Framework.git
 cd Ultimate-SDD-Framework
-go build -o nexus ./cmd/sdd
+go build -o viki ./cmd/sdd
 ```
 
 ## 🚀 Quick Start
 ```bash
-nexus init "My Project"
-nexus discovery --deep    # For existing codebases
-nexus specify "Add feature"
-nexus analyze             # Quality assessment
+viki init "My Project"
+viki discovery --deep    # For existing codebases
+viki specify "Add feature"
+viki analyze             # Quality assessment
 ```
 
 ---

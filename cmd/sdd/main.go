@@ -12,7 +12,7 @@ const version = "1.0.0"
 
 func main() {
 	rootCmd := &cobra.Command{
-		Use:   "nexus",
+		Use:   "viki",
 		Short: "Ultimate SDD Framework - System over Snippets Development",
 		Long: `The Ultimate SDD Framework implements "System over Snippets" philosophy:
 structured development with modular rules, context reset planning, and system evolution.
@@ -52,9 +52,9 @@ func newVersionCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
 		Short: "Show version information",
-		Long:  "Display the current version of the Ultimate SDD Framework",
+		Long:  "Display the current version of Viki - The Ultimate SDD Framework",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("Ultimate SDD Framework v%s\n", version)
+			fmt.Printf("Viki v%s - Ultimate SDD Framework\n", version)
 			fmt.Println("The most advanced AI-powered development platform")
 			fmt.Println("Built with ❤️ using Go and Charm")
 		},

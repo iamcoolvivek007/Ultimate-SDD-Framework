@@ -138,25 +138,25 @@ curl -L https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/releases/downl
 ```bash
 git clone https://github.com/iamcoolvivek007/Ultimate-SDD-Framework.git
 cd Ultimate-SDD-Framework
-go build -o nexus ./cmd/sdd
+go build -o viki ./cmd/sdd
 ```
 
 ## 🚀 Quick Start
 
 ```bash
 # Initialize a project
-nexus init "My Awesome Project"
+viki init "My Awesome Project"
 
 # For existing codebases (brownfield)
-nexus discovery --deep
-nexus specify "Add new feature"
-nexus plan
-nexus execute
+viki discovery --deep
+viki specify "Add new feature"
+viki plan
+viki execute
 
 # AI-powered development
-nexus analyze              # Code quality assessment
-nexus pair start           # Interactive pair programming
-nexus learn suggest        # Personalized recommendations
+viki analyze              # Code quality assessment
+viki pair start           # Interactive pair programming
+viki learn suggest        # Personalized recommendations
 ```
 
 ## 🏆 Unique Advantages
@@ -243,20 +243,20 @@ Before publishing, verify everything works:
 cd "/home/elcucu/Pictures/finalprojects/Ultimate SDD Framework"
 
 # Test build
-go build -o nexus ./cmd/sdd
+go build -o viki ./cmd/sdd
 
 # Test version
-./nexus version
+./viki version
 
 # Test core commands
-./nexus --help
-./nexus init --help
-./nexus analyze --help
+./viki --help
+./viki init --help
+./viki analyze --help
 
 # Test advanced features
-./nexus pair --help
-./nexus team --help
-./nexus learn --help
+./viki pair --help
+./viki team --help
+./viki learn --help
 
 # Verify all imports work
 go mod tidy

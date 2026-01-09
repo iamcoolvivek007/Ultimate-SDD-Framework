@@ -1,4 +1,4 @@
-# 🚀 Ultimate SDD Framework
+# 🚀 Viki - Ultimate SDD Framework
 
 **System over Snippets - AI-Powered Development**
 
@@ -143,50 +143,50 @@ sdd approve
 
 ### Project Management
 ```bash
-nexus init <name>           # Initialize SDD project
-nexus discovery [--deep]    # Brownfield: Map existing codebase
-nexus status                # Show project status
-nexus approve               # Approve current phase
-nexus team <subcommand>     # Team collaboration management
+viki init <name>           # Initialize SDD project
+viki discovery [--deep]    # Brownfield: Map existing codebase
+viki status                # Show project status
+viki approve               # Approve current phase
+viki team <subcommand>     # Team collaboration management
 ```
 
 ### Development Workflow
 ```bash
 # Greenfield (New Projects)
-nexus init <name>           # Initialize project
-nexus specify <desc>        # PRD-First requirement gathering
-nexus plan                  # Context reset architecture planning
-nexus approve               # Quality gates (mandatory approvals)
-nexus task                  # Atomic task breakdown
-nexus execute               # Modular rule task execution
-nexus review [pr]           # AI-powered code review & QA validation
-nexus evolve "bug report"   # System evolution from bugs
+viki init <name>           # Initialize project
+viki specify <desc>        # PRD-First requirement gathering
+viki plan                  # Context reset architecture planning
+viki approve               # Quality gates (mandatory approvals)
+viki task                  # Atomic task breakdown
+viki execute               # Modular rule task execution
+viki review [pr]           # AI-powered code review & QA validation
+viki evolve "bug report"   # System evolution from bugs
 
 # Advanced Development Features
-nexus analyze               # Comprehensive code quality analysis
-nexus pair <subcommand>     # Interactive AI pair programming
-nexus learn <subcommand>    # Adaptive learning & personalization
+viki analyze               # Comprehensive code quality analysis
+viki pair <subcommand>     # Interactive AI pair programming
+viki learn <subcommand>    # Adaptive learning & personalization
 
 # Brownfield (Existing Codebases)
-nexus init <name>           # Initialize project
-nexus discovery --deep      # Map existing system (MANDATORY FIRST)
-nexus specify <desc>        # Legacy-aware requirement gathering
-nexus plan                  # Migration & integration planning
-nexus approve               # Quality gates with legacy validation
-nexus task                  # File-path-specific task breakdown
-nexus execute               # Safeguard execution with regression testing
-nexus review                # Legacy integration validation
-nexus evolve "bug report"   # Brownfield-specific rule evolution
+viki init <name>           # Initialize project
+viki discovery --deep      # Map existing system (MANDATORY FIRST)
+viki specify <desc>        # Legacy-aware requirement gathering
+viki plan                  # Migration & integration planning
+viki approve               # Quality gates with legacy validation
+viki task                  # File-path-specific task breakdown
+viki execute               # Safeguard execution with regression testing
+viki review                # Legacy integration validation
+viki evolve "bug report"   # Brownfield-specific rule evolution
 ```
 
 ### AI Provider Management
 ```bash
-nexus mcp add <name> --provider <provider>    # Add AI provider
-nexus mcp remove <name>                       # Remove provider
-nexus mcp list                                # List providers
-nexus mcp default <name>                      # Set default provider
-nexus mcp test [name]                         # Test connection
-nexus mcp chat <message>                      # Direct chat with AI
+viki mcp add <name> --provider <provider>    # Add AI provider
+viki mcp remove <name>                       # Remove provider
+viki mcp list                                # List providers
+viki mcp default <name>                      # Set default provider
+viki mcp test [name]                         # Test connection
+viki mcp chat <message>                      # Direct chat with AI
 ```
 
 ## 🧠 System over Snippets Philosophy
@@ -209,10 +209,10 @@ The Ultimate SDD Framework implements five meta-skills that prevent "vibe coding
 
 ### 3. Command-ification
 **Repetitive workflows are mapped to CLI commands.**
-- `nexus specify`: PRD generation workflow
-- `nexus plan`: Context reset planning
-- `nexus execute`: Modular rule task execution
-- `nexus evolve`: System evolution from bugs
+- `viki specify`: PRD generation workflow
+- `viki plan`: Context reset planning
+- `viki execute`: Modular rule task execution
+- `viki evolve`: System evolution from bugs
 
 ### 4. Context Reset
 **Planning and execution happen in separate mental spaces.**
@@ -222,7 +222,7 @@ The Ultimate SDD Framework implements five meta-skills that prevent "vibe coding
 
 ### 5. System Evolution
 **Every bug becomes a learning opportunity.**
-- `nexus evolve "bug description"`: Analyzes bugs and updates rules
+- `viki evolve "bug description"`: Analyzes bugs and updates rules
 - Root cause analysis prevents similar issues
 - System gets smarter with each bug fixed
 
@@ -239,7 +239,7 @@ The Ultimate SDD Framework includes specialized support for **brownfield develop
 🔍 Discovery → 📋 Specification → 🏗️ PIV Planning → 🛡️ Safeguard Execution → 🔄 Evolution
 ```
 
-#### 1. Discovery Phase (`nexus discovery --deep`)
+#### 1. Discovery Phase (`viki discovery --deep`)
 **Map existing codebase and establish system context**
 - Comprehensive LSP analysis of all files
 - Identification of legacy patterns and anti-patterns
@@ -247,28 +247,28 @@ The Ultimate SDD Framework includes specialized support for **brownfield develop
 - Assessment of technical debt
 - Generation of `CONTEXT.md` as source of truth
 
-#### 2. Specification Phase (`nexus specify "feature with legacy integration"`)
+#### 2. Specification Phase (`viki specify "feature with legacy integration"`)
 **Define interactions with existing system**
 - Legacy touchpoints identification
 - Regression risk assessment
 - Integration constraint documentation
 - Context validation against discovered patterns
 
-#### 3. PIV Planning (`nexus plan`)
+#### 3. PIV Planning (`viki plan`)
 **Context-reset planning with brownfield awareness**
 - Clean mental space for architecture design
 - Migration and integration strategy planning
 - Legacy code refactoring requirements
 - Backwards compatibility planning
 
-#### 4. Safeguard Execution (`nexus execute`)
+#### 4. Safeguard Execution (`viki execute`)
 **Protected implementation with legacy validation**
 - Modular rule loading based on task context
 - Automatic regression testing integration
 - Legacy pattern compliance enforcement
 - Integration point validation
 
-#### 5. Evolution (`nexus evolve "legacy integration bug"`)
+#### 5. Evolution (`viki evolve "legacy integration bug"`)
 **System learns from brownfield challenges**
 - Root cause analysis of legacy integration issues
 - Rule updates to prevent similar problems
@@ -287,33 +287,33 @@ The Ultimate SDD Framework includes specialized support for **brownfield develop
 
 ```bash
 # 1. Discover the existing system
-nexus init "My Legacy Project"
-nexus discovery --deep
+viki init "My Legacy Project"
+viki discovery --deep
 
 # 2. Review the generated context
 cat .sdd/CONTEXT.md
 
 # 3. Specify features with legacy awareness
-nexus specify "Add user export feature without breaking existing streak logic"
+viki specify "Add user export feature without breaking existing streak logic"
 
 # 4. Plan with integration constraints
-nexus plan  # Includes migration strategies
-nexus approve
+viki plan  # Includes migration strategies
+viki approve
 
 # 5. Execute with safeguard validation
-nexus task
-nexus execute  # Validates against legacy patterns
+viki task
+viki execute  # Validates against legacy patterns
 
 # 6. Review with regression testing
-nexus review
+viki review
 
 # 7. Evolve from any integration issues
-nexus evolve "Export feature broke existing habit tracking"
+viki evolve "Export feature broke existing habit tracking"
 ```
 
 ## 🧠 Advanced AI Features
 
-### Code Quality Analysis (`nexus analyze`)
+### Code Quality Analysis (`viki analyze`)
 **Comprehensive automated code quality assessment:**
 - **Code Metrics**: Lines of code, complexity, maintainability scores
 - **Security Scanning**: Vulnerability detection and hardening recommendations
@@ -322,11 +322,11 @@ nexus evolve "Export feature broke existing habit tracking"
 - **Quality Scoring**: Overall A-F grading with detailed breakdowns
 
 ```bash
-nexus analyze  # Full codebase analysis
+viki analyze  # Full codebase analysis
 # Generates .sdd/analysis_report.md with detailed findings
 ```
 
-### AI-Powered Code Review (`nexus review [pr-number]`)
+### AI-Powered Code Review (`viki review [pr-number]`)
 **Intelligent automated code review with AI analysis:**
 - **Pattern Recognition**: Identifies anti-patterns and best practice violations
 - **Security Analysis**: Automated vulnerability and weakness detection
@@ -335,12 +335,12 @@ nexus analyze  # Full codebase analysis
 - **Quality Scoring**: Automated approval/rejection recommendations
 
 ```bash
-nexus review 123              # Review PR #123
-nexus review --deep           # Comprehensive analysis
+viki review 123              # Review PR #123
+viki review --deep           # Comprehensive analysis
 # Generates .sdd/review_report.md with detailed feedback
 ```
 
-### Interactive Pair Programming (`nexus pair`)
+### Interactive Pair Programming (`viki pair`)
 **Real-time AI-assisted development sessions:**
 - **Context-Aware Suggestions**: Intelligent code completion and refactoring
 - **Best Practice Enforcement**: Automatic application of learned patterns
@@ -349,14 +349,14 @@ nexus review --deep           # Comprehensive analysis
 - **Session Analytics**: Productivity tracking and pattern recognition
 
 ```bash
-nexus pair start developer "api development"  # Start session
-nexus pair suggest --file api.go --line 42 --type refactor
-nexus pair action --id sugg_123 --action accepted
-nexus pair report  # View session insights
-nexus pair end     # Complete session
+viki pair start developer "api development"  # Start session
+viki pair suggest --file api.go --line 42 --type refactor
+viki pair action --id sugg_123 --action accepted
+viki pair report  # View session insights
+viki pair end     # Complete session
 ```
 
-### Adaptive Learning System (`nexus learn`)
+### Adaptive Learning System (`viki learn`)
 **Continuous improvement through development pattern recognition:**
 - **Interaction Recording**: Track successful patterns and learn from failures
 - **Personalized Suggestions**: Context-aware recommendations based on history
@@ -365,15 +365,15 @@ nexus pair end     # Complete session
 - **Learning Analytics**: Development habit insights and productivity metrics
 
 ```bash
-nexus learn record --type refactoring --context api --action extract-method --success
-nexus learn suggest database api  # Get personalized recommendations
-nexus learn report               # View learning insights
-nexus learn evolve               # Suggest rule improvements
+viki learn record --type refactoring --context api --action extract-method --success
+viki learn suggest database api  # Get personalized recommendations
+viki learn report               # View learning insights
+viki learn evolve               # Suggest rule improvements
 ```
 
 ## 👥 Team Collaboration Features
 
-### Team Management (`nexus team`)
+### Team Management (`viki team`)
 **Collaborative development environment:**
 - **Team Structure**: Member management with roles and skills
 - **Shared Standards**: Team-wide coding rules and best practices
@@ -382,13 +382,13 @@ nexus learn evolve               # Suggest rule improvements
 - **Decision Log**: Important architectural and design decisions
 
 ```bash
-nexus team init --name "Backend Team" --description "API development team"
-nexus team member add --name "Alice" --role senior --skills "go,api,testing"
-nexus team rule add --category coding_standards --title "Use meaningful names"
-nexus team knowledge add --title "API Design Patterns" --category best_practices
-nexus team pattern add --name "Repository Pattern" --language go --code "..."
-nexus team search "error handling"  # Search team knowledge
-nexus team report                  # Comprehensive team overview
+viki team init --name "Backend Team" --description "API development team"
+viki team member add --name "Alice" --role senior --skills "go,api,testing"
+viki team rule add --category coding_standards --title "Use meaningful names"
+viki team knowledge add --title "API Design Patterns" --category best_practices
+viki team pattern add --name "Repository Pattern" --language go --code "..."
+viki team search "error handling"  # Search team knowledge
+viki team report                  # Comprehensive team overview
 ```
 
 ## 🤖 AI Providers
