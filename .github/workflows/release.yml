@@ -1,0 +1,226 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name for manual release'
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build binaries
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+            name: linux-amd64
+          - os: ubuntu-latest
+            goos: linux
+            goarch: arm64
+            name: linux-arm64
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+            name: darwin-amd64
+          - os: macos-latest
+            goos: darwin
+            goarch: arm64
+            name: darwin-arm64
+          - os: windows-latest
+            goos: windows
+            goarch: amd64
+            name: windows-amd64
+          - os: windows-latest
+            goos: windows
+            goarch: arm64
+            name: windows-arm64
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Get version
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          elif [[ "${{ github.event.inputs.tag_name }}" ]]; then
+            VERSION=${{ github.event.inputs.tag_name }}
+          else
+            VERSION=dev-$(git rev-parse --short HEAD)
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build binary
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 0
+        run: |
+          BINARY_NAME=sdd
+          if [ "$GOOS" = "windows" ]; then
+            BINARY_NAME=sdd.exe
+          fi
+
+          go build \
+            -ldflags "-X main.version=${{ steps.version.outputs.version }} -X main.buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ) -s -w" \
+            -o "${BINARY_NAME}" \
+            ./cmd/sdd
+
+      - name: Generate checksums
+        run: |
+          if [ "${{ matrix.goos }}" = "windows" ]; then
+            sha256sum sdd.exe > sdd.exe.sha256
+            echo "CHECKSUM=$(cat sdd.exe.sha256)" >> $GITHUB_ENV
+          else
+            sha256sum sdd > sdd.sha256
+            echo "CHECKSUM=$(cat sdd.sha256)" >> $GITHUB_ENV
+          fi
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdd-${{ steps.version.outputs.version }}-${{ matrix.name }}
+          path: |
+            sdd*
+            *.sha256
+
+  release:
+    name: Create release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: version
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/}
+          else
+            VERSION=${{ github.event.inputs.tag_name }}
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create release archives
+        run: |
+          cd artifacts
+          for dir in */; do
+            if [ -d "$dir" ]; then
+              archive_name="ultimate-sdd-framework-${{ steps.version.outputs.version }}-${dir%/}.tar.gz"
+              tar -czf "../$archive_name" -C "$dir" .
+              echo "Created $archive_name"
+            fi
+          done
+
+      - name: Create release notes
+        id: release_notes
+        run: |
+          cat > release_notes.md << 'EOF'
+          ## 🚀 Ultimate SDD Framework ${{ steps.version.outputs.version }}
+
+          **Spec-Driven Development with AI Agents**
+
+          ### What's New
+
+          - Complete SDD workflow with gated phases
+          - AI agent system with expert personas (PM, Architect, Developer, QA)
+          - LSP integration for codebase context awareness
+          - MCP support for multiple AI providers
+          - Terminal-native CLI with rich TUI
+          - Comprehensive documentation and examples
+
+          ### Installation
+
+          Download the appropriate binary for your platform from the assets below.
+
+          #### Quick Start
+          ```bash
+          # Make executable and run
+          chmod +x sdd
+          ./sdd --help
+          ```
+
+          #### Configure AI Provider
+          ```bash
+          # OpenAI example
+          ./sdd mcp add openai-main --provider openai --model gpt-4
+
+          # Anthropic example
+          ./sdd mcp add claude-main --provider anthropic --model claude-3-sonnet-20240229
+          ```
+
+          ### Supported Platforms
+          - Linux (amd64, arm64)
+          - macOS (amd64, arm64)
+          - Windows (amd64, arm64)
+
+          ### Documentation
+          - [Quick Start Guide](https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/blob/main/docs/quick-start.md)
+          - [Complete Documentation](https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/blob/main/README.md)
+
+          ---
+          *Built with ❤️ using Go and AI assistance*
+          EOF
+
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          cat release_notes.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+          body: ${{ steps.release_notes.outputs.notes }}
+          files: |
+            ultimate-sdd-framework-*.tar.gz
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  test-build:
+    name: Test build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Verify build
+        run: |
+          go build -o sdd ./cmd/sdd
+          ./sdd --version || ./sdd --help | head -5
+
+      - name: Run basic tests
+        run: go test ./...
