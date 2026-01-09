@@ -5,6 +5,8 @@
 *.so
 *.dylib
 sdd
+viki
+nexus
 
 # Test binary, built with `go test -c`
 *.test
