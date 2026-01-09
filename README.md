@@ -147,6 +147,7 @@ nexus init <name>           # Initialize SDD project
 nexus discovery [--deep]    # Brownfield: Map existing codebase
 nexus status                # Show project status
 nexus approve               # Approve current phase
+nexus team <subcommand>     # Team collaboration management
 ```
 
 ### Development Workflow
@@ -158,8 +159,13 @@ nexus plan                  # Context reset architecture planning
 nexus approve               # Quality gates (mandatory approvals)
 nexus task                  # Atomic task breakdown
 nexus execute               # Modular rule task execution
-nexus review                # Quality assurance validation
+nexus review [pr]           # AI-powered code review & QA validation
 nexus evolve "bug report"   # System evolution from bugs
+
+# Advanced Development Features
+nexus analyze               # Comprehensive code quality analysis
+nexus pair <subcommand>     # Interactive AI pair programming
+nexus learn <subcommand>    # Adaptive learning & personalization
 
 # Brownfield (Existing Codebases)
 nexus init <name>           # Initialize project
@@ -303,6 +309,86 @@ nexus review
 
 # 7. Evolve from any integration issues
 nexus evolve "Export feature broke existing habit tracking"
+```
+
+## 🧠 Advanced AI Features
+
+### Code Quality Analysis (`nexus analyze`)
+**Comprehensive automated code quality assessment:**
+- **Code Metrics**: Lines of code, complexity, maintainability scores
+- **Security Scanning**: Vulnerability detection and hardening recommendations
+- **Performance Analysis**: Bottleneck identification and optimization suggestions
+- **Test Coverage**: Gap analysis and testing strategy recommendations
+- **Quality Scoring**: Overall A-F grading with detailed breakdowns
+
+```bash
+nexus analyze  # Full codebase analysis
+# Generates .sdd/analysis_report.md with detailed findings
+```
+
+### AI-Powered Code Review (`nexus review [pr-number]`)
+**Intelligent automated code review with AI analysis:**
+- **Pattern Recognition**: Identifies anti-patterns and best practice violations
+- **Security Analysis**: Automated vulnerability and weakness detection
+- **Performance Insights**: Optimization opportunities and bottleneck warnings
+- **Maintainability Assessment**: Code complexity and refactoring suggestions
+- **Quality Scoring**: Automated approval/rejection recommendations
+
+```bash
+nexus review 123              # Review PR #123
+nexus review --deep           # Comprehensive analysis
+# Generates .sdd/review_report.md with detailed feedback
+```
+
+### Interactive Pair Programming (`nexus pair`)
+**Real-time AI-assisted development sessions:**
+- **Context-Aware Suggestions**: Intelligent code completion and refactoring
+- **Best Practice Enforcement**: Automatic application of learned patterns
+- **Learning Integration**: Session insights improve future suggestions
+- **Multiple Modes**: Code completion, refactoring, testing, explanation
+- **Session Analytics**: Productivity tracking and pattern recognition
+
+```bash
+nexus pair start developer "api development"  # Start session
+nexus pair suggest --file api.go --line 42 --type refactor
+nexus pair action --id sugg_123 --action accepted
+nexus pair report  # View session insights
+nexus pair end     # Complete session
+```
+
+### Adaptive Learning System (`nexus learn`)
+**Continuous improvement through development pattern recognition:**
+- **Interaction Recording**: Track successful patterns and learn from failures
+- **Personalized Suggestions**: Context-aware recommendations based on history
+- **Rule Evolution**: Automatic suggestions for framework rule improvements
+- **Pattern Recognition**: Identify and promote successful coding approaches
+- **Learning Analytics**: Development habit insights and productivity metrics
+
+```bash
+nexus learn record --type refactoring --context api --action extract-method --success
+nexus learn suggest database api  # Get personalized recommendations
+nexus learn report               # View learning insights
+nexus learn evolve               # Suggest rule improvements
+```
+
+## 👥 Team Collaboration Features
+
+### Team Management (`nexus team`)
+**Collaborative development environment:**
+- **Team Structure**: Member management with roles and skills
+- **Shared Standards**: Team-wide coding rules and best practices
+- **Knowledge Base**: Centralized documentation and pattern library
+- **Code Patterns**: Reusable solutions and architectural patterns
+- **Decision Log**: Important architectural and design decisions
+
+```bash
+nexus team init --name "Backend Team" --description "API development team"
+nexus team member add --name "Alice" --role senior --skills "go,api,testing"
+nexus team rule add --category coding_standards --title "Use meaningful names"
+nexus team knowledge add --title "API Design Patterns" --category best_practices
+nexus team pattern add --name "Repository Pattern" --language go --code "..."
+nexus team search "error handling"  # Search team knowledge
+nexus team report                  # Comprehensive team overview
 ```
 
 ## 🤖 AI Providers
