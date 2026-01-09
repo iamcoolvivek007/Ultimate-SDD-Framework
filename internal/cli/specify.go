@@ -66,9 +66,12 @@ constraints, and acceptance criteria.`,
 				return fmt.Errorf("failed to generate specification: %w", err)
 			}
 
+			// Add Status to specification
+			specContentWithStatus := fmt.Sprintf("---\nstatus: pending\n---\n\n%s", specContent)
+
 			// Save specification
 			specPath := stateMgr.GetPhaseOutputPath(gates.PhaseSpecify)
-			if err := os.WriteFile(specPath, []byte(specContent), 0644); err != nil {
+			if err := os.WriteFile(specPath, []byte(specContentWithStatus), 0644); err != nil {
 				return fmt.Errorf("failed to save specification: %w", err)
 			}
 

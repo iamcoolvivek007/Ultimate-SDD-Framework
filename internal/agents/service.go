@@ -84,6 +84,9 @@ func (as *AgentService) GetAgentResponse(agentName, phase, userInput string) (st
 		}
 	}
 
+	// Add Conductor Context (persistent brain)
+	contextInfo += as.getConductorContext()
+
 	// Build the full prompt
 	systemPrompt := agent.GetSystemPrompt()
 	phasePrompt := agent.GetPhasePrompt(phase, contextInfo)
@@ -117,6 +120,37 @@ func (as *AgentService) GetAgentResponse(agentName, phase, userInput string) (st
 	}
 
 	return response.Choices[0].Message.Content, nil
+}
+
+// getConductorContext reads files from .sdd/context/ to inject persistent context
+func (as *AgentService) getConductorContext() string {
+	contextDir := filepath.Join(as.projectRoot, ".sdd", "context")
+	if _, err := os.Stat(contextDir); os.IsNotExist(err) {
+		return ""
+	}
+
+	var builder strings.Builder
+	builder.WriteString("\n\n## 🧠 PERSISTENT PROJECT CONTEXT (CONDUCTOR)\n")
+
+	files, err := os.ReadDir(contextDir)
+	if err != nil {
+		return ""
+	}
+
+	for _, file := range files {
+		if file.IsDir() || !strings.HasSuffix(file.Name(), ".md") {
+			continue
+		}
+
+		content, err := os.ReadFile(filepath.Join(contextDir, file.Name()))
+		if err != nil {
+			continue
+		}
+
+		builder.WriteString(fmt.Sprintf("\n### %s\n%s\n", strings.ToUpper(strings.TrimSuffix(file.Name(), ".md")), string(content)))
+	}
+
+	return builder.String()
 }
 
 // getBrownfieldConstraintsForPhase provides brownfield-specific constraints for each phase

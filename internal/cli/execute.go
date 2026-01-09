@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"ultimate-sdd-framework/internal/agents"
@@ -39,6 +40,18 @@ process and track progress against the task breakdown.`,
 			taskContent, err := os.ReadFile(taskPath)
 			if err != nil {
 				return fmt.Errorf("failed to read tasks: %w", err)
+			}
+
+			// Intent Gating: Verify Spec Approval
+			// Assuming the spec is always at GetPhaseOutputPath(gates.PhaseSpecify)
+			specPath := stateMgr.GetPhaseOutputPath(gates.PhaseSpecify)
+			if specData, err := os.ReadFile(specPath); err == nil {
+				if !strings.Contains(string(specData), "status: approved") {
+					return fmt.Errorf("INTENT GATING: Specification at %s must have 'status: approved' in frontmatter before execution can proceed", specPath)
+				}
+			} else {
+				// If spec is missing, that's also a gating failure usually, but stateMgr checks phase
+				fmt.Printf("⚠️ Warning: Could not check spec approval: %v\n", err)
 			}
 
 			// Initialize agent service
