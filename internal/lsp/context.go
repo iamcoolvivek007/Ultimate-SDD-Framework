@@ -51,12 +51,81 @@ type ProjectStructure struct {
 	ConfigFiles     []string
 }
 
+// BrownfieldContext provides comprehensive analysis for existing codebases
+type BrownfieldContext struct {
+	CodebaseContext
+	LegacyPatterns     []LegacyPattern
+	ForbiddenPatterns  []ForbiddenPattern
+	IntegrationPoints  []IntegrationPoint
+	TechnicalDebt      []TechnicalDebtItem
+	Constitution       Constitution
+}
+
+// LegacyPattern represents established patterns in the codebase
+type LegacyPattern struct {
+	Pattern     string
+	Description string
+	Files       []string
+	Examples    []string
+}
+
+// ForbiddenPattern represents anti-patterns that should be avoided
+type ForbiddenPattern struct {
+	Pattern     string
+	Description string
+	Severity    string
+	Occurrences []string
+	Recommended string
+}
+
+// IntegrationPoint represents key integration points in the system
+type IntegrationPoint struct {
+	Name        string
+	Type        string // api, database, external_service, etc.
+	Description string
+	Files       []string
+	Dependencies []string
+}
+
+// TechnicalDebtItem represents identified technical debt
+type TechnicalDebtItem struct {
+	Issue       string
+	Severity    string
+	Files       []string
+	Description string
+	Recommendation string
+}
+
+// Constitution represents the system's architectural rules
+type Constitution struct {
+	TechStack        []string
+	ArchitecturalRules []string
+	CodingStandards []string
+	IntegrationRules []string
+	QualityGates    []string
+}
+
 // NewCodebaseContext creates a new codebase context analyzer
 func NewCodebaseContext(rootPath string) *CodebaseContext {
 	return &CodebaseContext{
 		RootPath:     rootPath,
 		Files:        []FileInfo{},
 		Dependencies: make(map[string][]string),
+	}
+}
+
+// NewBrownfieldContext creates a comprehensive brownfield analysis context
+func NewBrownfieldContext(rootPath string) *BrownfieldContext {
+	return &BrownfieldContext{
+		CodebaseContext: CodebaseContext{
+			RootPath:     rootPath,
+			Files:        []FileInfo{},
+			Dependencies: make(map[string][]string),
+		},
+		LegacyPatterns:    []LegacyPattern{},
+		ForbiddenPatterns: []ForbiddenPattern{},
+		IntegrationPoints: []IntegrationPoint{},
+		TechnicalDebt:     []TechnicalDebtItem{},
 	}
 }
 
@@ -661,4 +730,699 @@ func (cc *CodebaseContext) analyzePatterns() []string {
 	}
 
 	return patterns
+}
+
+// AnalyzeBrownfield performs comprehensive brownfield analysis
+func (bfc *BrownfieldContext) AnalyzeBrownfield() error {
+	// First perform basic codebase analysis
+	if err := bfc.AnalyzeProject(); err != nil {
+		return fmt.Errorf("failed to analyze codebase: %w", err)
+	}
+
+	// Analyze legacy patterns
+	if err := bfc.analyzeLegacyPatterns(); err != nil {
+		return fmt.Errorf("failed to analyze legacy patterns: %w", err)
+	}
+
+	// Identify forbidden patterns
+	if err := bfc.identifyForbiddenPatterns(); err != nil {
+		return fmt.Errorf("failed to identify forbidden patterns: %w", err)
+	}
+
+	// Map integration points
+	if err := bfc.mapIntegrationPoints(); err != nil {
+		return fmt.Errorf("failed to map integration points: %w", err)
+	}
+
+	// Assess technical debt
+	if err := bfc.assessTechnicalDebt(); err != nil {
+		return fmt.Errorf("failed to assess technical debt: %w", err)
+	}
+
+	// Load constitution if it exists
+	if err := bfc.loadConstitution(); err != nil {
+		// Constitution doesn't exist yet, create default
+		bfc.createDefaultConstitution()
+	}
+
+	return nil
+}
+
+// analyzeLegacyPatterns identifies established patterns in the codebase
+func (bfc *BrownfieldContext) analyzeLegacyPatterns() error {
+	patterns := []LegacyPattern{}
+
+	// Analyze error handling patterns
+	errorPatterns := bfc.analyzeErrorHandlingPatterns()
+	patterns = append(patterns, errorPatterns...)
+
+	// Analyze data access patterns
+	dataPatterns := bfc.analyzeDataAccessPatterns()
+	patterns = append(patterns, dataPatterns...)
+
+	// Analyze architectural patterns
+	archPatterns := bfc.analyzeArchitecturalPatterns()
+	patterns = append(patterns, archPatterns...)
+
+	bfc.LegacyPatterns = patterns
+	return nil
+}
+
+// identifyForbiddenPatterns finds anti-patterns that should be avoided
+func (bfc *BrownfieldContext) identifyForbiddenPatterns() error {
+	forbidden := []ForbiddenPattern{}
+
+	// Check for deprecated patterns
+	deprecatedPatterns := bfc.checkDeprecatedPatterns()
+	forbidden = append(forbidden, deprecatedPatterns...)
+
+	// Check for security issues
+	securityPatterns := bfc.checkSecurityPatterns()
+	forbidden = append(forbidden, securityPatterns...)
+
+	// Check for performance issues
+	performancePatterns := bfc.checkPerformancePatterns()
+	forbidden = append(forbidden, performancePatterns...)
+
+	bfc.ForbiddenPatterns = forbidden
+	return nil
+}
+
+// mapIntegrationPoints identifies key integration points
+func (bfc *BrownfieldContext) mapIntegrationPoints() error {
+	points := []IntegrationPoint{}
+
+	// API endpoints
+	apiPoints := bfc.mapAPIPoints()
+	points = append(points, apiPoints...)
+
+	// Database connections
+	dbPoints := bfc.mapDatabasePoints()
+	points = append(points, dbPoints...)
+
+	// External services
+	externalPoints := bfc.mapExternalServicePoints()
+	points = append(points, externalPoints...)
+
+	// File system interactions
+	filePoints := bfc.mapFileSystemPoints()
+	points = append(points, filePoints...)
+
+	bfc.IntegrationPoints = points
+	return nil
+}
+
+// assessTechnicalDebt identifies technical debt items
+func (bfc *BrownfieldContext) assessTechnicalDebt() error {
+	debt := []TechnicalDebtItem{}
+
+	// Code quality debt
+	qualityDebt := bfc.assessCodeQualityDebt()
+	debt = append(debt, qualityDebt...)
+
+	// Architecture debt
+	archDebt := bfc.assessArchitectureDebt()
+	debt = append(debt, archDebt...)
+
+	// Test coverage debt
+	testDebt := bfc.assessTestCoverageDebt()
+	debt = append(debt, testDebt...)
+
+	bfc.TechnicalDebt = debt
+	return nil
+}
+
+// GenerateCONTEXTFile creates the CONTEXT.md file for brownfield development
+func (bfc *BrownfieldContext) GenerateCONTEXTFile() string {
+	var ctx strings.Builder
+
+	ctx.WriteString("---\n")
+	ctx.WriteString("title: System Context & Constitution\n")
+	ctx.WriteString("generated_by: Ultimate SDD Framework - Brownfield Discovery\n")
+	ctx.WriteString("last_updated: Generated automatically\n")
+	ctx.WriteString("---\n\n")
+
+	ctx.WriteString("# System Context & Constitution\n\n")
+	ctx.WriteString("This document serves as the **Source of Truth** for the current system state.\n")
+	ctx.WriteString("All development decisions should reference this context to maintain consistency.\n\n")
+
+	// Constitution
+	ctx.WriteString("## 🏛️ System Constitution\n\n")
+	ctx.WriteString("### Technology Stack\n")
+	for _, tech := range bfc.Constitution.TechStack {
+		ctx.WriteString(fmt.Sprintf("- %s\n", tech))
+	}
+	ctx.WriteString("\n")
+
+	ctx.WriteString("### Architectural Rules\n")
+	for _, rule := range bfc.Constitution.ArchitecturalRules {
+		ctx.WriteString(fmt.Sprintf("- %s\n", rule))
+	}
+	ctx.WriteString("\n")
+
+	ctx.WriteString("### Coding Standards\n")
+	for _, standard := range bfc.Constitution.CodingStandards {
+		ctx.WriteString(fmt.Sprintf("- %s\n", standard))
+	}
+	ctx.WriteString("\n")
+
+	// Legacy Patterns
+	ctx.WriteString("## 📚 Legacy Patterns\n\n")
+	ctx.WriteString("These are established patterns that should be followed for consistency:\n\n")
+
+	for i, pattern := range bfc.LegacyPatterns {
+		ctx.WriteString(fmt.Sprintf("### %d. %s\n", i+1, pattern.Pattern))
+		ctx.WriteString(fmt.Sprintf("**Description:** %s\n\n", pattern.Description))
+
+		if len(pattern.Files) > 0 {
+			ctx.WriteString("**Found in files:**\n")
+			for _, file := range pattern.Files {
+				ctx.WriteString(fmt.Sprintf("- %s\n", file))
+			}
+			ctx.WriteString("\n")
+		}
+
+		if len(pattern.Examples) > 0 {
+			ctx.WriteString("**Examples:**\n")
+			for _, example := range pattern.Examples {
+				ctx.WriteString(fmt.Sprintf("```go\n%s\n```\n", example))
+			}
+			ctx.WriteString("\n")
+		}
+	}
+
+	// Forbidden Patterns
+	ctx.WriteString("## 🚫 Forbidden Patterns\n\n")
+	ctx.WriteString("These anti-patterns should be avoided:\n\n")
+
+	for i, pattern := range bfc.ForbiddenPatterns {
+		ctx.WriteString(fmt.Sprintf("### %d. %s\n", i+1, pattern.Pattern))
+		ctx.WriteString(fmt.Sprintf("**Severity:** %s\n", pattern.Severity))
+		ctx.WriteString(fmt.Sprintf("**Description:** %s\n\n", pattern.Description))
+
+		if len(pattern.Occurrences) > 0 {
+			ctx.WriteString("**Found in:**\n")
+			for _, occurrence := range pattern.Occurrences {
+				ctx.WriteString(fmt.Sprintf("- %s\n", occurrence))
+			}
+			ctx.WriteString("\n")
+		}
+
+		if pattern.Recommended != "" {
+			ctx.WriteString(fmt.Sprintf("**Recommended:** %s\n\n", pattern.Recommended))
+		}
+	}
+
+	// Integration Points
+	ctx.WriteString("## 🔗 Integration Points\n\n")
+	ctx.WriteString("Critical integration points in the system:\n\n")
+
+	for i, point := range bfc.IntegrationPoints {
+		ctx.WriteString(fmt.Sprintf("### %d. %s (%s)\n", i+1, point.Name, point.Type))
+		ctx.WriteString(fmt.Sprintf("**Description:** %s\n\n", point.Description))
+
+		if len(point.Files) > 0 {
+			ctx.WriteString("**Files:**\n")
+			for _, file := range point.Files {
+				ctx.WriteString(fmt.Sprintf("- %s\n", file))
+			}
+			ctx.WriteString("\n")
+		}
+
+		if len(point.Dependencies) > 0 {
+			ctx.WriteString("**Dependencies:**\n")
+			for _, dep := range point.Dependencies {
+				ctx.WriteString(fmt.Sprintf("- %s\n", dep))
+			}
+			ctx.WriteString("\n")
+		}
+	}
+
+	// Technical Debt
+	ctx.WriteString("## 💸 Technical Debt\n\n")
+	ctx.WriteString("Identified technical debt that should be considered:\n\n")
+
+	for i, debt := range bfc.TechnicalDebt {
+		ctx.WriteString(fmt.Sprintf("### %d. %s\n", i+1, debt.Issue))
+		ctx.WriteString(fmt.Sprintf("**Severity:** %s\n", debt.Severity))
+		ctx.WriteString(fmt.Sprintf("**Description:** %s\n\n", debt.Description))
+
+		if len(debt.Files) > 0 {
+			ctx.WriteString("**Affected files:**\n")
+			for _, file := range debt.Files {
+				ctx.WriteString(fmt.Sprintf("- %s\n", file))
+			}
+			ctx.WriteString("\n")
+		}
+
+		ctx.WriteString(fmt.Sprintf("**Recommendation:** %s\n\n", debt.Recommendation))
+	}
+
+	// System Overview
+	ctx.WriteString("## 📊 System Overview\n\n")
+	ctx.WriteString(fmt.Sprintf("**Primary Language:** %s\n", bfc.Structure.MainLanguage))
+	ctx.WriteString(fmt.Sprintf("**Framework:** %s\n", bfc.Structure.Framework))
+	ctx.WriteString(fmt.Sprintf("**Total Files:** %d\n", len(bfc.Files)))
+
+	features := []string{}
+	if bfc.Structure.HasAPI {
+		features = append(features, "API")
+	}
+	if bfc.Structure.HasDatabase {
+		features = append(features, "Database")
+	}
+	if bfc.Structure.HasFrontend {
+		features = append(features, "Frontend")
+	}
+	if bfc.Structure.HasTests {
+		features = append(features, "Tests")
+	}
+
+	if len(features) > 0 {
+		ctx.WriteString(fmt.Sprintf("**Features:** %s\n", strings.Join(features, ", ")))
+	}
+
+	ctx.WriteString("\n**Entry Points:**\n")
+	for _, entry := range bfc.Structure.EntryPoints {
+		ctx.WriteString(fmt.Sprintf("- %s\n", entry))
+	}
+
+	ctx.WriteString("\n---\n*Generated by Ultimate SDD Framework - Brownfield Discovery Phase*\n")
+	ctx.WriteString("*This document should be updated whenever the system architecture changes.*\n")
+
+	return ctx.String()
+}
+
+// Helper methods for brownfield analysis
+
+func (bfc *BrownfieldContext) analyzeErrorHandlingPatterns() []LegacyPattern {
+	patterns := []LegacyPattern{}
+
+	errorPattern := LegacyPattern{
+		Pattern:     "Consistent Error Handling",
+		Description: "Standard error handling patterns used throughout the codebase",
+		Files:       []string{},
+		Examples:    []string{},
+	}
+
+	for _, file := range bfc.Files {
+		if strings.Contains(file.Content, "error") {
+			errorPattern.Files = append(errorPattern.Files, file.Path)
+
+			// Extract error handling examples
+			if strings.Contains(file.Content, "if err != nil") {
+				errorPattern.Examples = append(errorPattern.Examples,
+					"if err != nil {\n    return fmt.Errorf(\"operation failed: %w\", err)\n}")
+			}
+		}
+	}
+
+	if len(errorPattern.Files) > 0 {
+		patterns = append(patterns, errorPattern)
+	}
+
+	return patterns
+}
+
+func (bfc *BrownfieldContext) analyzeDataAccessPatterns() []LegacyPattern {
+	patterns := []LegacyPattern{}
+
+	if bfc.Structure.HasDatabase {
+		dbPattern := LegacyPattern{
+			Pattern:     "Database Access Layer",
+			Description: "Established patterns for database interactions",
+			Files:       []string{},
+			Examples:    []string{},
+		}
+
+		for _, file := range bfc.Files {
+			content := strings.ToLower(file.Content)
+			if strings.Contains(content, "database") || strings.Contains(content, "sql") ||
+			   strings.Contains(content, "query") || strings.Contains(content, "gorm") {
+				dbPattern.Files = append(dbPattern.Files, file.Path)
+			}
+		}
+
+		if len(dbPattern.Files) > 0 {
+			patterns = append(patterns, dbPattern)
+		}
+	}
+
+	return patterns
+}
+
+func (bfc *BrownfieldContext) analyzeArchitecturalPatterns() []LegacyPattern {
+	patterns := []LegacyPattern{}
+
+	// MVC pattern detection
+	mvcPattern := LegacyPattern{
+		Pattern:     "MVC Architecture",
+		Description: "Model-View-Controller pattern implementation",
+		Files:       []string{},
+	}
+
+	for _, file := range bfc.Files {
+		path := strings.ToLower(file.Path)
+		if strings.Contains(path, "model") || strings.Contains(path, "view") || strings.Contains(path, "controller") {
+			mvcPattern.Files = append(mvcPattern.Files, file.Path)
+		}
+	}
+
+	if len(mvcPattern.Files) > 3 { // At least one of each type
+		patterns = append(patterns, mvcPattern)
+	}
+
+	return patterns
+}
+
+func (bfc *BrownfieldContext) checkDeprecatedPatterns() []ForbiddenPattern {
+	forbidden := []ForbiddenPattern{}
+
+	// Check for deprecated libraries or patterns
+	for _, file := range bfc.Files {
+		if strings.Contains(file.Content, "deprecated") ||
+		   strings.Contains(strings.ToLower(file.Content), "todo: remove") {
+			forbidden = append(forbidden, ForbiddenPattern{
+				Pattern:     "Deprecated Code Usage",
+				Description: "Code marked as deprecated should be avoided",
+				Severity:    "Medium",
+				Occurrences: []string{file.Path},
+				Recommended: "Replace with current recommended alternatives",
+			})
+		}
+	}
+
+	return forbidden
+}
+
+func (bfc *BrownfieldContext) checkSecurityPatterns() []ForbiddenPattern {
+	forbidden := []ForbiddenPattern{}
+
+	// Check for potential security issues
+	for _, file := range bfc.Files {
+		content := file.Content
+
+		// SQL injection risks
+		if strings.Contains(content, "sprintf") && strings.Contains(content, "query") {
+			forbidden = append(forbidden, ForbiddenPattern{
+				Pattern:     "Potential SQL Injection",
+				Description: "String formatting in SQL queries can lead to injection attacks",
+				Severity:    "High",
+				Occurrences: []string{file.Path},
+				Recommended: "Use parameterized queries or prepared statements",
+			})
+		}
+
+		// Hardcoded secrets
+		if strings.Contains(content, "password") && (strings.Contains(content, "=") || strings.Contains(content, ":")) {
+			forbidden = append(forbidden, ForbiddenPattern{
+				Pattern:     "Hardcoded Credentials",
+				Description: "Credentials should not be hardcoded in source code",
+				Severity:    "Critical",
+				Occurrences: []string{file.Path},
+				Recommended: "Use environment variables or secure credential storage",
+			})
+		}
+	}
+
+	return forbidden
+}
+
+func (bfc *BrownfieldContext) checkPerformancePatterns() []ForbiddenPattern {
+	forbidden := []ForbiddenPattern{}
+
+	// Check for N+1 query patterns
+	for _, file := range bfc.Files {
+		content := file.Content
+		if strings.Contains(content, "for") && strings.Contains(content, "query") &&
+		   strings.Contains(content, "range") {
+			forbidden = append(forbidden, ForbiddenPattern{
+				Pattern:     "Potential N+1 Query",
+				Description: "Looping and querying in loops can cause performance issues",
+				Severity:    "Medium",
+				Occurrences: []string{file.Path},
+				Recommended: "Use batch queries or eager loading",
+			})
+		}
+	}
+
+	return forbidden
+}
+
+func (bfc *BrownfieldContext) mapAPIPoints() []IntegrationPoint {
+	points := []IntegrationPoint{}
+
+	for _, file := range bfc.Files {
+		if strings.Contains(file.Content, "router") || strings.Contains(file.Content, "route") ||
+		   strings.Contains(file.Content, "api") || strings.Contains(file.Content, "endpoint") {
+
+			// Extract route definitions
+			lines := strings.Split(file.Content, "\n")
+			for _, line := range lines {
+				line = strings.TrimSpace(line)
+				if strings.Contains(line, "GET") || strings.Contains(line, "POST") ||
+				   strings.Contains(line, "PUT") || strings.Contains(line, "DELETE") {
+					points = append(points, IntegrationPoint{
+						Name:        fmt.Sprintf("API Route in %s", filepath.Base(file.Path)),
+						Type:        "api",
+						Description: fmt.Sprintf("API endpoint defined in %s", file.Path),
+						Files:       []string{file.Path},
+						Dependencies: []string{"HTTP framework"},
+					})
+					break
+				}
+			}
+		}
+	}
+
+	return points
+}
+
+func (bfc *BrownfieldContext) mapDatabasePoints() []IntegrationPoint {
+	points := []IntegrationPoint{}
+
+	if bfc.Structure.HasDatabase {
+		dbPoint := IntegrationPoint{
+			Name:        "Database Connection",
+			Type:        "database",
+			Description: "Primary database connection and configuration",
+			Files:       []string{},
+			Dependencies: []string{"Database driver"},
+		}
+
+		for _, file := range bfc.Files {
+			content := strings.ToLower(file.Content)
+			if strings.Contains(content, "database") || strings.Contains(content, "sql") ||
+			   strings.Contains(content, "gorm") || strings.Contains(content, "connection") {
+				dbPoint.Files = append(dbPoint.Files, file.Path)
+			}
+		}
+
+		if len(dbPoint.Files) > 0 {
+			points = append(points, dbPoint)
+		}
+	}
+
+	return points
+}
+
+func (bfc *BrownfieldContext) mapExternalServicePoints() []IntegrationPoint {
+	points := []IntegrationPoint{}
+
+	for _, file := range bfc.Files {
+		content := strings.ToLower(file.Content)
+
+		// Check for external API calls
+		if strings.Contains(content, "http.client") || strings.Contains(content, "fetch") ||
+		   strings.Contains(content, "axios") || strings.Contains(content, "requests") {
+			points = append(points, IntegrationPoint{
+				Name:        fmt.Sprintf("External API Call in %s", filepath.Base(file.Path)),
+				Type:        "external_service",
+				Description: "External service integration",
+				Files:       []string{file.Path},
+				Dependencies: []string{"HTTP client library"},
+			})
+		}
+	}
+
+	return points
+}
+
+func (bfc *BrownfieldContext) mapFileSystemPoints() []IntegrationPoint {
+	points := []IntegrationPoint{}
+
+	for _, file := range bfc.Files {
+		if strings.Contains(file.Content, "os.Open") || strings.Contains(file.Content, "fs") ||
+		   strings.Contains(file.Content, "filepath") {
+			points = append(points, IntegrationPoint{
+				Name:        fmt.Sprintf("File System Access in %s", filepath.Base(file.Path)),
+				Type:        "filesystem",
+				Description: "File system operations",
+				Files:       []string{file.Path},
+				Dependencies: []string{"OS filesystem"},
+			})
+		}
+	}
+
+	return points
+}
+
+func (bfc *BrownfieldContext) assessCodeQualityDebt() []TechnicalDebtItem {
+	debt := []TechnicalDebtItem{}
+
+	// Check for long files
+	for _, file := range bfc.Files {
+		lines := strings.Split(file.Content, "\n")
+		if len(lines) > 500 {
+			debt = append(debt, TechnicalDebtItem{
+				Issue:        "Long File",
+				Severity:     "Low",
+				Files:        []string{file.Path},
+				Description:  fmt.Sprintf("File has %d lines, making it hard to maintain", len(lines)),
+				Recommendation: "Consider splitting into smaller, focused modules",
+			})
+		}
+	}
+
+	// Check for complex functions
+	for _, file := range bfc.Files {
+		lines := strings.Split(file.Content, "\n")
+		for i, line := range lines {
+			if strings.Contains(line, "func ") && strings.Contains(line, "{") {
+				// Count lines in function (simplified)
+				funcStart := i
+				braceCount := 0
+				funcLength := 0
+
+				for j := funcStart; j < len(lines); j++ {
+					funcLength++
+					if strings.Contains(lines[j], "{") {
+						braceCount++
+					}
+					if strings.Contains(lines[j], "}") {
+						braceCount--
+						if braceCount == 0 {
+							break
+						}
+					}
+				}
+
+				if funcLength > 50 {
+					debt = append(debt, TechnicalDebtItem{
+						Issue:        "Complex Function",
+						Severity:     "Medium",
+						Files:        []string{file.Path},
+						Description:  fmt.Sprintf("Function starting at line %d has %d lines", funcStart+1, funcLength),
+						Recommendation: "Break down into smaller, focused functions",
+					})
+				}
+			}
+		}
+	}
+
+	return debt
+}
+
+func (bfc *BrownfieldContext) assessArchitectureDebt() []TechnicalDebtItem {
+	debt := []TechnicalDebtItem{}
+
+	// Check for circular dependencies (simplified)
+	fileMap := make(map[string][]string)
+	for _, file := range bfc.Files {
+		fileMap[file.Path] = file.Imports
+	}
+
+	// This is a simplified check - real circular dependency detection is more complex
+	for file, imports := range fileMap {
+		for _, imp := range imports {
+			if importedFile, exists := fileMap[imp]; exists {
+				for _, reverseImp := range importedFile {
+					if reverseImp == file {
+						debt = append(debt, TechnicalDebtItem{
+							Issue:        "Potential Circular Dependency",
+							Severity:     "High",
+							Files:        []string{file, imp},
+							Description:  "Files may have circular import dependencies",
+							Recommendation: "Refactor to break circular dependencies using interfaces or dependency injection",
+						})
+						break
+					}
+				}
+			}
+		}
+	}
+
+	return debt
+}
+
+func (bfc *BrownfieldContext) assessTestCoverageDebt() []TechnicalDebtItem {
+	debt := []TechnicalDebtItem{}
+
+	if !bfc.Structure.HasTests {
+		debt = append(debt, TechnicalDebtItem{
+			Issue:        "Missing Test Suite",
+			Severity:     "High",
+			Files:        []string{},
+			Description:  "No test files detected in the codebase",
+			Recommendation: "Implement comprehensive unit and integration tests",
+		})
+	} else {
+		// Count test files vs source files
+		sourceFiles := 0
+		testFiles := 0
+
+		for _, file := range bfc.Files {
+			if strings.Contains(file.Path, "_test.go") || strings.Contains(file.Path, ".test.") {
+				testFiles++
+			} else if file.Type == FileTypeGo {
+				sourceFiles++
+			}
+		}
+
+		if testFiles < sourceFiles/2 {
+			debt = append(debt, TechnicalDebtItem{
+				Issue:        "Low Test Coverage",
+				Severity:     "Medium",
+				Files:        []string{},
+				Description:  fmt.Sprintf("Only %d test files for %d source files", testFiles, sourceFiles),
+				Recommendation: "Increase test coverage to at least 80%",
+			})
+		}
+	}
+
+	return debt
+}
+
+func (bfc *BrownfieldContext) loadConstitution() error {
+	constitutionPath := filepath.Join(bfc.RootPath, "CONSTITUTION.md")
+
+	if _, err := os.Stat(constitutionPath); os.IsNotExist(err) {
+		return fmt.Errorf("constitution file not found")
+	}
+
+	_, err := os.ReadFile(constitutionPath)
+	if err != nil {
+		return err
+	}
+
+	// Parse constitution (simplified parsing - TODO: implement actual parsing)
+	bfc.Constitution = Constitution{
+		TechStack:         []string{"Go", "React", "PostgreSQL"},
+		ArchitecturalRules: []string{"MVC pattern", "Repository pattern"},
+		CodingStandards:   []string{"Go naming conventions", "Error handling"},
+		IntegrationRules:  []string{"REST API", "Database transactions"},
+		QualityGates:      []string{"Tests pass", "Linting passes"},
+	}
+
+	return nil
+}
+
+func (bfc *BrownfieldContext) createDefaultConstitution() {
+	bfc.Constitution = Constitution{
+		TechStack:         []string{bfc.Structure.MainLanguage, bfc.Structure.Framework},
+		ArchitecturalRules: []string{"Follow established patterns", "Maintain separation of concerns"},
+		CodingStandards:   []string{"Follow language conventions", "Consistent error handling"},
+		IntegrationRules:  []string{"Use existing integration points", "Maintain API contracts"},
+		QualityGates:      []string{"No regressions", "Tests pass", "Code review approved"},
+	}
 }

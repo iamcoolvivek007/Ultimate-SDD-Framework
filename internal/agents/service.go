@@ -2,6 +2,8 @@ package agents
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"ultimate-sdd-framework/internal/lsp"
@@ -10,10 +12,12 @@ import (
 
 // AgentService provides high-level agent operations with context awareness
 type AgentService struct {
-	agentMgr    *AgentManager
-	mcpMgr      *mcp.MCPManager
-	lspContext  *lsp.CodebaseContext
-	projectRoot string
+	agentMgr        *AgentManager
+	mcpMgr          *mcp.MCPManager
+	lspContext      *lsp.CodebaseContext
+	brownfieldCtx   *lsp.BrownfieldContext
+	projectRoot     string
+	hasBrownfieldContext bool
 }
 
 // NewAgentService creates a new agent service
@@ -37,10 +41,25 @@ func (as *AgentService) Initialize() error {
 		return fmt.Errorf("failed to load MCP config: %w", err)
 	}
 
-	// Initialize LSP context
-	as.lspContext = lsp.NewCodebaseContext(as.projectRoot)
-	if err := as.lspContext.AnalyzeProject(); err != nil {
-		return fmt.Errorf("failed to analyze codebase: %w", err)
+	// Check for brownfield context (CONTEXT.md)
+	contextPath := filepath.Join(as.projectRoot, ".sdd", "CONTEXT.md")
+	if _, err := os.Stat(contextPath); err == nil {
+		// Brownfield context exists - use it
+		as.brownfieldCtx = lsp.NewBrownfieldContext(as.projectRoot)
+		if err := as.brownfieldCtx.AnalyzeBrownfield(); err != nil {
+			return fmt.Errorf("failed to analyze brownfield context: %w", err)
+		}
+		as.hasBrownfieldContext = true
+
+		// Still initialize regular LSP context for compatibility
+		as.lspContext = &as.brownfieldCtx.CodebaseContext
+	} else {
+		// No brownfield context - use regular LSP analysis
+		as.lspContext = lsp.NewCodebaseContext(as.projectRoot)
+		if err := as.lspContext.AnalyzeProject(); err != nil {
+			return fmt.Errorf("failed to analyze codebase: %w", err)
+		}
+		as.hasBrownfieldContext = false
 	}
 
 	return nil
@@ -54,10 +73,15 @@ func (as *AgentService) GetAgentResponse(agentName, phase, userInput string) (st
 		return "", fmt.Errorf("agent not found: %w", err)
 	}
 
-	// Get LSP context for this phase
+	// Get context for this phase (brownfield-aware)
 	contextInfo := ""
 	if as.lspContext != nil {
 		contextInfo = as.lspContext.GetContextForPhase(phase)
+
+		// Add brownfield constraints if available
+		if as.hasBrownfieldContext && as.brownfieldCtx != nil {
+			contextInfo += as.getBrownfieldConstraintsForPhase(phase)
+		}
 	}
 
 	// Build the full prompt
@@ -93,6 +117,120 @@ func (as *AgentService) GetAgentResponse(agentName, phase, userInput string) (st
 	}
 
 	return response.Choices[0].Message.Content, nil
+}
+
+// getBrownfieldConstraintsForPhase provides brownfield-specific constraints for each phase
+func (as *AgentService) getBrownfieldConstraintsForPhase(phase string) string {
+	if !as.hasBrownfieldContext || as.brownfieldCtx == nil {
+		return ""
+	}
+
+	var constraints strings.Builder
+	constraints.WriteString("\n\n## 🔧 Brownfield Constraints\n\n")
+
+	switch phase {
+	case "specify":
+		constraints.WriteString("### Legacy System Awareness\n")
+		constraints.WriteString("- **Existing Architecture**: Must integrate with current system design\n")
+		constraints.WriteString("- **Forbidden Patterns**: Avoid anti-patterns identified in CONTEXT.md\n")
+		constraints.WriteString("- **Integration Points**: Consider existing API and database touchpoints\n")
+		constraints.WriteString("- **Technical Debt**: Acknowledge known issues and limitations\n")
+
+		// Add specific forbidden patterns
+		if len(as.brownfieldCtx.ForbiddenPatterns) > 0 {
+			constraints.WriteString("\n### Prohibited Approaches\n")
+			for _, pattern := range as.brownfieldCtx.ForbiddenPatterns {
+				constraints.WriteString(fmt.Sprintf("- **%s**: %s\n", pattern.Pattern, pattern.Recommended))
+			}
+		}
+
+	case "plan":
+		constraints.WriteString("### Legacy Integration Requirements\n")
+		constraints.WriteString("- **Migration Strategy**: Plan how new features integrate with existing code\n")
+		constraints.WriteString("- **Refactoring Steps**: Include necessary code restructuring\n")
+		constraints.WriteString("- **Backwards Compatibility**: Ensure existing functionality remains intact\n")
+		constraints.WriteString("- **Testing Strategy**: Include regression testing for legacy components\n")
+
+		// Add integration points
+		if len(as.brownfieldCtx.IntegrationPoints) > 0 {
+			constraints.WriteString("\n### Key Integration Points\n")
+			for _, point := range as.brownfieldCtx.IntegrationPoints {
+				constraints.WriteString(fmt.Sprintf("- **%s**: %s\n", point.Name, point.Description))
+			}
+		}
+
+	case "task":
+		constraints.WriteString("### Legacy-Aware Task Creation\n")
+		constraints.WriteString("- **File Path Requirements**: Every task must specify existing files to modify\n")
+		constraints.WriteString("- **Regression Risk Assessment**: Identify potential side effects\n")
+		constraints.WriteString("- **Legacy Pattern Compliance**: Follow established coding patterns\n")
+		constraints.WriteString("- **Testing Obligations**: Include tests for modified legacy components\n")
+
+	case "execute":
+		constraints.WriteString("### Safe Modification Practices\n")
+		constraints.WriteString("- **Pattern Compliance**: Use only established legacy patterns\n")
+		constraints.WriteString("- **Integration Testing**: Verify changes don't break existing functionality\n")
+		constraints.WriteString("- **Documentation Updates**: Update CONTEXT.md if patterns change\n")
+		constraints.WriteString("- **Code Review Focus**: Pay special attention to legacy integration points\n")
+
+		// Add relevant legacy patterns
+		if len(as.brownfieldCtx.LegacyPatterns) > 0 {
+			constraints.WriteString("\n### Required Pattern Usage\n")
+			for _, pattern := range as.brownfieldCtx.LegacyPatterns {
+				constraints.WriteString(fmt.Sprintf("- **%s**: %s\n", pattern.Pattern, pattern.Description))
+			}
+		}
+
+	case "review":
+		constraints.WriteString("### Legacy System Validation\n")
+		constraints.WriteString("- **Regression Testing**: Run full existing test suite\n")
+		constraints.WriteString("- **Integration Verification**: Test all identified integration points\n")
+		constraints.WriteString("- **Pattern Compliance**: Ensure no forbidden patterns were introduced\n")
+		constraints.WriteString("- **Technical Debt Assessment**: Evaluate impact on existing debt\n")
+
+		// Add technical debt considerations
+		if len(as.brownfieldCtx.TechnicalDebt) > 0 {
+			constraints.WriteString("\n### Technical Debt Considerations\n")
+			for _, debt := range as.brownfieldCtx.TechnicalDebt {
+				if debt.Severity == "High" {
+					constraints.WriteString(fmt.Sprintf("- **%s**: %s\n", debt.Issue, debt.Recommendation))
+				}
+			}
+		}
+	}
+
+	// Add constitution compliance
+	if len(as.brownfieldCtx.Constitution.ArchitecturalRules) > 0 {
+		constraints.WriteString("\n### Constitution Compliance\n")
+		for _, rule := range as.brownfieldCtx.Constitution.ArchitecturalRules {
+			constraints.WriteString(fmt.Sprintf("- **Architectural Rule**: %s\n", rule))
+		}
+	}
+
+	return constraints.String()
+}
+
+// HasBrownfieldContext returns whether brownfield context is available
+func (as *AgentService) HasBrownfieldContext() bool {
+	return as.hasBrownfieldContext
+}
+
+// GetBrownfieldSummary returns a summary of brownfield analysis
+func (as *AgentService) GetBrownfieldSummary() string {
+	if !as.hasBrownfieldContext || as.brownfieldCtx == nil {
+		return "No brownfield context available. Run 'nexus discovery' to analyze the codebase."
+	}
+
+	var summary strings.Builder
+	summary.WriteString(fmt.Sprintf("## Brownfield Analysis Summary\n\n"))
+	summary.WriteString(fmt.Sprintf("**System**: %s with %s\n", as.brownfieldCtx.Structure.MainLanguage, as.brownfieldCtx.Structure.Framework))
+	summary.WriteString(fmt.Sprintf("**Files Analyzed**: %d\n", len(as.brownfieldCtx.Files)))
+	summary.WriteString(fmt.Sprintf("**Legacy Patterns**: %d identified\n", len(as.brownfieldCtx.LegacyPatterns)))
+	summary.WriteString(fmt.Sprintf("**Forbidden Patterns**: %d flagged\n", len(as.brownfieldCtx.ForbiddenPatterns)))
+	summary.WriteString(fmt.Sprintf("**Integration Points**: %d mapped\n", len(as.brownfieldCtx.IntegrationPoints)))
+	summary.WriteString(fmt.Sprintf("**Technical Debt Items**: %d identified\n", len(as.brownfieldCtx.TechnicalDebt)))
+
+	return summary.String()
 }
 
 // GetAgentForPhase returns the appropriate agent for a phase

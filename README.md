@@ -144,19 +144,33 @@ sdd approve
 ### Project Management
 ```bash
 nexus init <name>           # Initialize SDD project
+nexus discovery [--deep]    # Brownfield: Map existing codebase
 nexus status                # Show project status
 nexus approve               # Approve current phase
 ```
 
 ### Development Workflow
 ```bash
-nexus specify <description> # PRD-First requirement gathering
+# Greenfield (New Projects)
+nexus init <name>           # Initialize project
+nexus specify <desc>        # PRD-First requirement gathering
 nexus plan                  # Context reset architecture planning
 nexus approve               # Quality gates (mandatory approvals)
 nexus task                  # Atomic task breakdown
 nexus execute               # Modular rule task execution
 nexus review                # Quality assurance validation
 nexus evolve "bug report"   # System evolution from bugs
+
+# Brownfield (Existing Codebases)
+nexus init <name>           # Initialize project
+nexus discovery --deep      # Map existing system (MANDATORY FIRST)
+nexus specify <desc>        # Legacy-aware requirement gathering
+nexus plan                  # Migration & integration planning
+nexus approve               # Quality gates with legacy validation
+nexus task                  # File-path-specific task breakdown
+nexus execute               # Safeguard execution with regression testing
+nexus review                # Legacy integration validation
+nexus evolve "bug report"   # Brownfield-specific rule evolution
 ```
 
 ### AI Provider Management
@@ -208,6 +222,88 @@ The Ultimate SDD Framework implements five meta-skills that prevent "vibe coding
 
 ### The "Merged Secret" Reinforced
 **You cannot proceed from Plan to Task without approval.** This enforced gating, combined with modular rules and system evolution, creates a development environment that continuously improves and prevents common issues.
+
+## 🏭 Brownfield Development Support
+
+The Ultimate SDD Framework includes specialized support for **brownfield development** (working with existing codebases), implementing the "Document-First" and "Reverse Engineering" strategies.
+
+### Brownfield Workflow
+
+```
+🔍 Discovery → 📋 Specification → 🏗️ PIV Planning → 🛡️ Safeguard Execution → 🔄 Evolution
+```
+
+#### 1. Discovery Phase (`nexus discovery --deep`)
+**Map existing codebase and establish system context**
+- Comprehensive LSP analysis of all files
+- Identification of legacy patterns and anti-patterns
+- Mapping of integration points and dependencies
+- Assessment of technical debt
+- Generation of `CONTEXT.md` as source of truth
+
+#### 2. Specification Phase (`nexus specify "feature with legacy integration"`)
+**Define interactions with existing system**
+- Legacy touchpoints identification
+- Regression risk assessment
+- Integration constraint documentation
+- Context validation against discovered patterns
+
+#### 3. PIV Planning (`nexus plan`)
+**Context-reset planning with brownfield awareness**
+- Clean mental space for architecture design
+- Migration and integration strategy planning
+- Legacy code refactoring requirements
+- Backwards compatibility planning
+
+#### 4. Safeguard Execution (`nexus execute`)
+**Protected implementation with legacy validation**
+- Modular rule loading based on task context
+- Automatic regression testing integration
+- Legacy pattern compliance enforcement
+- Integration point validation
+
+#### 5. Evolution (`nexus evolve "legacy integration bug"`)
+**System learns from brownfield challenges**
+- Root cause analysis of legacy integration issues
+- Rule updates to prevent similar problems
+- Pattern evolution based on real implementation experience
+- Continuous improvement of brownfield development practices
+
+### Brownfield Benefits
+
+- **Risk Mitigation**: Clear identification of integration points and regression risks
+- **Pattern Compliance**: Automatic enforcement of established legacy patterns
+- **Context Awareness**: AI agents understand existing system constraints
+- **System Evolution**: Framework learns and improves from each brownfield challenge
+- **Auditability**: Complete traceability of changes to legacy systems
+
+### Getting Started with Brownfield
+
+```bash
+# 1. Discover the existing system
+nexus init "My Legacy Project"
+nexus discovery --deep
+
+# 2. Review the generated context
+cat .sdd/CONTEXT.md
+
+# 3. Specify features with legacy awareness
+nexus specify "Add user export feature without breaking existing streak logic"
+
+# 4. Plan with integration constraints
+nexus plan  # Includes migration strategies
+nexus approve
+
+# 5. Execute with safeguard validation
+nexus task
+nexus execute  # Validates against legacy patterns
+
+# 6. Review with regression testing
+nexus review
+
+# 7. Evolve from any integration issues
+nexus evolve "Export feature broke existing habit tracking"
+```
 
 ## 🤖 AI Providers
 

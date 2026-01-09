@@ -15,11 +15,16 @@ func main() {
 		Long: `The Ultimate SDD Framework implements "System over Snippets" philosophy:
 structured development with modular rules, context reset planning, and system evolution.
 
-Complete the sequence: Specify → Plan → Task → Execute → Evolve with AI assistance.`,
+Supports both greenfield (new projects) and brownfield (existing codebases) development:
+- Greenfield: Standard PRD → Plan → Task → Execute → Evolve workflow
+- Brownfield: Discovery → Legacy-Aware Specification → PIV Planning → Safeguard Execution
+
+Complete the sequence: [Discovery] → Specify → Plan → Task → Execute → Evolve with AI assistance.`,
 	}
 
 	// Add subcommands
 	rootCmd.AddCommand(cli.NewInitCmd())
+	rootCmd.AddCommand(cli.NewDiscoveryCmd())
 	rootCmd.AddCommand(cli.NewSpecifyCmd())
 	rootCmd.AddCommand(cli.NewPlanCmd())
 	rootCmd.AddCommand(cli.NewTaskCmd())
