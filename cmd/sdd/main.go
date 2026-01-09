@@ -36,6 +36,8 @@ Complete the sequence: [Discovery] → Specify → Plan → Task → Execute →
 	rootCmd.AddCommand(cli.NewPairCmd())
 	rootCmd.AddCommand(cli.NewTeamCmd())
 	rootCmd.AddCommand(cli.NewLearnCmd())
+	rootCmd.AddCommand(cli.NewVisionCmd())
+	rootCmd.AddCommand(cli.NewPerformanceCmd())
 	rootCmd.AddCommand(cli.NewEvolveCmd())
 	rootCmd.AddCommand(cli.NewStatusCmd())
 	rootCmd.AddCommand(cli.NewApproveCmd())
