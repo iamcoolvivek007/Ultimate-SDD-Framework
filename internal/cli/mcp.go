@@ -7,7 +7,7 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
-	"github.com/ultimate-sdd-framework/internal/mcp"
+	"ultimate-sdd-framework/internal/mcp"
 )
 
 var (

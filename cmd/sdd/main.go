@@ -10,12 +10,12 @@ import (
 
 func main() {
 	rootCmd := &cobra.Command{
-		Use:   "sdd",
-		Short: "Ultimate SDD Framework - Spec-Driven Development with AI Agents",
-		Long: `The Ultimate SDD Framework combines structured gating, expert AI personas,
-and terminal-native execution to enforce rigorous development practices.
+		Use:   "nexus",
+		Short: "Ultimate SDD Framework - System over Snippets Development",
+		Long: `The Ultimate SDD Framework implements "System over Snippets" philosophy:
+structured development with modular rules, context reset planning, and system evolution.
 
-Complete the sequence: Specify → Plan → Task → Execute with AI assistance.`,
+Complete the sequence: Specify → Plan → Task → Execute → Evolve with AI assistance.`,
 	}
 
 	// Add subcommands
@@ -25,6 +25,7 @@ Complete the sequence: Specify → Plan → Task → Execute with AI assistance.
 	rootCmd.AddCommand(cli.NewTaskCmd())
 	rootCmd.AddCommand(cli.NewExecuteCmd())
 	rootCmd.AddCommand(cli.NewReviewCmd())
+	rootCmd.AddCommand(cli.NewEvolveCmd())
 	rootCmd.AddCommand(cli.NewStatusCmd())
 	rootCmd.AddCommand(cli.NewApproveCmd())
 	rootCmd.AddCommand(cli.NewMCPCommand())

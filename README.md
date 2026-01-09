@@ -1,8 +1,8 @@
 # 🚀 Ultimate SDD Framework
 
-**Spec-Driven Development with AI Agents**
+**System over Snippets - AI-Powered Development**
 
-The Ultimate SDD Framework merges structured gating, expert AI personas, and terminal-native execution to enforce rigorous development practices. No more "vibe coding" - every feature follows a proven sequence with AI assistance.
+The Ultimate SDD Framework implements the "System over Snippets" philosophy: building AI systems where every conversation has clear purpose, enforced through modular rules, context reset planning, and continuous system evolution.
 
 [![Go Version](https://img.shields.io/badge/go-1.21+-blue.svg)](https://golang.org)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -31,14 +31,37 @@ Ultimate SDD Framework
 
 ### 1. Install
 
-```bash
-# Clone and build
-git clone <repository-url>
-cd ultimate-sdd-framework
-go build -o sdd ./cmd/sdd
+#### Option A: Download Pre-built Binary (Recommended)
 
-# Or download pre-built binary
-# (coming soon)
+```bash
+# Download the latest release for your platform
+# Visit: https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/releases
+
+# Linux/macOS
+curl -L https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/releases/latest/download/sdd-linux-amd64.tar.gz | tar xz
+sudo mv sdd /usr/local/bin/
+
+# Windows (PowerShell)
+Invoke-WebRequest -Uri "https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/releases/latest/download/sdd-windows-amd64.tar.gz" -OutFile "sdd.tar.gz"
+tar -xzf sdd.tar.gz
+# Add to PATH or use directly
+```
+
+#### Option B: Build from Source
+
+```bash
+# Clone repository
+git clone https://github.com/iamcoolvivek007/Ultimate-SDD-Framework.git
+cd Ultimate-SDD-Framework
+
+# Build for current platform
+make build
+
+# Or build for all platforms
+make build-all
+
+# Install system-wide
+sudo make install
 ```
 
 ### 2. Configure AI Provider
@@ -120,29 +143,71 @@ sdd approve
 
 ### Project Management
 ```bash
-sdd init <name>           # Initialize SDD project
-sdd status                # Show project status
-sdd approve               # Approve current phase
+nexus init <name>           # Initialize SDD project
+nexus status                # Show project status
+nexus approve               # Approve current phase
 ```
 
 ### Development Workflow
 ```bash
-sdd specify <description> # Generate feature specifications
-sdd plan                  # Create architecture plan
-sdd task                  # Break down into tasks
-sdd execute               # Generate implementation guide
-sdd review                # Quality assurance review
+nexus specify <description> # PRD-First requirement gathering
+nexus plan                  # Context reset architecture planning
+nexus approve               # Quality gates (mandatory approvals)
+nexus task                  # Atomic task breakdown
+nexus execute               # Modular rule task execution
+nexus review                # Quality assurance validation
+nexus evolve "bug report"   # System evolution from bugs
 ```
 
 ### AI Provider Management
 ```bash
-sdd mcp add <name> --provider <provider>    # Add AI provider
-sdd mcp remove <name>                       # Remove provider
-sdd mcp list                                # List providers
-sdd mcp default <name>                      # Set default provider
-sdd mcp test [name]                         # Test connection
-sdd mcp chat <message>                      # Direct chat with AI
+nexus mcp add <name> --provider <provider>    # Add AI provider
+nexus mcp remove <name>                       # Remove provider
+nexus mcp list                                # List providers
+nexus mcp default <name>                      # Set default provider
+nexus mcp test [name]                         # Test connection
+nexus mcp chat <message>                      # Direct chat with AI
 ```
+
+## 🧠 System over Snippets Philosophy
+
+The Ultimate SDD Framework implements five meta-skills that prevent "vibe coding" and ensure every AI interaction serves a specific purpose:
+
+### 1. PRD-First Development
+**No coding begins without a validated Product Requirements Document.**
+- Every feature starts with comprehensive requirements
+- Out-of-scope items are explicitly identified
+- Business logic is defined before technical work
+
+### 2. Modular Rules Architecture
+**Rules are split by concern to save context and prevent drift.**
+- `global.md`: Universal standards (TDD, security, linting)
+- `frontend.md`: React/TypeScript specific rules
+- `backend.md`: Go/Fiber backend patterns
+- `api.md`: REST/GraphQL API standards
+- Rules loaded on-demand based on task context
+
+### 3. Command-ification
+**Repetitive workflows are mapped to CLI commands.**
+- `nexus specify`: PRD generation workflow
+- `nexus plan`: Context reset planning
+- `nexus execute`: Modular rule task execution
+- `nexus evolve`: System evolution from bugs
+
+### 4. Context Reset
+**Planning and execution happen in separate mental spaces.**
+- Planning: Clean slate with only PRD context
+- Execution: Task-specific with relevant rules only
+- Prevents context overload and confusion
+
+### 5. System Evolution
+**Every bug becomes a learning opportunity.**
+- `nexus evolve "bug description"`: Analyzes bugs and updates rules
+- Root cause analysis prevents similar issues
+- System gets smarter with each bug fixed
+
+### The "Merged Secret" Reinforced
+**You cannot proceed from Plan to Task without approval.** This enforced gating, combined with modular rules and system evolution, creates a development environment that continuously improves and prevents common issues.
 
 ## 🤖 AI Providers
 
@@ -337,6 +402,90 @@ Inspired by:
 - [GitHub Spec Kit](https://github.com/github/spec-kit) - Structured specifications
 - [BMAD METHOD](https://github.com/bmad-sim) - Expert agent personas
 - [OpenCode/Crush](https://github.com/opencode-cc) - Terminal-native development
+
+## 📦 Releases & Downloads
+
+### Pre-built Binaries
+
+The Ultimate SDD Framework provides pre-built binaries for all major platforms:
+
+- **Linux**: `amd64`, `arm64`
+- **macOS**: `amd64` (Intel), `arm64` (Apple Silicon)
+- **Windows**: `amd64`, `arm64`
+
+Download from: [GitHub Releases](https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/releases)
+
+### Release Channels
+
+- **Latest**: Most recent stable release
+- **Pre-release**: Beta versions with new features
+- **Nightly**: Development builds (unstable)
+
+### Verification
+
+All releases include SHA256 checksums for verification:
+
+```bash
+# Verify download integrity
+sha256sum -c sdd-linux-amd64.sha256
+```
+
+### Build from Source
+
+For development or custom builds:
+
+```bash
+# Quick build for current platform
+make build
+
+# Cross-platform builds
+make build-all
+
+# Create release archives
+make release
+```
+
+## 🤝 Contributing
+
+### Development Setup
+
+```bash
+# Clone repository
+git clone https://github.com/iamcoolvivek007/Ultimate-SDD-Framework.git
+cd Ultimate-SDD-Framework
+
+# Install dependencies
+make deps
+
+# Run tests
+make test
+
+# Start development
+make dev
+```
+
+### Building Releases
+
+The project uses automated CI/CD for releases:
+
+1. **Push tagged commits** (`git tag v1.0.0 && git push --tags`)
+2. **GitHub Actions** automatically builds for all platforms
+3. **Release artifacts** are uploaded to GitHub Releases
+4. **Checksums** are generated for verification
+
+### Release Process
+
+```bash
+# Create and push a new tag
+git tag v1.0.0
+git push origin v1.0.0
+
+# GitHub Actions will:
+# 1. Build binaries for all platforms
+# 2. Generate checksums
+# 3. Create GitHub release
+# 4. Upload artifacts
+```
 
 ---
 
