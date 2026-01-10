@@ -38,11 +38,14 @@ type Message struct {
 
 // ChatRequest represents a request to the AI model
 type ChatRequest struct {
-	Messages    []Message `json:"messages"`
-	Model       string    `json:"model,omitempty"`
-	Temperature float64   `json:"temperature,omitempty"`
-	MaxTokens   int       `json:"max_tokens,omitempty"`
-	Stream      bool      `json:"stream,omitempty"`
+	Messages     []Message `json:"messages"`
+	Model        string    `json:"model,omitempty"`
+	Temperature  float64   `json:"temperature,omitempty"`
+	MaxTokens    int       `json:"max_tokens,omitempty"`
+	Stream       bool      `json:"stream,omitempty"`
+	System       string    `json:"system,omitempty"`
+	Context      string    `json:"context,omitempty"`
+	Instructions string    `json:"instructions,omitempty"`
 }
 
 // ChatResponse represents a response from the AI model

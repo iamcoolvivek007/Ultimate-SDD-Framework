@@ -311,6 +311,43 @@ func (as *AgentService) GetCodebaseSummary() string {
 	return summary.String()
 }
 
+// PrepareArchitectRequest builds a request for the Architect with architectural guidelines
+func (as *AgentService) PrepareArchitectRequest(prd string) (*mcp.ChatRequest, error) {
+	systemPrompt := as.loadPrompt("architect.md")
+
+	// Ingest the whitepaper context
+	archContext := as.loadContext("architecture.md")
+
+	return &mcp.ChatRequest{
+		System: systemPrompt,
+		// The Architect gets the PRD + the Architectural Whitepaper
+		Context: fmt.Sprintf("PRD: %s\nARCH_GUIDELINES: %s", prd, archContext),
+		// Architect is forced to use the audit skill before finishing
+		Instructions: "Equip [USE_SKILL: architecture-audit] to validate your plan before outputting.",
+	}, nil
+}
+
+// loadPrompt loads a system prompt from the .agents/ directory
+func (as *AgentService) loadPrompt(filename string) string {
+	agentName := strings.TrimSuffix(filename, ".md")
+	agent, err := as.agentMgr.GetAgent(agentName)
+	if err != nil {
+		// Fallback or log error? For now, return empty or a basic prompt
+		return ""
+	}
+	return agent.GetSystemPrompt()
+}
+
+// loadContext loads a specific context file from .sdd/context/
+func (as *AgentService) loadContext(filename string) string {
+	contextPath := filepath.Join(as.projectRoot, ".sdd", "context", filename)
+	content, err := os.ReadFile(contextPath)
+	if err != nil {
+		return ""
+	}
+	return string(content)
+}
+
 // ValidateSetup checks if all required components are configured
 func (as *AgentService) ValidateSetup() []string {
 	var issues []string
