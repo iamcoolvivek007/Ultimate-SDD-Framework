@@ -164,7 +164,7 @@ Please generate clean, modern code that follows best practices for the chosen fr
 Include proper styling, accessibility attributes, and responsive design.
 Structure the components in a modular, reusable way.`
 
-	response, err := va.agentSvc.GetAgentResponse("developer", "execute", prompt)
+	response, err := va.agentSvc.GetAgentResponse("developer", "execute", prompt, "", "")
 	if err != nil {
 		return "", fmt.Errorf("failed to generate UI code: %w", err)
 	}
@@ -210,7 +210,7 @@ Please generate a detailed technical specification including:
 5. Deployment and scaling considerations
 6. Security and monitoring requirements`
 
-	response, err := va.agentSvc.GetAgentResponse("architect", "plan", prompt)
+	response, err := va.agentSvc.GetAgentResponse("architect", "plan", prompt, "", "")
 	if err != nil {
 		return "", fmt.Errorf("failed to generate architecture spec: %w", err)
 	}
@@ -447,7 +447,7 @@ Create a phased implementation plan including:
 5. Testing strategy
 6. Deployment considerations`
 
-	response, err := va.agentSvc.GetAgentResponse("architect", "plan", prompt)
+	response, err := va.agentSvc.GetAgentResponse("architect", "plan", prompt, "", "")
 	if err != nil {
 		return "", fmt.Errorf("failed to generate implementation plan: %w", err)
 	}

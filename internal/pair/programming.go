@@ -203,7 +203,7 @@ func (pp *PairProgrammer) generateSuggestion(filePath string, cursorLine int, co
 	prompt := pp.buildSuggestionPrompt(filePath, cursorLine, context, requestType)
 
 	// Get AI response
-	response, err := pp.agentSvc.GetAgentResponse(pp.activeSession.Agent.Role, "execute", prompt)
+	response, err := pp.agentSvc.GetAgentResponse(pp.activeSession.Agent.Role, "execute", prompt, "", "")
 	if err != nil {
 		return nil, fmt.Errorf("failed to get AI response: %w", err)
 	}

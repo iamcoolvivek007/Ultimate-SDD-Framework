@@ -563,7 +563,7 @@ func (al *AdaptiveLearner) analyzeFailureForMitigation(failure *FailurePattern) 
 	prompt := fmt.Sprintf("Analyze this development failure and suggest mitigation:\nPattern: %s\nConsequence: %s\n\nProvide a specific mitigation strategy.",
 		failure.Pattern, failure.Consequence)
 
-	if response, err := al.agentSvc.GetAgentResponse("system", "analyze", prompt); err == nil {
+	if response, err := al.agentSvc.GetAgentResponse("system", "analyze", prompt, "", ""); err == nil {
 		failure.Mitigation = strings.TrimSpace(response)
 	} else {
 		failure.Mitigation = "AI analysis failed - manual review needed"

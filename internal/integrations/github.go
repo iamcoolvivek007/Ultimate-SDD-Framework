@@ -3,9 +3,6 @@ package integrations
 import (
 	"context"
 	"fmt"
-	"os"
-	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/google/go-github/v60/github"
@@ -122,15 +119,18 @@ func (ghi *GitHubIntegration) GetRepositoryInfo() (*github.Repository, error) {
 
 // CreateBranchProtection sets up branch protection rules
 func (ghi *GitHubIntegration) CreateBranchProtection(branch string) error {
+	strict := true
+	enforceAdmins := true
+
 	protection := &github.ProtectionRequest{
 		RequiredStatusChecks: &github.RequiredStatusChecks{
-			Strict:   github.Bool(true),
-			Contexts: []string{"continuous-integration/travis-ci"},
+			Strict:   strict,
+			Contexts: &[]string{"continuous-integration/travis-ci"},
 		},
 		RequiredPullRequestReviews: &github.PullRequestReviewsEnforcementRequest{
-			RequiredApprovingReviewCount: github.Int(1),
+			RequiredApprovingReviewCount: 1,
 		},
-		EnforceAdmins: github.Bool(true),
+		EnforceAdmins: enforceAdmins,
 		Restrictions:  nil,
 	}
 
