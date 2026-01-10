@@ -23,6 +23,11 @@ func NewStateManager(projectRoot string) *StateManager {
 	}
 }
 
+// GetProjectRoot returns the project root directory
+func (sm *StateManager) GetProjectRoot() string {
+	return sm.projectRoot
+}
+
 // InitializeProject creates the initial .sdd directory and state file
 func (sm *StateManager) InitializeProject(projectName string) error {
 	// Create .sdd directory
