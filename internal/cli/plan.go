@@ -60,7 +60,7 @@ technology choices, data flow, and implementation strategy.`,
 			}
 
 			// Generate architecture plan
-			planContent, err := agentSvc.GetAgentResponse("architect", "plan", string(specContent))
+			planContent, err := agentSvc.GetAgentResponse("architect", "plan", string(specContent), "", "")
 			if err != nil {
 				return fmt.Errorf("failed to generate architecture plan: %w", err)
 			}

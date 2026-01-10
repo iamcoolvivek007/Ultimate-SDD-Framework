@@ -61,7 +61,7 @@ constraints, and acceptance criteria.`,
 			}
 
 			// Generate specifications using AI
-			specContent, err := agentSvc.GetAgentResponse("pm", "specify", description)
+			specContent, err := agentSvc.GetAgentResponse("pm", "specify", description, "", "")
 			if err != nil {
 				return fmt.Errorf("failed to generate specification: %w", err)
 			}

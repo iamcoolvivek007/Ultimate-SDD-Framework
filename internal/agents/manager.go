@@ -22,36 +22,26 @@ type Agent struct {
 // AgentManager handles loading and managing agents
 type AgentManager struct {
 	agentsDir    string
-	autoMakerDir string
 	agents       map[string]*Agent
 }
 
 // NewAgentManager creates a new agent manager
 func NewAgentManager(projectRoot string) *AgentManager {
 	return &AgentManager{
-		agentsDir:    filepath.Join(projectRoot, ".agents"),
-		autoMakerDir: filepath.Join(projectRoot, ".automaker", "system_prompts"),
+		// Moved from .agents to .sdd/role
+		agentsDir:    filepath.Join(projectRoot, ".sdd", "role"),
 		agents:       make(map[string]*Agent),
 	}
 }
 
 // LoadAgents loads all agent definitions from directories
 func (am *AgentManager) LoadAgents() error {
-	// Strategy: Load legacy first, then overwrite with AutoMaker so AutoMaker takes precedence.
-
-	// 1. Load from .agents (legacy/fallback)
 	if _, err := os.Stat(am.agentsDir); err == nil {
 		if err := am.loadFromDir(am.agentsDir, false); err != nil {
-			return fmt.Errorf("failed to load legacy agents: %w", err)
+			return fmt.Errorf("failed to load agents from .sdd/role: %w", err)
 		}
-	}
-
-	// 2. Load from .automaker (override/add)
-	// Note: AutoMaker filenames might differ (engineer.md vs developer.md).
-	if _, err := os.Stat(am.autoMakerDir); err == nil {
-		if err := am.loadFromDir(am.autoMakerDir, true); err != nil {
-			return fmt.Errorf("failed to load automaker agents: %w", err)
-		}
+	} else {
+		return fmt.Errorf("role directory .sdd/role not found")
 	}
 
 	return nil
@@ -76,13 +66,20 @@ func (am *AgentManager) loadFromDir(dir string, isRaw bool) error {
 		if isRaw {
 			agent, err = am.loadRawAgent(filePath)
 		} else {
-			agent, err = am.loadAgent(filePath)
+			// .sdd/role/* files are primarily markdown with frontmatter?
+			// The provided prompts (guardian.md) had simple markdown headers, not YAML frontmatter.
+			// However, legacy implementation expected YAML frontmatter.
+			// I should support both or raw markdown.
+			// Given the user provided prompts look like raw markdown without YAML frontmatter:
+			// I will treat them as raw agents but extract Role from filename or content.
+			agent, err = am.loadRawAgent(filePath)
 		}
 
 		if err != nil {
 			return fmt.Errorf("failed to load agent %s: %w", agentName, err)
 		}
 
+		// Set the ID/Name
 		am.agents[agentName] = agent
 	}
 	return nil
@@ -110,24 +107,22 @@ func (am *AgentManager) ListAgents() []string {
 func (am *AgentManager) GetAgentForPhase(phase string) (*Agent, error) {
 	var agentName string
 	switch phase {
+	case "discover":
+		agentName = "scout"
 	case "specify":
-		// AutoMaker uses "pm", legacy might use "product_manager"
-		if _, ok := am.agents["pm"]; ok {
-			agentName = "pm"
-		} else {
-			agentName = "product_manager"
-		}
-	case "plan":
-		agentName = "architect"
-	case "task", "execute":
-		// AutoMaker uses "engineer", legacy uses "developer"
-		if _, ok := am.agents["engineer"]; ok {
-			agentName = "engineer"
-		} else {
-			agentName = "developer"
-		}
-	case "review":
-		agentName = "qa"
+		agentName = "strategist"
+	case "design", "plan":
+		agentName = "designer"
+	case "audit":
+		agentName = "guardian"
+	case "execute":
+		agentName = "builder"
+	case "validate", "review":
+		agentName = "inspector"
+	case "evolve":
+		agentName = "librarian"
+	case "deploy":
+		agentName = "sre"
 	default:
 		return nil, fmt.Errorf("no agent defined for phase: %s", phase)
 	}
@@ -167,11 +162,12 @@ func (am *AgentManager) loadRawAgent(filePath string) (*Agent, error) {
 		return nil, err
 	}
 
+	name := strings.TrimSuffix(filepath.Base(filePath), ".md")
+
 	return &Agent{
 		Content: string(content),
 		IsRaw:   true,
-		// Role and other fields might be inferred or left empty for raw agents
-		Role: "AutoMaker Agent",
+		Role:    name, // Default to filename
 	}, nil
 }
 
@@ -194,30 +190,9 @@ Always respond in character and maintain your role throughout the interaction.`,
 
 // GetPhasePrompt returns a phase-specific prompt for the agent
 func (a *Agent) GetPhasePrompt(phase, context string) string {
-	var phaseInstruction string
-
-	switch phase {
-	case "specify":
-		phaseInstruction = `Create detailed technical specifications based on the user's request.
-		Include requirements, constraints, acceptance criteria, and edge cases.`
-	case "plan":
-		phaseInstruction = `Design the system architecture based on the specifications.
-		Define components, technologies, data flow, and implementation approach.`
-	case "task":
-		phaseInstruction = `Break down the plan into specific, actionable tasks.
-		Create a detailed checklist with clear deliverables and acceptance criteria.`
-	case "execute":
-		phaseInstruction = `Implement the feature according to the plan and specifications.
-		Write clean, testable code following best practices.`
-	case "review":
-		phaseInstruction = `Review the implementation for quality, completeness, and adherence to requirements.
-		Identify issues, suggest improvements, and validate against acceptance criteria.`
-	}
-
-	return fmt.Sprintf(`%s
-
-Current Phase: %s
+	// With the new role-based prompts, the instructions are often baked into the system prompt or skill.
+	// We can keep this generic wrapper.
+	return fmt.Sprintf(`Current Phase: %s
 Context: %s
-
-%s`, a.GetSystemPrompt(), strings.Title(phase), context, phaseInstruction)
+`, strings.Title(phase), context)
 }
