@@ -31,6 +31,7 @@ func (m *SDDModel) StartThinking(initialMessage string) tea.Cmd {
 func (m *SDDModel) StopThinking(result string) {
 	m.UIState = StateDashboard
 	m.Content = result
+	m.Viewport.SetContent(result)
 }
 
 func tickCmd() tea.Cmd {
