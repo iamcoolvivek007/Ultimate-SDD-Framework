@@ -132,25 +132,32 @@ func NewBrownfieldContext(rootPath string) *BrownfieldContext {
 // AnalyzeProject analyzes the entire project structure
 func (cc *CodebaseContext) AnalyzeProject() error {
 	// Walk through all files
-	err := filepath.Walk(cc.RootPath, func(path string, info os.FileInfo, err error) error {
+	err := filepath.WalkDir(cc.RootPath, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 
+		name := d.Name()
+		isDir := d.IsDir()
+
 		// Skip hidden directories and certain files
-		if strings.HasPrefix(info.Name(), ".") && info.IsDir() {
-			if info.Name() == ".sdd" || info.Name() == ".agents" {
+		if strings.HasPrefix(name, ".") && isDir {
+			if name == ".sdd" || name == ".agents" {
 				return nil // Don't skip our own directories
 			}
 			return filepath.SkipDir
 		}
 
 		// Skip common directories
-		if info.IsDir() && (info.Name() == "node_modules" || info.Name() == "vendor" || info.Name() == ".git") {
+		if isDir && (name == "node_modules" || name == "vendor" || name == ".git") {
 			return filepath.SkipDir
 		}
 
-		if !info.IsDir() {
+		if !isDir {
+			info, err := d.Info()
+			if err != nil {
+				return err
+			}
 			fileInfo, err := cc.analyzeFile(path, info)
 			if err != nil {
 				return err
@@ -265,7 +272,8 @@ func (cc *CodebaseContext) analyzeStructure() {
 		if isEntryPoint(file.Path, file.Type) {
 			structure.EntryPoints = append(structure.EntryPoints, file.Path)
 		}
-		if isConfigFile(file.Path) {
+		// Fix check to use base name for config files
+		if isConfigFile(filepath.Base(file.Path)) {
 			structure.ConfigFiles = append(structure.ConfigFiles, file.Path)
 		}
 	}
@@ -598,7 +606,7 @@ func isConfigFile(path string) bool {
 		"config.json", "docker-compose.yml", "Dockerfile",
 	}
 	for _, config := range configFiles {
-		if strings.Contains(path, config) {
+		if strings.HasSuffix(path, config) {
 			return true
 		}
 	}
