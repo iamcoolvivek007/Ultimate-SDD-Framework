@@ -34,13 +34,13 @@ type SDDModel struct {
 	StateManager *gates.StateManager
 
 	// Components
-	Spinner      spinner.Model
-	Viewport     viewport.Model
-	SkillList    list.Model
+	Spinner   spinner.Model
+	Viewport  viewport.Model
+	SkillList list.Model
 
 	// Data
-	Skills       []string // Currently equipped skills
-	Thoughts     []string // Stream of thoughts
+	Skills   []string // Currently equipped skills
+	Thoughts []string // Stream of thoughts
 
 	// Window size
 	width  int
@@ -84,23 +84,21 @@ func NewSDDModel(stateMgr *gates.StateManager) (*SDDModel, error) {
 		Thoughts:     []string{},
 	}
 
+	// Initialize content
+	if content, err := m.loadPhaseContent(m.Phase); err == nil {
+		m.Content = content
+	} else {
+		m.Content = m.getPhaseGuidance()
+	}
+	m.Viewport.SetContent(m.Content)
+
 	// Check if approval is required for the current phase
-	// If the current phase is in progress (meaning we just finished thinking?) or pending review
-	// But in this framework, approval gates are usually transition checks.
-	// If we are in a phase that requires approval to *complete* or *proceed*, let's check.
-	// We'll rely on the status. If status is "Pending Approval" (which isn't a state, but we can infer)
-	// Actually, let's look at `gates` logic. "Review" phase is explicit.
 	if state.CurrentPhase == gates.PhaseReview && state.Phases[gates.PhaseReview].Status != gates.StatusApproved {
 		// Auto-enter approval mode if we are in Review phase
-		// Load the review artifact
-		if content, err := m.loadPhaseContent(gates.PhaseReview); err == nil {
-			m.InitApprovalMode(content)
-		}
+		m.InitApprovalMode(m.Content)
 	} else if state.CurrentPhase == gates.PhasePlan && state.Phases[gates.PhasePlan].Status != gates.StatusApproved {
 		// Planning also usually requires approval
-		if content, err := m.loadPhaseContent(gates.PhasePlan); err == nil {
-			m.InitApprovalMode(content)
-		}
+		m.InitApprovalMode(m.Content)
 	}
 
 	return m, nil
@@ -143,7 +141,7 @@ func (m SDDModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height
 
 		// Update viewport size
-		m.Viewport.Width = msg.Width - 40 // Reserve space for left panel
+		m.Viewport.Width = msg.Width - 40   // Reserve space for left panel
 		m.Viewport.Height = msg.Height - 10 // Reserve space for header/footer
 
 		// Update list size
@@ -152,6 +150,9 @@ func (m SDDModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	// Handle updates based on state
 	switch m.UIState {
+	case StateDashboard:
+		m.Viewport, cmd = m.Viewport.Update(msg)
+		cmds = append(cmds, cmd)
 	case StateThinking:
 		return m.UpdateExecute(msg)
 	case StateSkillSelect:

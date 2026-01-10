@@ -2,7 +2,6 @@ package ui
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
@@ -37,29 +36,10 @@ func (m SDDModel) dashboardView() string {
 		}
 	} else if m.UIState == StateApproving {
 		mainContent = m.Viewport.View()
-		mainContent += "\n\n" + lipgloss.NewStyle().Bold(true).Render("[A] Approve  [R] Revision  [Q] Quit")
 	} else {
 		// Dashboard idle
-		// Load actual content if available
-		content := m.Content
-		if content == "Welcome to Nexus UI. Ready to command." {
-			// Try to load the current phase's output file
-			outputPath := m.StateManager.GetPhaseOutputPath(m.Phase)
-			if data, err := os.ReadFile(outputPath); err == nil {
-				content = string(data)
-			} else {
-				// If no file, show guidance
-				content = m.getPhaseGuidance()
-			}
-		}
-
-		// Truncate if too long (simple approach, viewport should be used ideally)
-		if len(content) > 1000 {
-			content = content[:1000] + "...\n(See full file for more)"
-		}
-
-		mainContent = fmt.Sprintf("Current Phase: %s\n\n%s", strings.ToUpper(string(m.Phase)), content)
-		mainContent += "\n\nPress 'k' to equip skills."
+		// Use viewport for scrolling content
+		mainContent = fmt.Sprintf("Current Phase: %s\n\n%s", strings.ToUpper(string(m.Phase)), m.Viewport.View())
 	}
 
 	// Adjust main panel width
@@ -77,9 +57,30 @@ func (m SDDModel) dashboardView() string {
 	if len(m.Skills) > 0 {
 		skillStr = strings.Join(m.Skills, ", ")
 	}
-	footer := footerStyle.Render(fmt.Sprintf("Skills Equipped: [%s]", skillStr))
+
+	footerText := fmt.Sprintf("Skills Equipped: [%s]  %s", skillStr, m.renderFooterKeys())
+	footer := footerStyle.Render(footerText)
 
 	return lipgloss.JoinVertical(lipgloss.Left, header, body, footer)
+}
+
+func (m SDDModel) renderFooterKeys() string {
+	var keys []string
+
+	k := func(key, desc string) string {
+		return fmt.Sprintf("%s %s", keyStyle.Render(key), desc)
+	}
+
+	switch m.UIState {
+	case StateDashboard:
+		keys = []string{k("k", "Equip Skills"), k("q", "Quit")}
+	case StateApproving:
+		keys = []string{k("a", "Approve"), k("r", "Revision"), k("q", "Quit")}
+	case StateThinking:
+		keys = []string{k("ctrl+c", "Cancel")}
+	}
+
+	return strings.Join(keys, " • ")
 }
 
 func (m SDDModel) renderPhaseProgress() string {

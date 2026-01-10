@@ -14,41 +14,45 @@ var (
 
 	// Styles
 	headerStyle = lipgloss.NewStyle().
-		Foreground(ColorWhite).
-		Background(ColorIndigo).
-		Bold(true).
-		Padding(0, 1).
-		Width(100)
+			Foreground(ColorWhite).
+			Background(ColorIndigo).
+			Bold(true).
+			Padding(0, 1).
+			Width(100)
 
 	panelStyle = lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
-		BorderForeground(ColorIndigo).
-		Padding(0, 1)
+			Border(lipgloss.RoundedBorder()).
+			BorderForeground(ColorIndigo).
+			Padding(0, 1)
 
 	leftPanelStyle = panelStyle.Copy().
-		Width(30)
+			Width(30)
 
 	mainPanelStyle = panelStyle.Copy().
-		Width(60)
+			Width(60)
 
 	activePhaseStyle = lipgloss.NewStyle().
-		Foreground(ColorEmerald).
-		Bold(true)
+				Foreground(ColorEmerald).
+				Bold(true)
 
 	pendingPhaseStyle = lipgloss.NewStyle().
-		Foreground(ColorAmber)
+				Foreground(ColorAmber)
 
 	blockedPhaseStyle = lipgloss.NewStyle().
-		Foreground(ColorRed)
+				Foreground(ColorRed)
 
 	footerStyle = lipgloss.NewStyle().
-		Foreground(ColorGray).
-		PaddingTop(1)
+			Foreground(ColorGray).
+			PaddingTop(1)
 
 	spinnerStyle = lipgloss.NewStyle().
-		Foreground(ColorAmber)
+			Foreground(ColorAmber)
 
 	thoughtStyle = lipgloss.NewStyle().
-		Foreground(ColorGray).
-		Italic(true)
+			Foreground(ColorGray).
+			Italic(true)
+
+	keyStyle = lipgloss.NewStyle().
+			Foreground(ColorIndigo).
+			Bold(true)
 )
