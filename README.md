@@ -1,42 +1,62 @@
 # 🚀 Viki - Ultimate SDD Framework
 
-**System over Snippets - AI-Powered Development**
-
-The Ultimate SDD Framework implements the "System over Snippets" philosophy: building AI systems where every conversation has clear purpose, enforced through modular rules, context reset planning, and continuous system evolution.
+**System over Snippets - AI-Powered Development with 21+ Specialized Agents**
 
 [![Go Version](https://img.shields.io/badge/go-1.21+-blue.svg)](https://golang.org)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-3.0.0-purple.svg)](CHANGELOG.md)
+
+The Ultimate SDD Framework implements the "System over Snippets" philosophy: building AI systems where every conversation has clear purpose, enforced through modular rules, context reset planning, and continuous system evolution.
 
 ## ✨ What Makes This Different
 
-Traditional AI coding assistants give you unfiltered, unstructured suggestions. The Ultimate SDD Framework enforces **rigorous development discipline**:
+Traditional AI coding assistants give you unfiltered, unstructured suggestions. Viki enforces **rigorous development discipline** with features from the best frameworks:
 
+- **21+ Specialized Agents**: From PM to Security Analyst, Tech Lead to UX Designer
+- **Scale-Adaptive Intelligence**: Level 0-4 adjusts planning depth automatically
+- **SQLite Persistence**: Sessions, messages, and file changes tracked in database
 - **Structured Gating**: Features progress through mandatory phases (Specify → Plan → Task → Execute)
-- **Expert Personas**: Specialized AI agents for each development role
-- **Context Awareness**: LSP integration understands your existing codebase
-- **Terminal-Native**: Works entirely in your terminal with rich TUI interfaces
-- **API Key Support**: Connect to OpenAI, Anthropic, Google Gemini, Ollama, and Azure
+- **9 AI Tools**: Bash, edit, grep, view, write, patch, fetch, glob, ls
+- **Multi-Provider Support**: OpenAI, Anthropic, Google Gemini, Ollama, Azure
 
-### 🆕 New in v2.0
+### 🆕 New in v3.0 (Latest)
 
-- **Interactive Chat Mode** (`viki chat`) - Continuous AI conversation with context
-- **Project Templates** (`viki new`) - Start fast with Go, React, Python, Next.js templates
-- **Web Dashboard** (`viki dashboard`) - Browser-based UI with real-time updates
-- **Streaming Responses** - Real-time AI output as it generates
-- **Plugin System** (`viki plugin`) - Extend with custom agents and workflows
-- **Secrets Management** (`viki secrets`) - OS keychain integration for API keys
-- **Undo Command** (`viki undo`) - Rollback file changes with history
-- **Global Config** (`viki config`) - Settings in `~/.viki/config.yaml`
-- **Codebase Indexing** (`viki index`) - LSP-like symbol extraction for context
+**Integrated best features from BMAD-METHOD, OpenCode, and Spec-Kit:**
+
+| Feature | Source | Description |
+|---------|--------|-------------|
+| `viki session` | OpenCode | SQLite-persistent chat sessions |
+| `viki workflow` | BMAD | Quick/Standard/Enterprise tracks |
+| `viki brainstorm` | BMAD | 6 ideation techniques (SCAMPER, Six Hats, etc.) |
+| `viki agents` | BMAD | 21+ specialized AI personas |
+| `viki constitution` | Spec-Kit | Project governance & principles |
+| `viki clarify` | Spec-Kit | Refine specifications with Q&A |
+| `viki checklist` | Spec-Kit | Generate quality checklists |
+
+**Also includes:**
+- Scale-Adaptive Levels (0-4) for automatic complexity detection
+- Custom slash commands (`viki/command` format)
+- File change tracking with undo capability
+- Workflow engine with step dependencies
+
+### 🔧 v2.0 Features
+
+- **Interactive Chat Mode** (`viki chat`) - Continuous AI conversation
+- **Project Templates** (`viki new`) - Go, React, Python, Next.js templates
+- **Web Dashboard** (`viki dashboard`) - Browser-based UI
+- **Plugin System** (`viki plugin`) - Extend with custom agents
+- **Secrets Management** (`viki secrets`) - OS keychain integration
+- **Codebase Indexing** (`viki index`) - LSP-like symbol extraction
 
 ## 🏗️ Architecture Overview
 
 ```
-Ultimate SDD Framework
-├── 🎯 Workflow Layer (Spec Kit)     → Gates: Specify → Plan → Task → Execute
-├── 🧠 Intelligence Layer (BMAD)     → Roles: PM, Architect, Developer, QA
-├── 💻 Execution Layer (OpenCode)    → CLI + TUI + LSP + MCP
-└── 📊 State Management              → .sdd/ folder + YAML persistence
+Ultimate SDD Framework v3.0
+├── 🎯 Workflow Layer      → Gates: Specify → Plan → Task → Execute
+├── 🧠 Intelligence Layer  → 21+ Agents: PM, Architect, Developer, QA, Security...
+├── 💻 Execution Layer     → CLI + TUI + LSP + MCP + 9 AI Tools
+├── 🗃️ Persistence Layer   → SQLite: Sessions, Messages, File Changes
+└── 📊 State Management    → .sdd/ folder + YAML + Database
 ```
 
 ## 🚀 Quick Start
@@ -135,17 +155,23 @@ sdd approve
    - **Execute**: Guide implementation with Developer agent
    - **Review**: Quality assurance with QA agent
 
-2. **Intelligence (BMAD)**: Expert AI personas
-   - **Product Manager**: Requirements & edge cases
-   - **System Architect**: Design & technology choices
-   - **Software Developer**: Clean code & TDD
-   - **Quality Assurance**: Testing & validation
+2. **Intelligence (BMAD)**: 21+ Expert AI Personas
 
-3. **Execution (OpenCode)**: Terminal-native development
+   | Category | Agents |
+   |----------|--------|
+   | **Core** | Product Manager, System Architect, Software Developer, Quality Assurance |
+   | **Product** | UX Designer, Scrum Master, Business Analyst |
+   | **Engineering** | DevOps, Security Analyst, Tech Lead, Data Architect, API Designer, Frontend Dev, Backend Dev |
+   | **Quality** | Test Automation Engineer, Performance Engineer, Code Reviewer |
+   | **Operations** | Site Reliability Engineer, Technical Writer |
+   | **Creative** | Innovation Catalyst, Debug Specialist |
+
+3. **Execution (OpenCode)**: Terminal-native with AI Tools
    - **CLI**: Command-line interface for all operations
    - **TUI**: Rich terminal UI for interactive workflows
    - **LSP**: Codebase context awareness
    - **MCP**: Multi-provider AI model support
+   - **Tools**: bash, edit, grep, view, write, patch, fetch, glob, ls
 
 ### The "Merged Secret"
 
@@ -199,6 +225,42 @@ viki mcp list                                # List providers
 viki mcp default <name>                      # Set default provider
 viki mcp test [name]                         # Test connection
 viki mcp chat <message>                      # Direct chat with AI
+```
+
+### 🆕 v3.0 Commands
+```bash
+# Session Management (from OpenCode)
+viki session list              # List all chat sessions
+viki session switch <id>       # Switch to different session
+viki session new "title"       # Create new session
+viki session export <id>       # Export to markdown
+viki session delete <id>       # Delete session
+
+# Workflow Engine (from BMAD)
+viki workflow init             # Analyze project & recommend track
+viki workflow status           # Show current progress
+viki workflow next             # Execute next step
+viki workflow list             # List available tracks
+
+# Brainstorming (from BMAD)
+viki brainstorm "topic"        # Classic brainstorm
+viki brainstorm --technique reverse "topic"    # Reverse brainstorm
+viki brainstorm --technique six_hats "topic"   # Six Thinking Hats
+viki brainstorm --technique scamper "topic"    # SCAMPER method
+viki brainstorm --technique party_mode "topic" # Multi-agent discussion
+viki brainstorm --list         # List all techniques
+
+# Agent Selection (from BMAD)
+viki agents                    # List all 21+ agents with details
+
+# Governance (from Spec-Kit)
+viki constitution "principles" # Create project constitution
+viki constitution --view       # View constitution
+viki constitution --amend "change" # Amend constitution
+
+# Specification (from Spec-Kit)
+viki clarify                   # Generate clarification questions
+viki checklist                 # Generate quality checklists
 ```
 
 ## 🧠 System over Snippets Philosophy
