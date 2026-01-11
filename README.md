@@ -63,37 +63,34 @@ Ultimate SDD Framework v3.0
 
 ### 1. Install
 
-#### Option A: Download Pre-built Binary (Recommended)
+#### Option A: One-liner Install (Recommended)
 
 ```bash
-# Download the latest release for your platform
-# Visit: https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/releases
-
-# Linux/macOS
-curl -L https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/releases/latest/download/sdd-linux-amd64.tar.gz | tar xz
-sudo mv sdd /usr/local/bin/
-
-# Windows (PowerShell)
-Invoke-WebRequest -Uri "https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/releases/latest/download/sdd-windows-amd64.tar.gz" -OutFile "sdd.tar.gz"
-tar -xzf sdd.tar.gz
-# Add to PATH or use directly
+# Linux / macOS
+curl -sSL https://raw.githubusercontent.com/iamcoolvivek007/Ultimate-SDD-Framework/main/scripts/install.sh | bash
 ```
 
-#### Option B: Build from Source
+#### Option B: Download Binary
 
 ```bash
-# Clone repository
+# Visit releases page and download for your platform:
+# https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/releases
+
+# Linux
+curl -L https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/releases/latest/download/ultimate-sdd-framework-linux-amd64.tar.gz | tar xz
+sudo mv sdd /usr/local/bin/viki
+
+# macOS
+curl -L https://github.com/iamcoolvivek007/Ultimate-SDD-Framework/releases/latest/download/ultimate-sdd-framework-darwin-arm64.tar.gz | tar xz
+sudo mv sdd /usr/local/bin/viki
+```
+
+#### Option C: Build from Source
+
+```bash
 git clone https://github.com/iamcoolvivek007/Ultimate-SDD-Framework.git
 cd Ultimate-SDD-Framework
-
-# Build for current platform
-make build
-
-# Or build for all platforms
-make build-all
-
-# Install system-wide
-sudo make install
+make build && sudo make install
 ```
 
 ### 2. Configure AI Provider
