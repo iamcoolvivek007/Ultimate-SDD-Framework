@@ -13,7 +13,7 @@ import (
 func NewPlanCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "plan",
-		Short: "Create architecture plan using the Architect agent",
+		Short: "Create architecture plan using the Designer agent",
 		Long: `Generate a detailed system architecture plan based on specifications.
 
 This command uses the Architect agent to design the system components,
@@ -48,19 +48,19 @@ technology choices, data flow, and implementation strategy.`,
 				return fmt.Errorf("failed to initialize agent service: %w", err)
 			}
 
-			// Validate architect agent is available
+			// Validate designer agent is available
 			_, err = agentSvc.GetAgentForPhase("plan")
 			if err != nil {
-				return fmt.Errorf("architect agent not available: %w", err)
+				return fmt.Errorf("designer agent not available: %w", err)
 			}
 
 			// Transition to plan phase
-			if err := stateMgr.TransitionPhase(gates.PhasePlan, "architect"); err != nil {
+			if err := stateMgr.TransitionPhase(gates.PhasePlan, "designer"); err != nil {
 				return fmt.Errorf("failed to transition to plan phase: %w", err)
 			}
 
 			// Generate architecture plan
-			planContent, err := agentSvc.GetAgentResponse("architect", "plan", string(specContent), "", "")
+			planContent, err := agentSvc.GetAgentResponse("designer", "plan", string(specContent), "", "")
 			if err != nil {
 				return fmt.Errorf("failed to generate architecture plan: %w", err)
 			}

@@ -60,19 +60,19 @@ process and track progress against the task breakdown.`,
 				return fmt.Errorf("failed to initialize agent service: %w", err)
 			}
 
-			// Get developer agent
-			devAgent, err := agentSvc.GetAgentForPhase("execute")
+			// Get builder agent
+			builderAgent, err := agentSvc.GetAgentForPhase("execute")
 			if err != nil {
-				return fmt.Errorf("developer agent not available: %w", err)
+				return fmt.Errorf("builder agent not available: %w", err)
 			}
 
 			// Transition to execute phase
-			if err := stateMgr.TransitionPhase(gates.PhaseExecute, "developer"); err != nil {
+			if err := stateMgr.TransitionPhase(gates.PhaseExecute, "builder"); err != nil {
 				return fmt.Errorf("failed to transition to execute phase: %w", err)
 			}
 
 			// Generate implementation guide
-			implContent := generateImplementationGuide(devAgent, string(taskContent))
+			implContent := generateImplementationGuide(builderAgent, string(taskContent))
 
 			// Save implementation guide
 			implPath := stateMgr.GetPhaseOutputPath(gates.PhaseExecute)

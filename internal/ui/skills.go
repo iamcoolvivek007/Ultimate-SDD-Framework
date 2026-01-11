@@ -25,6 +25,7 @@ func (m *SDDModel) LoadSkills() {
 
 	files, err := os.ReadDir(skillDir)
 	if err == nil {
+		// Directory exists, try to load skill files
 		for _, f := range files {
 			if f.IsDir() || !strings.HasSuffix(f.Name(), ".md") {
 				continue
@@ -41,13 +42,17 @@ func (m *SDDModel) LoadSkills() {
 
 			items = append(items, item{title: name, desc: desc, path: f.Name()})
 		}
-	} else {
-		// Mock items if no directory exists (for demonstration)
+	}
+
+	// Always provide default skills if no custom skills found
+	if len(items) == 0 {
 		items = []list.Item{
 			item{title: "architecture-audit", desc: "Validate plan against Architectural Constitution"},
 			item{title: "research-codebase", desc: "Deep dive into existing code patterns"},
 			item{title: "security-scan", desc: "Check for common security vulnerabilities"},
 			item{title: "api-design", desc: "Standardize API definitions"},
+			item{title: "user-experience", desc: "Ensure great user experience and usability"},
+			item{title: "performance-optimization", desc: "Optimize app speed and efficiency"},
 		}
 	}
 

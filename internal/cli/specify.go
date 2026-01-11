@@ -17,12 +17,22 @@ func NewSpecifyCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "specify [description]",
-		Short: "Create feature specifications using the PM agent",
-		Long: `Generate detailed technical specifications for a feature.
+		Short: "📝 Tell Viki what you want to build",
+		Long: `💭 Time to describe your idea!
 
-This command uses the Product Manager agent to analyze your request
-and create comprehensive specifications including requirements,
-constraints, and acceptance criteria.`,
+Tell Viki what you want to create. Be as clear as you can about:
+• What the app/website should do
+• Who will use it
+• Any specific features you want
+
+Viki will think through your idea and create a clear plan that both humans and computers can understand.
+
+Examples:
+• "Build a todo list app where users can add, edit, and delete tasks"
+• "Create a simple blog with posts and comments"
+• "Make a weather app that shows the forecast for my city"
+
+Don't worry about technical details - just describe what you want! ✨`,
 		Args: cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			description := strings.Join(args, " ")
@@ -41,7 +51,7 @@ constraints, and acceptance criteria.`,
 			// Initialize agent service
 			agentSvc := agents.NewAgentService(".")
 			if err := agentSvc.Initialize(); err != nil {
-				return fmt.Errorf("failed to initialize agent service: %w", err)
+				return fmt.Errorf("🤖 Oops! Viki's AI assistants aren't ready. Try running 'viki init' first: %w", err)
 			}
 
 			// Get PM agent
@@ -50,9 +60,17 @@ constraints, and acceptance criteria.`,
 				return fmt.Errorf("PM agent not available: %w", err)
 			}
 
-			// Transition to specify phase
-			if err := stateMgr.TransitionPhase(gates.PhaseSpecify, "pm"); err != nil {
-				return fmt.Errorf("failed to transition to specify phase: %w", err)
+			// Check current phase and only transition if not already in specify phase
+			state, err = stateMgr.LoadState()
+			if err != nil {
+				return fmt.Errorf("📁 Can't find your project info. Did you run 'viki init' first?: %w", err)
+			}
+
+			if state.CurrentPhase != gates.PhaseSpecify {
+				// Only transition if not already in specify phase
+				if err := stateMgr.TransitionPhase(gates.PhaseSpecify, "strategist"); err != nil {
+					return fmt.Errorf("failed to transition to specify phase: %w", err)
+				}
 			}
 
 			// Generate specifications
@@ -61,9 +79,9 @@ constraints, and acceptance criteria.`,
 			}
 
 			// Generate specifications using AI
-			specContent, err := agentSvc.GetAgentResponse("pm", "specify", description, "", "")
+			specContent, err := agentSvc.GetAgentResponse("strategist", "specify", description, "", "")
 			if err != nil {
-				return fmt.Errorf("failed to generate specification: %w", err)
+				return fmt.Errorf("🤔 Viki had trouble understanding your request. Try rephrasing it or check your AI provider setup: %w", err)
 			}
 
 			// Add Status to specification

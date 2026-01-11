@@ -15,11 +15,17 @@ func NewInitCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "init [project-name]",
-		Short: "Initialize a new SDD project",
-		Long: `Initialize a new Spec-Driven Development project.
+		Short: "🚀 Start a new project with Viki",
+		Long: `🎉 Let's start building something awesome!
 
-This creates the .sdd/ directory to track project state and validates
-that all required agent personas are available.`,
+This command sets up your project so Viki can help you develop it. Viki will:
+• Create a special folder (.sdd/) to remember your project's progress
+• Set up AI assistants to help with different parts of development
+• Get everything ready for you to describe what you want to build
+
+Just give your project a name, and you're ready to go!
+
+Example: viki init "my-todo-app"`,
 		Args: cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(args) > 0 {
