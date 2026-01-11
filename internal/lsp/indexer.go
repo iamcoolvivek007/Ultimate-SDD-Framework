@@ -64,15 +64,15 @@ func NewIndexer(projectRoot string) *Indexer {
 
 // Index indexes the entire project
 func (i *Indexer) Index() error {
-	return filepath.Walk(i.projectRoot, func(path string, info os.FileInfo, err error) error {
+	return filepath.WalkDir(i.projectRoot, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
 			return nil // Skip errors
 		}
 		
 		// Skip ignored directories
-		if info.IsDir() {
+		if d.IsDir() {
 			for _, pattern := range i.ignorePatterns {
-				if info.Name() == pattern {
+				if d.Name() == pattern {
 					return filepath.SkipDir
 				}
 			}
