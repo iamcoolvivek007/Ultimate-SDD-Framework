@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"ultimate-sdd-framework/internal/templates"
-	"ultimate-sdd-framework/internal/web"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
@@ -110,37 +109,7 @@ func listAvailableTemplates(tm *templates.TemplateManager) error {
 	return nil
 }
 
-func NewDashboardCmd() *cobra.Command {
-	var port int
-
-	cmd := &cobra.Command{
-		Use:   "dashboard",
-		Short: "🌐 Open the web dashboard",
-		Long: `Start a web-based dashboard for Viki.
-
-The dashboard provides:
-• Visual workflow progress tracking
-• Real-time activity logs
-• Project statistics
-• Quick actions
-
-Access at http://localhost:<port> after starting.`,
-		RunE: func(cmd *cobra.Command, args []string) error {
-			server := web.NewDashboardServer(port)
-
-			// Load current project state
-			if err := server.LoadState("."); err != nil {
-				fmt.Printf("Warning: could not load project state: %v\n", err)
-			}
-
-			return server.Start()
-		},
-	}
-
-	cmd.Flags().IntVarP(&port, "port", "p", 8080, "Port to run dashboard on")
-
-	return cmd
-}
+// NewDashboardCmd is defined in dashboard.go
 
 func NewConfigCmd() *cobra.Command {
 	cmd := &cobra.Command{

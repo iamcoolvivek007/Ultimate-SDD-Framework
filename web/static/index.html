@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viki Dashboard - AI Development Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🤖</span>
+                <span class="logo-text">Viki</span>
+                <span class="version">v3.0</span>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn" id="themeToggle">🌙</button>
+                <button class="nav-btn" onclick="showHelp()">❓ Help</button>
+            </nav>
+        </header>
+
+        <main class="main">
+            <!-- Workflow Pipeline -->
+            <section class="pipeline-section">
+                <h2 class="section-title">📊 Workflow Pipeline</h2>
+                <div class="pipeline">
+                    <div class="pipeline-step active" data-phase="init" onclick="selectPhase('init')">
+                        <div class="step-icon">💡</div>
+                        <div class="step-label">Idea</div>
+                        <div class="step-status">✓</div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step" data-phase="specify" onclick="selectPhase('specify')">
+                        <div class="step-icon">📝</div>
+                        <div class="step-label">Specify</div>
+                        <div class="step-status"></div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step" data-phase="plan" onclick="selectPhase('plan')">
+                        <div class="step-icon">📐</div>
+                        <div class="step-label">Plan</div>
+                        <div class="step-status"></div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step" data-phase="task" onclick="selectPhase('task')">
+                        <div class="step-icon">✅</div>
+                        <div class="step-label">Tasks</div>
+                        <div class="step-status"></div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step" data-phase="execute" onclick="selectPhase('execute')">
+                        <div class="step-icon">💻</div>
+                        <div class="step-label">Code</div>
+                        <div class="step-status"></div>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="pipeline-step" data-phase="review" onclick="selectPhase('review')">
+                        <div class="step-icon">🔍</div>
+                        <div class="step-label">Review</div>
+                        <div class="step-status"></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="content-grid">
+                <!-- Action Panel -->
+                <section class="action-panel">
+                    <div class="phase-header">
+                        <h2 class="phase-title" id="phaseTitle">💡 Start Your Project</h2>
+                        <p class="phase-desc" id="phaseDesc">Tell Viki what you want to build</p>
+                    </div>
+
+                    <!-- Phase: Init -->
+                    <div class="phase-content" id="phase-init">
+                        <div class="form-group">
+                            <label>Project Name</label>
+                            <input type="text" id="projectName" placeholder="my-awesome-app" class="input">
+                        </div>
+                        <button class="btn btn-primary" onclick="runAction('init')">
+                            🚀 Create Project
+                        </button>
+                    </div>
+
+                    <!-- Phase: Specify -->
+                    <div class="phase-content hidden" id="phase-specify">
+                        <div class="form-group">
+                            <label>Describe Your Idea</label>
+                            <textarea id="ideaDesc" placeholder="I want to build a todo app where users can add, complete, and delete tasks. It should have user authentication and a clean, modern UI." class="textarea" rows="5"></textarea>
+                        </div>
+                        <div class="tips">
+                            <h4>💡 Tips for great specs:</h4>
+                            <ul>
+                                <li>What does the user do?</li>
+                                <li>What's the main feature?</li>
+                                <li>Any specific tech preferences?</li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-primary" onclick="runAction('specify')">
+                            ✨ Generate Specification
+                        </button>
+                    </div>
+
+                    <!-- Phase: Plan -->
+                    <div class="phase-content hidden" id="phase-plan">
+                        <div class="preview-card">
+                            <h4>📝 Specification Ready</h4>
+                            <p id="specPreview">Your requirements have been captured...</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="runAction('plan')">
+                            📐 Create Architecture Plan
+                        </button>
+                    </div>
+
+                    <!-- Phase: Task -->
+                    <div class="phase-content hidden" id="phase-task">
+                        <div class="preview-card">
+                            <h4>📐 Plan Ready</h4>
+                            <p id="planPreview">Architecture has been designed...</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="runAction('approve')">
+                            ✓ Approve Plan
+                        </button>
+                        <button class="btn btn-primary" onclick="runAction('task')">
+                            ✅ Break Into Tasks
+                        </button>
+                    </div>
+
+                    <!-- Phase: Execute -->
+                    <div class="phase-content hidden" id="phase-execute">
+                        <div class="task-list" id="taskList">
+                            <div class="task-item">
+                                <input type="checkbox" id="t1">
+                                <label for="t1">Set up project structure</label>
+                            </div>
+                            <div class="task-item">
+                                <input type="checkbox" id="t2">
+                                <label for="t2">Create database schema</label>
+                            </div>
+                            <div class="task-item">
+                                <input type="checkbox" id="t3">
+                                <label for="t3">Implement API endpoints</label>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="runAction('execute')">
+                            💻 Generate Code
+                        </button>
+                    </div>
+
+                    <!-- Phase: Review -->
+                    <div class="phase-content hidden" id="phase-review">
+                        <div class="review-summary">
+                            <div class="review-score">
+                                <span class="score-value">8/10</span>
+                                <span class="score-label">Quality Score</span>
+                            </div>
+                            <div class="review-status approved">
+                                ✅ APPROVED
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="runAction('review')">
+                            🔍 Run Code Review
+                        </button>
+                    </div>
+
+                    <!-- Output Console -->
+                    <div class="output-console" id="outputConsole">
+                        <div class="console-header">
+                            <span>📟 Output</span>
+                            <button class="clear-btn" onclick="clearOutput()">Clear</button>
+                        </div>
+                        <div class="console-content" id="consoleContent">
+                            <div class="log info">Welcome to Viki Dashboard! 🎉</div>
+                            <div class="log">Ready to build something amazing.</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Chat Sidebar -->
+                <aside class="chat-sidebar">
+                    <div class="chat-header">
+                        <h3>💬 Chat with Viki</h3>
+                    </div>
+                    
+                    <div class="agent-selector">
+                        <label>Active Agent:</label>
+                        <select id="agentSelect" onchange="switchAgent()">
+                            <option value="pm">🎯 Product Manager</option>
+                            <option value="architect">🏗️ System Architect</option>
+                            <option value="developer">💻 Developer</option>
+                            <option value="qa">🔍 QA Engineer</option>
+                            <option value="devops">⚙️ DevOps</option>
+                            <option value="security">🔒 Security</option>
+                            <option value="ux_designer">🎨 UX Designer</option>
+                        </select>
+                    </div>
+
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="message assistant">
+                            <div class="message-avatar">🤖</div>
+                            <div class="message-content">
+                                Hi! I'm Viki, your AI development assistant. I can help you:
+                                <ul>
+                                    <li>Define project requirements</li>
+                                    <li>Design architecture</li>
+                                    <li>Write and review code</li>
+                                </ul>
+                                What would you like to build today?
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input">
+                        <textarea id="chatInput" placeholder="Ask Viki anything..." rows="2"></textarea>
+                        <button class="send-btn" onclick="sendMessage()">
+                            Send ➤
+                        </button>
+                    </div>
+
+                    <div class="quick-actions">
+                        <button class="quick-btn" onclick="quickAction('suggest')">💡 Suggestions</button>
+                        <button class="quick-btn" onclick="quickAction('clarify')">❓ Clarify</button>
+                        <button class="quick-btn" onclick="quickAction('example')">📋 Examples</button>
+                    </div>
+                </aside>
+            </div>
+        </main>
+
+        <!-- Help Modal -->
+        <div class="modal hidden" id="helpModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>❓ How to Use Viki</h2>
+                    <button class="close-btn" onclick="closeHelp()">×</button>
+                </div>
+                <div class="modal-body">
+                    <h3>🚀 Getting Started</h3>
+                    <ol>
+                        <li><strong>Create Project</strong> - Give your project a name</li>
+                        <li><strong>Describe Idea</strong> - Tell Viki what you want to build</li>
+                        <li><strong>Generate Plan</strong> - AI creates the architecture</li>
+                        <li><strong>Break Into Tasks</strong> - Get actionable steps</li>
+                        <li><strong>Execute</strong> - Generate the code!</li>
+                    </ol>
+
+                    <h3>💬 Chat Features</h3>
+                    <ul>
+                        <li>Ask questions at any time</li>
+                        <li>Switch between AI agents for different perspectives</li>
+                        <li>Use quick actions for common tasks</li>
+                    </ul>
+
+                    <h3>⌨️ Keyboard Shortcuts</h3>
+                    <ul>
+                        <li><kbd>Enter</kbd> - Send chat message</li>
+                        <li><kbd>Ctrl+Enter</kbd> - Run current action</li>
+                        <li><kbd>Esc</kbd> - Close modals</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
