@@ -9,53 +9,64 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const version = "2.0.0"
+const version = "3.0.0"
 
 func main() {
 	rootCmd := &cobra.Command{
 		Use:   "viki",
 		Short: "🤖 Viki - Your AI Development Assistant",
-		Long: `✨ Welcome to Viki - the friendly AI that helps you build software!
+		Long: `✨ Welcome to Viki - the Ultimate AI Development Framework!
 
 🎯 What Viki does:
 • Takes your ideas and turns them into working code
-• Guides you through the development process step-by-step
-• Uses AI to help with planning, coding, and testing
-• Works with your existing projects or helps start new ones
+• Guides you through the development process step-by-step  
+• Uses 21+ specialized AI agents for every role
+• Features SQLite-persistent sessions and advanced tooling
+• Supports scale-adaptive workflows (Quick → Enterprise)
 
-🚀 Quick Start for New Users:
-1. viki init "my-awesome-app"    # Start a new project
-2. viki specify "what you want to build"  # Tell Viki your idea
-3. Follow the guided workflow!   # Viki will help with the rest
+🚀 Quick Start:
+1. viki init "my-awesome-app"     # Start a new project
+2. viki specify "your idea"       # Describe what you want
+3. viki plan                      # Let AI design it
+4. viki task                      # Break into tasks
+5. viki execute                   # Generate the code!
 
-💡 Pro Tips:
-• Viki works best when you describe what you want, not how to do it
-• You can ask Viki to explain anything you don't understand
-• Viki remembers your project and helps you continue where you left off
+💡 New in v3.0:
+• viki session - Manage persistent chat sessions
+• viki workflow - Structured development workflows
+• viki brainstorm - Interactive ideation
+• viki constitution - Project governance
+• viki agents - 21+ specialized AI personas
 
 Ready to build something amazing? Let's get started! 🚀`,
 	}
 
 	// Check if this is first run and show welcome message
 	if len(os.Args) == 1 {
-		fmt.Println(`🤖 Welcome to Viki - Your AI Development Assistant!
+		fmt.Println(`🤖 Welcome to Viki v3.0 - The Ultimate AI Development Framework!
 
-✨ Viki helps you build software using AI. Whether you're new to coding or a seasoned developer,
-Viki guides you through the development process with friendly AI assistants.
+✨ Viki helps you build software using AI with 21+ specialized agents.
 
 🚀 Quick Start:
-1. viki init "your-project-name"     # Start a new project
-2. viki mcp add my-ai --provider openai --model gpt-4  # Add AI provider
-3. viki specify "what you want to build"               # Describe your idea
-4. Follow Viki's guidance!                             # Let AI help you code
+1. viki init "project-name"       # Initialize project
+2. viki mcp add ai --provider openai --model gpt-4  # Add AI
+3. viki specify "your idea"       # Describe your vision
+4. viki workflow init             # Get guided workflow
 
-💡 Need help? Run 'viki --help' for all commands, or visit our docs!
+💡 New Commands:
+• viki session - Manage AI chat sessions
+• viki workflow - Development workflows (Quick/Standard/Enterprise)
+• viki brainstorm - Ideation with 6 techniques
+• viki constitution - Project principles
+• viki agents - View 21+ specialized agents
+
+Run 'viki --help' for all commands!
 
 Available commands:`)
 		fmt.Println()
 	}
 
-	// Add subcommands
+	// Core SDD commands
 	rootCmd.AddCommand(cli.NewInitCmd())
 	rootCmd.AddCommand(cli.NewDiscoveryCmd())
 	rootCmd.AddCommand(cli.NewSpecifyCmd())
@@ -76,7 +87,7 @@ Available commands:`)
 	rootCmd.AddCommand(newVersionCmd())
 	rootCmd.AddCommand(newGuideCmd())
 
-	// New commands (v2.0)
+	// v2.0 commands
 	rootCmd.AddCommand(cli.NewChatCmd())      // Interactive chat mode
 	rootCmd.AddCommand(cli.NewUndoCmd())      // Undo file changes
 	rootCmd.AddCommand(cli.NewSecretsCmd())   // Secrets management
@@ -85,6 +96,15 @@ Available commands:`)
 	rootCmd.AddCommand(cli.NewConfigCmd())    // Global config
 	rootCmd.AddCommand(cli.NewPluginCmd())    // Plugin management
 	rootCmd.AddCommand(cli.NewIndexCmd())     // Codebase indexing
+
+	// v3.0 commands - Enhanced with competitor features
+	rootCmd.AddCommand(cli.NewSessionCmd())      // Session management (from OpenCode)
+	rootCmd.AddCommand(cli.NewWorkflowCmd())     // Workflow engine (from BMAD)
+	rootCmd.AddCommand(cli.NewBrainstormCmd())   // Brainstorming (from BMAD)
+	rootCmd.AddCommand(cli.NewAgentSelectCmd())  // Agent selection (from BMAD)
+	rootCmd.AddCommand(cli.NewConstitutionCmd()) // Constitution (from Spec-Kit)
+	rootCmd.AddCommand(cli.NewClarifyCmd())      // Clarify specs (from Spec-Kit)
+	rootCmd.AddCommand(cli.NewChecklistCmd())    // Quality checklists (from Spec-Kit)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
