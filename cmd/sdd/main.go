@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/spf13/cobra"
 	"ultimate-sdd-framework/internal/cli"
+
+	"github.com/spf13/cobra"
 )
 
-const version = "1.0.0"
+const version = "2.0.0"
 
 func main() {
 	rootCmd := &cobra.Command{
@@ -74,6 +75,16 @@ Available commands:`)
 	rootCmd.AddCommand(cli.NewMCPCommand())
 	rootCmd.AddCommand(newVersionCmd())
 	rootCmd.AddCommand(newGuideCmd())
+
+	// New commands (v2.0)
+	rootCmd.AddCommand(cli.NewChatCmd())      // Interactive chat mode
+	rootCmd.AddCommand(cli.NewUndoCmd())      // Undo file changes
+	rootCmd.AddCommand(cli.NewSecretsCmd())   // Secrets management
+	rootCmd.AddCommand(cli.NewNewCmd())       // Project templates
+	rootCmd.AddCommand(cli.NewDashboardCmd()) // Web dashboard
+	rootCmd.AddCommand(cli.NewConfigCmd())    // Global config
+	rootCmd.AddCommand(cli.NewPluginCmd())    // Plugin management
+	rootCmd.AddCommand(cli.NewIndexCmd())     // Codebase indexing
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
