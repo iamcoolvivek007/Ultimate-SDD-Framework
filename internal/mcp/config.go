@@ -241,7 +241,7 @@ func GetDefaultModelForProvider(provider ModelProvider) string {
 	case ProviderAnthropic:
 		return "claude-3-sonnet-20240229"
 	case ProviderGoogle:
-		return "gemini-1.5-pro"
+		return "gemini-pro"
 	case ProviderOllama:
 		return "llama2"
 	case ProviderAzure:

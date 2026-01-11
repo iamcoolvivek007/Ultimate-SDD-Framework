@@ -77,7 +77,7 @@ func NewModelClient(provider ModelProvider, apiKey, model string) *ModelClient {
 	case ProviderAnthropic:
 		client.BaseURL = "https://api.anthropic.com/v1"
 	case ProviderGoogle:
-		client.BaseURL = "https://generativelanguage.googleapis.com/v1beta"
+		client.BaseURL = "https://generativelanguage.googleapis.com/v1"
 	case ProviderOllama:
 		client.BaseURL = "http://localhost:11434"
 	case ProviderAzure:
@@ -392,9 +392,9 @@ func (mc *ModelClient) GetAvailableModels() ([]string, error) {
 		}, nil
 	case ProviderGoogle:
 		return []string{
-			"gemini-1.5-pro",
-			"gemini-1.5-flash",
-			"gemini-1.5-pro-latest",
+			"gemini-pro",
+			"gemini-pro-vision",
+			"gemini-1.0-pro",
 		}, nil
 	case ProviderOllama:
 		// For Ollama, we'd need to query the local instance
