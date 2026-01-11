@@ -3,12 +3,17 @@ package ui
 import (
 	"os"
 
+	"time"
+
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/spinner"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"ultimate-sdd-framework/internal/gates"
 )
+
+// GSDTickMsg is sent to update the GSD checklist
+type GSDTickMsg time.Time
 
 // UIState represents the current state of the UI
 type UIState int
@@ -41,6 +46,7 @@ type SDDModel struct {
 	// Data
 	Skills   []string // Currently equipped skills
 	Thoughts []string // Stream of thoughts
+	GSDTasks []GSDTask // GSD Checklist
 
 	// Window size
 	width  int
@@ -82,7 +88,11 @@ func NewSDDModel(stateMgr *gates.StateManager) (*SDDModel, error) {
 		SkillList:    l,
 		Skills:       []string{},
 		Thoughts:     []string{},
+		GSDTasks:     []GSDTask{},
 	}
+
+	// Load GSD Tasks
+	m.loadGSDTasks()
 
 	// Initialize content
 	if content, err := m.loadPhaseContent(m.Phase); err == nil {
@@ -107,7 +117,14 @@ func NewSDDModel(stateMgr *gates.StateManager) (*SDDModel, error) {
 func (m SDDModel) Init() tea.Cmd {
 	return tea.Batch(
 		m.Spinner.Tick,
+		m.tickGSD(),
 	)
+}
+
+func (m SDDModel) tickGSD() tea.Cmd {
+	return tea.Tick(time.Second*2, func(t time.Time) tea.Msg {
+		return GSDTickMsg(t)
+	})
 }
 
 func (m SDDModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -117,6 +134,9 @@ func (m SDDModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	)
 
 	switch msg := msg.(type) {
+	case GSDTickMsg:
+		m.loadGSDTasks()
+		cmds = append(cmds, m.tickGSD())
 	case tea.KeyMsg:
 		// Global keys
 		switch msg.String() {
