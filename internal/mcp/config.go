@@ -9,8 +9,8 @@ import (
 
 // MCPConfig represents the Model Context Protocol configuration
 type MCPConfig struct {
-	Providers map[string]ProviderConfig `json:"providers"`
-	DefaultProvider string               `json:"default_provider"`
+	Providers       map[string]ProviderConfig `json:"providers"`
+	DefaultProvider string                    `json:"default_provider"`
 }
 
 // ProviderConfig represents configuration for a specific AI provider
@@ -241,7 +241,7 @@ func GetDefaultModelForProvider(provider ModelProvider) string {
 	case ProviderAnthropic:
 		return "claude-3-sonnet-20240229"
 	case ProviderGoogle:
-		return "gemini-pro"
+		return "gemini-2.5-flash"
 	case ProviderOllama:
 		return "llama2"
 	case ProviderAzure:

@@ -17,6 +17,18 @@ Traditional AI coding assistants give you unfiltered, unstructured suggestions. 
 - **Terminal-Native**: Works entirely in your terminal with rich TUI interfaces
 - **API Key Support**: Connect to OpenAI, Anthropic, Google Gemini, Ollama, and Azure
 
+### 🆕 New in v2.0
+
+- **Interactive Chat Mode** (`viki chat`) - Continuous AI conversation with context
+- **Project Templates** (`viki new`) - Start fast with Go, React, Python, Next.js templates
+- **Web Dashboard** (`viki dashboard`) - Browser-based UI with real-time updates
+- **Streaming Responses** - Real-time AI output as it generates
+- **Plugin System** (`viki plugin`) - Extend with custom agents and workflows
+- **Secrets Management** (`viki secrets`) - OS keychain integration for API keys
+- **Undo Command** (`viki undo`) - Rollback file changes with history
+- **Global Config** (`viki config`) - Settings in `~/.viki/config.yaml`
+- **Codebase Indexing** (`viki index`) - LSP-like symbol extraction for context
+
 ## 🏗️ Architecture Overview
 
 ```

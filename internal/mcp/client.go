@@ -14,20 +14,20 @@ import (
 type ModelProvider string
 
 const (
-	ProviderOpenAI     ModelProvider = "openai"
-	ProviderAnthropic  ModelProvider = "anthropic"
-	ProviderGoogle     ModelProvider = "google"
-	ProviderOllama     ModelProvider = "ollama"
-	ProviderAzure      ModelProvider = "azure"
+	ProviderOpenAI    ModelProvider = "openai"
+	ProviderAnthropic ModelProvider = "anthropic"
+	ProviderGoogle    ModelProvider = "google"
+	ProviderOllama    ModelProvider = "ollama"
+	ProviderAzure     ModelProvider = "azure"
 )
 
 // ModelClient handles communication with AI models via API keys
 type ModelClient struct {
-	Provider    ModelProvider
-	APIKey      string
-	BaseURL     string
-	Model       string
-	httpClient  *http.Client
+	Provider   ModelProvider
+	APIKey     string
+	BaseURL    string
+	Model      string
+	httpClient *http.Client
 }
 
 // Message represents a chat message
@@ -77,7 +77,7 @@ func NewModelClient(provider ModelProvider, apiKey, model string) *ModelClient {
 	case ProviderAnthropic:
 		client.BaseURL = "https://api.anthropic.com/v1"
 	case ProviderGoogle:
-		client.BaseURL = "https://generativelanguage.googleapis.com/v1"
+		client.BaseURL = "https://generativelanguage.googleapis.com/v1beta"
 	case ProviderOllama:
 		client.BaseURL = "http://localhost:11434"
 	case ProviderAzure:
@@ -392,9 +392,9 @@ func (mc *ModelClient) GetAvailableModels() ([]string, error) {
 		}, nil
 	case ProviderGoogle:
 		return []string{
-			"gemini-pro",
-			"gemini-pro-vision",
-			"gemini-1.0-pro",
+			"gemini-2.5-flash",
+			"gemini-2.5-pro",
+			"gemini-2.0-flash-exp",
 		}, nil
 	case ProviderOllama:
 		// For Ollama, we'd need to query the local instance
