@@ -41,23 +41,44 @@ func NewMCPManager(projectRoot string) *MCPManager {
 
 // LoadConfig loads the MCP configuration from disk
 func (m *MCPManager) LoadConfig() error {
-	// Check if config exists
-	if _, err := os.Stat(m.configPath); os.IsNotExist(err) {
-		// Create default config
+	// Check if local config exists
+	localHasConfig := false
+	if _, err := os.Stat(m.configPath); err == nil {
+		data, err := os.ReadFile(m.configPath)
+		if err == nil {
+			if err := json.Unmarshal(data, &m.config); err == nil {
+				if len(m.config.Providers) > 0 {
+					localHasConfig = true
+				}
+			}
+		}
+	}
+
+	// If no local config, try global config
+	if !localHasConfig {
+		homeDir, err := os.UserHomeDir()
+		if err == nil {
+			globalConfigPath := filepath.Join(homeDir, ".config", "viki", "mcp.json")
+			if _, err := os.Stat(globalConfigPath); err == nil {
+				data, err := os.ReadFile(globalConfigPath)
+				if err == nil {
+					if err := json.Unmarshal(data, &m.config); err == nil {
+						// Use global config
+						m.configPath = globalConfigPath
+						localHasConfig = true
+					}
+				}
+			}
+		}
+	}
+
+	// If still no config, create default
+	if !localHasConfig {
 		m.config = &MCPConfig{
 			Providers:       make(map[string]ProviderConfig),
 			DefaultProvider: "",
 		}
 		return m.SaveConfig()
-	}
-
-	data, err := os.ReadFile(m.configPath)
-	if err != nil {
-		return fmt.Errorf("failed to read MCP config: %w", err)
-	}
-
-	if err := json.Unmarshal(data, &m.config); err != nil {
-		return fmt.Errorf("failed to parse MCP config: %w", err)
 	}
 
 	// Initialize clients for enabled providers

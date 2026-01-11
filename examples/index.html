@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App - Viki Demo</title>
+    <meta name="description" content="A simple, elegant todo app built with vanilla JavaScript">
+    <link rel="stylesheet" href="src/css/styles.css">
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <h1>✨ My Todo List</h1>
+            <p class="subtitle">Built with Viki SDD Framework</p>
+        </header>
+
+        <main>
+            <div class="task-input-container">
+                <input type="text" id="taskInput" placeholder="What needs to be done?" aria-label="New task">
+                <button id="addBtn" title="Add task">
+                    <span>+</span>
+                </button>
+            </div>
+
+            <div class="filter-bar">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="active">Active</button>
+                <button class="filter-btn" data-filter="completed">Completed</button>
+                <span class="task-count"></span>
+            </div>
+
+            <ul id="taskList" class="task-list"></ul>
+
+            <div class="empty-state" id="emptyState">
+                <span class="empty-icon">📋</span>
+                <p>No tasks yet. Add one above!</p>
+            </div>
+        </main>
+
+        <footer>
+            <p>Double-click to edit • Built with ❤️ using Viki</p>
+        </footer>
+    </div>
+
+    <script src="src/js/app.js" type="module"></script>
+</body>
+
+</html>
