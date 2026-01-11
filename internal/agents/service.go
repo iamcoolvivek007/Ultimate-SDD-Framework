@@ -119,8 +119,10 @@ func (as *AgentService) getPhaseConfig(phase string) (role, prev, curr, skill st
 		return "designer", "1_prd.md", "2_architecture.md", "plan-feature"
 	case "audit":
 		return "guardian", "2_architecture.md", "3_security_report.md", "architecture-audit"
+	case "task":
+		return "taskmaster", "2_architecture.md", "gsd.json", "plan-feature"
 	case "execute":
-		return "builder", "2_architecture.md", "source_code", "code-generator" // Builder blindly follows Arch Spec
+		return "builder", "gsd.json", "source_code", "gsd-execute" // Builder follows GSD checklist
 	case "validate":
 		return "inspector", "source_code", "5_validation_report.md", "piv-validate"
 	case "evolve":
@@ -182,10 +184,16 @@ func (as *AgentService) prepareContext(phase, trackID, prevArtifact string) (str
 		// Already handled by prevArtifact="0_discovery.md"
 	}
 
-	// 3. Add Builder Constraints (Blind to PRD, sees Arch Spec + Security Report)
+	// 3. Add Builder Constraints (Blind to PRD, sees GSD + Arch Spec + Security Report)
 	if phase == "execute" {
-		// Arch Spec is already in prevArtifact.
-		// Need to inject Security Report as well.
+		// GSD is in prevArtifact.
+		// Need to inject Arch Spec and Security Report as well.
+		archPath := filepath.Join(as.projectRoot, ".sdd", "tracks", trackID, "2_architecture.md")
+		archContent, err := os.ReadFile(archPath)
+		if err == nil {
+			contextBuilder.WriteString(fmt.Sprintf("\n\n## ARCHITECTURE SPECIFICATION\n%s\n", string(archContent)))
+		}
+
 		secPath := filepath.Join(as.projectRoot, ".sdd", "tracks", trackID, "3_security_report.md")
 		secContent, err := os.ReadFile(secPath)
 		if err == nil {

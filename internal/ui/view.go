@@ -42,17 +42,22 @@ func (m SDDModel) dashboardView() string {
 		mainContent = fmt.Sprintf("Current Phase: %s\n\n%s", strings.ToUpper(string(m.Phase)), m.Viewport.View())
 	}
 
+	// 4. Right Panel (GSD Checklist)
+	gsdContent := m.renderGSDPanel()
+	gsdPanel := gsdPanelStyle.Height(m.height - 5).Render(gsdContent)
+
 	// Adjust main panel width
-	mainPanelWidth := m.width - 36 // 30 (left) + borders/padding
+	// Width - Left (30) - Right (30) - Padding
+	mainPanelWidth := m.width - 66
 	if mainPanelWidth < 20 {
 		mainPanelWidth = 20
 	}
 	mainPanel := mainPanelStyle.Width(mainPanelWidth).Height(m.height - 5).Render(mainContent)
 
 	// Combine panels
-	body := lipgloss.JoinHorizontal(lipgloss.Top, leftPanel, mainPanel)
+	body := lipgloss.JoinHorizontal(lipgloss.Top, leftPanel, mainPanel, gsdPanel)
 
-	// 4. Footer
+	// 5. Footer
 	skillStr := "None"
 	if len(m.Skills) > 0 {
 		skillStr = strings.Join(m.Skills, ", ")
@@ -81,6 +86,34 @@ func (m SDDModel) renderFooterKeys() string {
 	}
 
 	return strings.Join(keys, " • ")
+}
+
+func (m SDDModel) renderGSDPanel() string {
+	if len(m.GSDTasks) == 0 {
+		return "No GSD tasks active."
+	}
+
+	var s strings.Builder
+	s.WriteString("GSD CHECKLIST\n")
+	s.WriteString(strings.Repeat("=", 25) + "\n\n")
+
+	for _, task := range m.GSDTasks {
+		check := "[ ]"
+		style := pendingPhaseStyle
+		if task.Done {
+			check = "[✔]"
+			style = activePhaseStyle
+		}
+
+		// Truncate if too long
+		title := task.Title
+		if len(title) > 22 {
+			title = title[:19] + "..."
+		}
+
+		s.WriteString(style.Render(fmt.Sprintf("%s %s", check, title)) + "\n")
+	}
+	return s.String()
 }
 
 func (m SDDModel) renderPhaseProgress() string {

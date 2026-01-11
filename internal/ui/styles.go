@@ -28,6 +28,9 @@ var (
 	leftPanelStyle = panelStyle.Copy().
 			Width(30)
 
+	gsdPanelStyle = panelStyle.Copy().
+			Width(30)
+
 	mainPanelStyle = panelStyle.Copy().
 			Width(60)
 
