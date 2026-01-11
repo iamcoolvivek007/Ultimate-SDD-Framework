@@ -78,14 +78,16 @@ install_viki() {
     
     echo -e "${BLUE}Downloading Viki...${NC}"
     
-    if ! curl -sSL "$DOWNLOAD_URL" -o "${TEMP_DIR}/viki.tar.gz"; then
+    # Use -f to fail on HTTP errors (404, etc.) instead of downloading HTML error pages
+    if ! curl -fSL "$DOWNLOAD_URL" -o "${TEMP_DIR}/viki.tar.gz" 2>/dev/null; then
         # Try alternative naming convention
         DOWNLOAD_URL="https://github.com/${REPO}/releases/download/${VERSION}/sdd-${VERSION}-${PLATFORM}.tar.gz"
-        curl -sSL "$DOWNLOAD_URL" -o "${TEMP_DIR}/viki.tar.gz" || {
+        if ! curl -fSL "$DOWNLOAD_URL" -o "${TEMP_DIR}/viki.tar.gz" 2>/dev/null; then
             echo -e "${YELLOW}Release binary not found, building from source...${NC}"
+            rm -rf "$TEMP_DIR"
             install_from_source
             return
-        }
+        fi
     fi
     
     echo -e "${BLUE}Extracting...${NC}"
