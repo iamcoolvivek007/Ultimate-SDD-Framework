@@ -29,36 +29,36 @@ type FileInfo struct {
 type FileType string
 
 const (
-	FileTypeGo      FileType = "go"
+	FileTypeGo         FileType = "go"
 	FileTypeTypeScript FileType = "typescript"
 	FileTypeJavaScript FileType = "javascript"
-	FileTypePython  FileType = "python"
-	FileTypeRust    FileType = "rust"
-	FileTypeConfig  FileType = "config"
-	FileTypeDoc     FileType = "documentation"
-	FileTypeOther   FileType = "other"
+	FileTypePython     FileType = "python"
+	FileTypeRust       FileType = "rust"
+	FileTypeConfig     FileType = "config"
+	FileTypeDoc        FileType = "documentation"
+	FileTypeOther      FileType = "other"
 )
 
 // ProjectStructure represents the overall project structure
 type ProjectStructure struct {
-	MainLanguage    string
-	Framework       string
-	HasDatabase     bool
-	HasAPI          bool
-	HasFrontend     bool
-	HasTests        bool
-	EntryPoints     []string
-	ConfigFiles     []string
+	MainLanguage string
+	Framework    string
+	HasDatabase  bool
+	HasAPI       bool
+	HasFrontend  bool
+	HasTests     bool
+	EntryPoints  []string
+	ConfigFiles  []string
 }
 
 // BrownfieldContext provides comprehensive analysis for existing codebases
 type BrownfieldContext struct {
 	CodebaseContext
-	LegacyPatterns     []LegacyPattern
-	ForbiddenPatterns  []ForbiddenPattern
-	IntegrationPoints  []IntegrationPoint
-	TechnicalDebt      []TechnicalDebtItem
-	Constitution       Constitution
+	LegacyPatterns    []LegacyPattern
+	ForbiddenPatterns []ForbiddenPattern
+	IntegrationPoints []IntegrationPoint
+	TechnicalDebt     []TechnicalDebtItem
+	Constitution      Constitution
 }
 
 // LegacyPattern represents established patterns in the codebase
@@ -80,29 +80,29 @@ type ForbiddenPattern struct {
 
 // IntegrationPoint represents key integration points in the system
 type IntegrationPoint struct {
-	Name        string
-	Type        string // api, database, external_service, etc.
-	Description string
-	Files       []string
+	Name         string
+	Type         string // api, database, external_service, etc.
+	Description  string
+	Files        []string
 	Dependencies []string
 }
 
 // TechnicalDebtItem represents identified technical debt
 type TechnicalDebtItem struct {
-	Issue       string
-	Severity    string
-	Files       []string
-	Description string
+	Issue          string
+	Severity       string
+	Files          []string
+	Description    string
 	Recommendation string
 }
 
 // Constitution represents the system's architectural rules
 type Constitution struct {
-	TechStack        []string
+	TechStack          []string
 	ArchitecturalRules []string
-	CodingStandards []string
-	IntegrationRules []string
-	QualityGates    []string
+	CodingStandards    []string
+	IntegrationRules   []string
+	QualityGates       []string
 }
 
 // NewCodebaseContext creates a new codebase context analyzer
@@ -400,8 +400,8 @@ func (cc *CodebaseContext) getTaskContext() string {
 	ctx.WriteString("\n**Integration Points:**\n")
 	for _, file := range cc.Files {
 		if strings.Contains(strings.ToLower(file.Content), "api") ||
-		   strings.Contains(strings.ToLower(file.Content), "database") ||
-		   strings.Contains(strings.ToLower(file.Content), "external") {
+			strings.Contains(strings.ToLower(file.Content), "database") ||
+			strings.Contains(strings.ToLower(file.Content), "external") {
 			ctx.WriteString(fmt.Sprintf("- %s (potential integration)\n", file.Path))
 		}
 	}
@@ -592,7 +592,7 @@ func isEntryPoint(path string, fileType FileType) bool {
 		return strings.HasSuffix(path, "main.go") || strings.HasSuffix(path, "cmd/server/main.go")
 	case FileTypeJavaScript, FileTypeTypeScript:
 		return strings.HasSuffix(path, "index.js") || strings.HasSuffix(path, "app.js") ||
-			   strings.HasSuffix(path, "server.js") || strings.HasSuffix(path, "main.ts")
+			strings.HasSuffix(path, "server.js") || strings.HasSuffix(path, "main.ts")
 	case FileTypePython:
 		return strings.HasSuffix(path, "__main__.py") || path == "main.py" || path == "app.py"
 	}
@@ -1066,7 +1066,7 @@ func (bfc *BrownfieldContext) analyzeDataAccessPatterns() []LegacyPattern {
 		for _, file := range bfc.Files {
 			content := strings.ToLower(file.Content)
 			if strings.Contains(content, "database") || strings.Contains(content, "sql") ||
-			   strings.Contains(content, "query") || strings.Contains(content, "gorm") {
+				strings.Contains(content, "query") || strings.Contains(content, "gorm") {
 				dbPattern.Files = append(dbPattern.Files, file.Path)
 			}
 		}
@@ -1109,7 +1109,7 @@ func (bfc *BrownfieldContext) checkDeprecatedPatterns() []ForbiddenPattern {
 	// Check for deprecated libraries or patterns
 	for _, file := range bfc.Files {
 		if strings.Contains(file.Content, "deprecated") ||
-		   strings.Contains(strings.ToLower(file.Content), "todo: remove") {
+			strings.Contains(strings.ToLower(file.Content), "todo: remove") {
 			forbidden = append(forbidden, ForbiddenPattern{
 				Pattern:     "Deprecated Code Usage",
 				Description: "Code marked as deprecated should be avoided",
@@ -1163,7 +1163,7 @@ func (bfc *BrownfieldContext) checkPerformancePatterns() []ForbiddenPattern {
 	for _, file := range bfc.Files {
 		content := file.Content
 		if strings.Contains(content, "for") && strings.Contains(content, "query") &&
-		   strings.Contains(content, "range") {
+			strings.Contains(content, "range") {
 			forbidden = append(forbidden, ForbiddenPattern{
 				Pattern:     "Potential N+1 Query",
 				Description: "Looping and querying in loops can cause performance issues",
@@ -1182,19 +1182,19 @@ func (bfc *BrownfieldContext) mapAPIPoints() []IntegrationPoint {
 
 	for _, file := range bfc.Files {
 		if strings.Contains(file.Content, "router") || strings.Contains(file.Content, "route") ||
-		   strings.Contains(file.Content, "api") || strings.Contains(file.Content, "endpoint") {
+			strings.Contains(file.Content, "api") || strings.Contains(file.Content, "endpoint") {
 
 			// Extract route definitions
 			lines := strings.Split(file.Content, "\n")
 			for _, line := range lines {
 				line = strings.TrimSpace(line)
 				if strings.Contains(line, "GET") || strings.Contains(line, "POST") ||
-				   strings.Contains(line, "PUT") || strings.Contains(line, "DELETE") {
+					strings.Contains(line, "PUT") || strings.Contains(line, "DELETE") {
 					points = append(points, IntegrationPoint{
-						Name:        fmt.Sprintf("API Route in %s", filepath.Base(file.Path)),
-						Type:        "api",
-						Description: fmt.Sprintf("API endpoint defined in %s", file.Path),
-						Files:       []string{file.Path},
+						Name:         fmt.Sprintf("API Route in %s", filepath.Base(file.Path)),
+						Type:         "api",
+						Description:  fmt.Sprintf("API endpoint defined in %s", file.Path),
+						Files:        []string{file.Path},
 						Dependencies: []string{"HTTP framework"},
 					})
 					break
@@ -1211,17 +1211,17 @@ func (bfc *BrownfieldContext) mapDatabasePoints() []IntegrationPoint {
 
 	if bfc.Structure.HasDatabase {
 		dbPoint := IntegrationPoint{
-			Name:        "Database Connection",
-			Type:        "database",
-			Description: "Primary database connection and configuration",
-			Files:       []string{},
+			Name:         "Database Connection",
+			Type:         "database",
+			Description:  "Primary database connection and configuration",
+			Files:        []string{},
 			Dependencies: []string{"Database driver"},
 		}
 
 		for _, file := range bfc.Files {
 			content := strings.ToLower(file.Content)
 			if strings.Contains(content, "database") || strings.Contains(content, "sql") ||
-			   strings.Contains(content, "gorm") || strings.Contains(content, "connection") {
+				strings.Contains(content, "gorm") || strings.Contains(content, "connection") {
 				dbPoint.Files = append(dbPoint.Files, file.Path)
 			}
 		}
@@ -1242,12 +1242,12 @@ func (bfc *BrownfieldContext) mapExternalServicePoints() []IntegrationPoint {
 
 		// Check for external API calls
 		if strings.Contains(content, "http.client") || strings.Contains(content, "fetch") ||
-		   strings.Contains(content, "axios") || strings.Contains(content, "requests") {
+			strings.Contains(content, "axios") || strings.Contains(content, "requests") {
 			points = append(points, IntegrationPoint{
-				Name:        fmt.Sprintf("External API Call in %s", filepath.Base(file.Path)),
-				Type:        "external_service",
-				Description: "External service integration",
-				Files:       []string{file.Path},
+				Name:         fmt.Sprintf("External API Call in %s", filepath.Base(file.Path)),
+				Type:         "external_service",
+				Description:  "External service integration",
+				Files:        []string{file.Path},
 				Dependencies: []string{"HTTP client library"},
 			})
 		}
@@ -1261,12 +1261,12 @@ func (bfc *BrownfieldContext) mapFileSystemPoints() []IntegrationPoint {
 
 	for _, file := range bfc.Files {
 		if strings.Contains(file.Content, "os.Open") || strings.Contains(file.Content, "fs") ||
-		   strings.Contains(file.Content, "filepath") {
+			strings.Contains(file.Content, "filepath") {
 			points = append(points, IntegrationPoint{
-				Name:        fmt.Sprintf("File System Access in %s", filepath.Base(file.Path)),
-				Type:        "filesystem",
-				Description: "File system operations",
-				Files:       []string{file.Path},
+				Name:         fmt.Sprintf("File System Access in %s", filepath.Base(file.Path)),
+				Type:         "filesystem",
+				Description:  "File system operations",
+				Files:        []string{file.Path},
 				Dependencies: []string{"OS filesystem"},
 			})
 		}
@@ -1283,10 +1283,10 @@ func (bfc *BrownfieldContext) assessCodeQualityDebt() []TechnicalDebtItem {
 		lines := strings.Split(file.Content, "\n")
 		if len(lines) > 500 {
 			debt = append(debt, TechnicalDebtItem{
-				Issue:        "Long File",
-				Severity:     "Low",
-				Files:        []string{file.Path},
-				Description:  fmt.Sprintf("File has %d lines, making it hard to maintain", len(lines)),
+				Issue:          "Long File",
+				Severity:       "Low",
+				Files:          []string{file.Path},
+				Description:    fmt.Sprintf("File has %d lines, making it hard to maintain", len(lines)),
 				Recommendation: "Consider splitting into smaller, focused modules",
 			})
 		}
@@ -1317,10 +1317,10 @@ func (bfc *BrownfieldContext) assessCodeQualityDebt() []TechnicalDebtItem {
 
 				if funcLength > 50 {
 					debt = append(debt, TechnicalDebtItem{
-						Issue:        "Complex Function",
-						Severity:     "Medium",
-						Files:        []string{file.Path},
-						Description:  fmt.Sprintf("Function starting at line %d has %d lines", funcStart+1, funcLength),
+						Issue:          "Complex Function",
+						Severity:       "Medium",
+						Files:          []string{file.Path},
+						Description:    fmt.Sprintf("Function starting at line %d has %d lines", funcStart+1, funcLength),
 						Recommendation: "Break down into smaller, focused functions",
 					})
 				}
@@ -1347,10 +1347,10 @@ func (bfc *BrownfieldContext) assessArchitectureDebt() []TechnicalDebtItem {
 				for _, reverseImp := range importedFile {
 					if reverseImp == file {
 						debt = append(debt, TechnicalDebtItem{
-							Issue:        "Potential Circular Dependency",
-							Severity:     "High",
-							Files:        []string{file, imp},
-							Description:  "Files may have circular import dependencies",
+							Issue:          "Potential Circular Dependency",
+							Severity:       "High",
+							Files:          []string{file, imp},
+							Description:    "Files may have circular import dependencies",
 							Recommendation: "Refactor to break circular dependencies using interfaces or dependency injection",
 						})
 						break
@@ -1368,10 +1368,10 @@ func (bfc *BrownfieldContext) assessTestCoverageDebt() []TechnicalDebtItem {
 
 	if !bfc.Structure.HasTests {
 		debt = append(debt, TechnicalDebtItem{
-			Issue:        "Missing Test Suite",
-			Severity:     "High",
-			Files:        []string{},
-			Description:  "No test files detected in the codebase",
+			Issue:          "Missing Test Suite",
+			Severity:       "High",
+			Files:          []string{},
+			Description:    "No test files detected in the codebase",
 			Recommendation: "Implement comprehensive unit and integration tests",
 		})
 	} else {
@@ -1389,10 +1389,10 @@ func (bfc *BrownfieldContext) assessTestCoverageDebt() []TechnicalDebtItem {
 
 		if testFiles < sourceFiles/2 {
 			debt = append(debt, TechnicalDebtItem{
-				Issue:        "Low Test Coverage",
-				Severity:     "Medium",
-				Files:        []string{},
-				Description:  fmt.Sprintf("Only %d test files for %d source files", testFiles, sourceFiles),
+				Issue:          "Low Test Coverage",
+				Severity:       "Medium",
+				Files:          []string{},
+				Description:    fmt.Sprintf("Only %d test files for %d source files", testFiles, sourceFiles),
 				Recommendation: "Increase test coverage to at least 80%",
 			})
 		}
@@ -1415,11 +1415,11 @@ func (bfc *BrownfieldContext) loadConstitution() error {
 
 	// Parse constitution (simplified parsing - TODO: implement actual parsing)
 	bfc.Constitution = Constitution{
-		TechStack:         []string{"Go", "React", "PostgreSQL"},
+		TechStack:          []string{"Go", "React", "PostgreSQL"},
 		ArchitecturalRules: []string{"MVC pattern", "Repository pattern"},
-		CodingStandards:   []string{"Go naming conventions", "Error handling"},
-		IntegrationRules:  []string{"REST API", "Database transactions"},
-		QualityGates:      []string{"Tests pass", "Linting passes"},
+		CodingStandards:    []string{"Go naming conventions", "Error handling"},
+		IntegrationRules:   []string{"REST API", "Database transactions"},
+		QualityGates:       []string{"Tests pass", "Linting passes"},
 	}
 
 	return nil
@@ -1427,10 +1427,10 @@ func (bfc *BrownfieldContext) loadConstitution() error {
 
 func (bfc *BrownfieldContext) createDefaultConstitution() {
 	bfc.Constitution = Constitution{
-		TechStack:         []string{bfc.Structure.MainLanguage, bfc.Structure.Framework},
+		TechStack:          []string{bfc.Structure.MainLanguage, bfc.Structure.Framework},
 		ArchitecturalRules: []string{"Follow established patterns", "Maintain separation of concerns"},
-		CodingStandards:   []string{"Follow language conventions", "Consistent error handling"},
-		IntegrationRules:  []string{"Use existing integration points", "Maintain API contracts"},
-		QualityGates:      []string{"No regressions", "Tests pass", "Code review approved"},
+		CodingStandards:    []string{"Follow language conventions", "Consistent error handling"},
+		IntegrationRules:   []string{"Use existing integration points", "Maintain API contracts"},
+		QualityGates:       []string{"No regressions", "Tests pass", "Code review approved"},
 	}
 }

@@ -38,15 +38,15 @@ func (sm *StateManager) InitializeProject(projectName string) error {
 	// Create initial state
 	now := time.Now()
 	state := &ProjectState{
-		ProjectID:   generateProjectID(),
-		ProjectName: projectName,
-		CreatedAt:   now,
-		UpdatedAt:   now,
+		ProjectID:    generateProjectID(),
+		ProjectName:  projectName,
+		CreatedAt:    now,
+		UpdatedAt:    now,
 		CurrentPhase: PhaseInit,
 		Phases: map[Phase]PhaseState{
 			PhaseInit: {
-				Phase:     PhaseInit,
-				Status:    StatusApproved, // Init is always approved
+				Phase:       PhaseInit,
+				Status:      StatusApproved, // Init is always approved
 				CompletedAt: &now,
 			},
 			PhaseSpecify: {

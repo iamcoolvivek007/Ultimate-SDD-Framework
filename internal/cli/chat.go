@@ -13,19 +13,19 @@ import (
 
 var (
 	chatUserStyle = lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.Color("39"))
+			Bold(true).
+			Foreground(lipgloss.Color("39"))
 
 	chatAssistantStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("46"))
+				Foreground(lipgloss.Color("46"))
 
 	chatSystemStyle = lipgloss.NewStyle().
-		Italic(true).
-		Foreground(lipgloss.Color("241"))
+			Italic(true).
+			Foreground(lipgloss.Color("241"))
 
 	chatCodeStyle = lipgloss.NewStyle().
-		Background(lipgloss.Color("236")).
-		Foreground(lipgloss.Color("252"))
+			Background(lipgloss.Color("236")).
+			Foreground(lipgloss.Color("252"))
 )
 
 // ChatSession represents an interactive chat session
@@ -90,7 +90,7 @@ func (s *ChatSession) Clear() {
 func (s *ChatSession) Save(filename string) error {
 	var content strings.Builder
 	for _, msg := range s.messages {
-		content.WriteString(fmt.Sprintf("## %s\n\n%s\n\n---\n\n", 
+		content.WriteString(fmt.Sprintf("## %s\n\n%s\n\n---\n\n",
 			strings.Title(msg.Role), msg.Content))
 	}
 	return os.WriteFile(filename, []byte(content.String()), 0644)
@@ -220,8 +220,8 @@ Provider: %s
 Model: %s
 
 Type your message and press Enter.
-Use /help for commands, /exit to quit.`, 
-		mcp.GetProviderDisplayName(client.Provider), client.Model))
+Use /help for commands, /exit to quit.`,
+			mcp.GetProviderDisplayName(client.Provider), client.Model))
 
 	fmt.Println(welcomeBox)
 }

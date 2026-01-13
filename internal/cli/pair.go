@@ -10,14 +10,14 @@ import (
 )
 
 var (
-	agentRole     string
-	focusArea     string
-	activeFile    string
-	cursorLine     int
-	contextCode   string
-	requestType   string
-	suggestionID  string
-	userAction    string
+	agentRole    string
+	focusArea    string
+	activeFile   string
+	cursorLine   int
+	contextCode  string
+	requestType  string
+	suggestionID string
+	userAction   string
 )
 
 func NewPairCmd() *cobra.Command {

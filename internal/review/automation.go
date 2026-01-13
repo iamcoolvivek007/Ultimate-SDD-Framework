@@ -12,50 +12,50 @@ import (
 
 // CodeReview represents an automated code review
 type CodeReview struct {
-	Repository string                    `json:"repository"`
-	Branch     string                    `json:"branch"`
-	Files      []FileReview              `json:"files"`
-	Summary    ReviewSummary             `json:"summary"`
-	Agent      *agents.Agent            `json:"agent"`
+	Repository string        `json:"repository"`
+	Branch     string        `json:"branch"`
+	Files      []FileReview  `json:"files"`
+	Summary    ReviewSummary `json:"summary"`
+	Agent      *agents.Agent `json:"agent"`
 }
 
 // FileReview represents review of a single file
 type FileReview struct {
-	Path         string        `json:"path"`
-	Status       string        `json:"status"`       // approved, changes_requested, commented
-	Comments     []ReviewComment `json:"comments"`
-	Suggestions  []string      `json:"suggestions"`
-	Score        int           `json:"score"`        // 1-10 quality score
-	Issues       []CodeIssue   `json:"issues"`
+	Path        string          `json:"path"`
+	Status      string          `json:"status"` // approved, changes_requested, commented
+	Comments    []ReviewComment `json:"comments"`
+	Suggestions []string        `json:"suggestions"`
+	Score       int             `json:"score"` // 1-10 quality score
+	Issues      []CodeIssue     `json:"issues"`
 }
 
 // ReviewComment represents a specific comment on code
 type ReviewComment struct {
 	Line     int    `json:"line"`
-	Type    string `json:"type"`    // suggestion, issue, praise, question
-	Message string `json:"message"`
+	Type     string `json:"type"` // suggestion, issue, praise, question
+	Message  string `json:"message"`
 	Severity string `json:"severity"` // info, warning, error
-	RuleID  string `json:"rule_id"`
+	RuleID   string `json:"rule_id"`
 }
 
 // CodeIssue represents a specific code issue
 type CodeIssue struct {
-	Type        string `json:"type"`        // security, performance, maintainability, style
-	Severity    string `json:"severity"`    // low, medium, high, critical
-	Message     string `json:"message"`
-	Line         int    `json:"line"`
-	Suggestion  string `json:"suggestion"`
-	Category    string `json:"category"`
+	Type       string `json:"type"`     // security, performance, maintainability, style
+	Severity   string `json:"severity"` // low, medium, high, critical
+	Message    string `json:"message"`
+	Line       int    `json:"line"`
+	Suggestion string `json:"suggestion"`
+	Category   string `json:"category"`
 }
 
 // ReviewSummary provides overall review assessment
 type ReviewSummary struct {
-	OverallScore     int               `json:"overall_score"`     // 1-10
-	ApprovalStatus   string            `json:"approval_status"`   // approved, requested_changes, blocked
-	RiskLevel        string            `json:"risk_level"`        // low, medium, high, critical
-	IssuesByCategory map[string]int    `json:"issues_by_category"`
-	KeyFindings      []string          `json:"key_findings"`
-	Recommendations  []string          `json:"recommendations"`
+	OverallScore     int            `json:"overall_score"`   // 1-10
+	ApprovalStatus   string         `json:"approval_status"` // approved, requested_changes, blocked
+	RiskLevel        string         `json:"risk_level"`      // low, medium, high, critical
+	IssuesByCategory map[string]int `json:"issues_by_category"`
+	KeyFindings      []string       `json:"key_findings"`
+	Recommendations  []string       `json:"recommendations"`
 }
 
 // CodeReviewer performs automated code reviews
@@ -122,12 +122,12 @@ func (cr *CodeReviewer) reviewFile(filePath string) (*FileReview, error) {
 	}
 
 	fileReview := &FileReview{
-		Path:     filePath,
-		Status:   "approved", // Default to approved
-		Comments: []ReviewComment{},
+		Path:        filePath,
+		Status:      "approved", // Default to approved
+		Comments:    []ReviewComment{},
 		Suggestions: []string{},
-		Score:    8, // Default good score
-		Issues:   []CodeIssue{},
+		Score:       8, // Default good score
+		Issues:      []CodeIssue{},
 	}
 
 	// Perform automated analysis
@@ -161,7 +161,7 @@ func (cr *CodeReviewer) analyzeFileIssues(filePath, content string) []CodeIssue 
 	if strings.HasSuffix(filePath, ".go") {
 		issues = append(issues, cr.analyzeGoIssues(filePath, lines)...)
 	} else if strings.HasSuffix(filePath, ".ts") || strings.HasSuffix(filePath, ".tsx") ||
-	          strings.HasSuffix(filePath, ".js") || strings.HasSuffix(filePath, ".jsx") {
+		strings.HasSuffix(filePath, ".js") || strings.HasSuffix(filePath, ".jsx") {
 		issues = append(issues, cr.analyzeJSIssues(filePath, lines)...)
 	}
 
@@ -185,7 +185,7 @@ func (cr *CodeReviewer) analyzeGoIssues(filePath string, lines []string) []CodeI
 				Type:       "error-handling",
 				Severity:   "medium",
 				Message:    "Use of panic() detected - consider proper error handling",
-				Line:        i + 1,
+				Line:       i + 1,
 				Suggestion: "Return errors instead of panicking",
 				Category:   "maintainability",
 			})
@@ -197,7 +197,7 @@ func (cr *CodeReviewer) analyzeGoIssues(filePath string, lines []string) []CodeI
 				Type:       "documentation",
 				Severity:   "low",
 				Message:    "TODO comment found - consider addressing or creating issue",
-				Line:        i + 1,
+				Line:       i + 1,
 				Suggestion: "Resolve TODO or create tracking issue",
 				Category:   "maintainability",
 			})
@@ -209,7 +209,7 @@ func (cr *CodeReviewer) analyzeGoIssues(filePath string, lines []string) []CodeI
 				Type:       "style",
 				Severity:   "low",
 				Message:    fmt.Sprintf("Line too long (%d characters)", len(line)),
-				Line:        i + 1,
+				Line:       i + 1,
 				Suggestion: "Break long lines for better readability",
 				Category:   "style",
 			})
@@ -230,7 +230,7 @@ func (cr *CodeReviewer) analyzeJSIssues(filePath string, lines []string) []CodeI
 				Type:       "logging",
 				Severity:   "low",
 				Message:    "console.log found in production code",
-				Line:        i + 1,
+				Line:       i + 1,
 				Suggestion: "Use proper logging library instead",
 				Category:   "maintainability",
 			})
@@ -242,7 +242,7 @@ func (cr *CodeReviewer) analyzeJSIssues(filePath string, lines []string) []CodeI
 				Type:       "typescript",
 				Severity:   "medium",
 				Message:    "'any' type usage reduces type safety",
-				Line:        i + 1,
+				Line:       i + 1,
 				Suggestion: "Use specific types instead of 'any'",
 				Category:   "maintainability",
 			})
@@ -326,7 +326,7 @@ func (cr *CodeReviewer) generateCommentsFromIssues(issues []CodeIssue) []ReviewC
 
 	for _, issue := range issues {
 		comment := ReviewComment{
-			Line:     issue.Line,
+			Line:    issue.Line,
 			Message: issue.Message,
 			RuleID:  issue.Type,
 		}

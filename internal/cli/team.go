@@ -10,28 +10,28 @@ import (
 )
 
 var (
-	teamName        string
-	teamDescription string
-	memberName      string
-	memberEmail     string
-	memberRole      string
-	memberSkills    []string
-	ruleCategory    string
-	ruleTitle       string
-	ruleDescription string
-	ruleSeverity    string
-	ruleExamples    []string
-	knowledgeTitle  string
-	knowledgeContent string
+	teamName          string
+	teamDescription   string
+	memberName        string
+	memberEmail       string
+	memberRole        string
+	memberSkills      []string
+	ruleCategory      string
+	ruleTitle         string
+	ruleDescription   string
+	ruleSeverity      string
+	ruleExamples      []string
+	knowledgeTitle    string
+	knowledgeContent  string
 	knowledgeCategory string
-	knowledgeTags   []string
-	patternName     string
-	patternDesc     string
-	patternLang     string
-	patternCode     string
-	patternUseCase  string
-	searchQuery     string
-	searchCategory  string
+	knowledgeTags     []string
+	patternName       string
+	patternDesc       string
+	patternLang       string
+	patternCode       string
+	patternUseCase    string
+	searchQuery       string
+	searchCategory    string
 )
 
 func NewTeamCmd() *cobra.Command {
@@ -382,9 +382,9 @@ func NewTeamKnowledgeListCmd() *cobra.Command {
 			fmt.Println("🧠 Team Knowledge Base:")
 
 			knowledgeCategories := map[string][]collaboration.KnowledgeItem{
-				"Best Practices":   knowledge.BestPractices,
-				"Common Issues":    knowledge.CommonIssues,
-				"Architecture":     knowledge.ArchitectureDocs,
+				"Best Practices": knowledge.BestPractices,
+				"Common Issues":  knowledge.CommonIssues,
+				"Architecture":   knowledge.ArchitectureDocs,
 			}
 
 			totalItems := 0

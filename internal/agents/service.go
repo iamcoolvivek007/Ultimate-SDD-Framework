@@ -273,7 +273,6 @@ func (as *AgentService) runSecurityGate(trackID, contextInfo string) (string, er
 	return report, nil
 }
 
-
 // GetAgentResponse gets a response from an agent with full context
 func (as *AgentService) GetAgentResponse(agentName, phase, userInput, contextInfo, skill string) (string, error) {
 	// Get the agent

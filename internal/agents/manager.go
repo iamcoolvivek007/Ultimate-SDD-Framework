@@ -11,26 +11,26 @@ import (
 
 // Agent represents a BMAD-style persona agent
 type Agent struct {
-	Role       string `yaml:"role"`
-	Expertise  string `yaml:"expertise"`
+	Role        string `yaml:"role"`
+	Expertise   string `yaml:"expertise"`
 	Personality string `yaml:"personality"`
-	Tone       string `yaml:"tone"`
-	Content    string `yaml:"-"`
-	IsRaw      bool   `yaml:"-"`
+	Tone        string `yaml:"tone"`
+	Content     string `yaml:"-"`
+	IsRaw       bool   `yaml:"-"`
 }
 
 // AgentManager handles loading and managing agents
 type AgentManager struct {
-	agentsDir    string
-	agents       map[string]*Agent
+	agentsDir string
+	agents    map[string]*Agent
 }
 
 // NewAgentManager creates a new agent manager
 func NewAgentManager(projectRoot string) *AgentManager {
 	return &AgentManager{
 		// Moved from .agents to .sdd/role
-		agentsDir:    filepath.Join(projectRoot, ".sdd", "role"),
-		agents:       make(map[string]*Agent),
+		agentsDir: filepath.Join(projectRoot, ".sdd", "role"),
+		agents:    make(map[string]*Agent),
 	}
 }
 

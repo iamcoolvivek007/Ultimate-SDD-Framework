@@ -29,7 +29,7 @@ type Editor struct {
 func NewEditor(projectRoot string) *Editor {
 	historyDir := filepath.Join(projectRoot, ".sdd", "history")
 	os.MkdirAll(historyDir, 0755)
-	
+
 	return &Editor{
 		projectRoot: projectRoot,
 		historyDir:  historyDir,
@@ -40,11 +40,11 @@ func NewEditor(projectRoot string) *Editor {
 // ParseCodeBlocks extracts code blocks from AI response
 func (e *Editor) ParseCodeBlocks(response string) []CodeBlock {
 	var blocks []CodeBlock
-	
+
 	// Pattern: ```language:filename or ```language filename
 	pattern := regexp.MustCompile("(?s)```(\\w+)?(?::|\\s+)?([^\\n]*)?\\n(.*?)```")
 	matches := pattern.FindAllStringSubmatch(response, -1)
-	
+
 	for _, match := range matches {
 		block := CodeBlock{
 			Language: match[1],
@@ -53,7 +53,7 @@ func (e *Editor) ParseCodeBlocks(response string) []CodeBlock {
 		}
 		blocks = append(blocks, block)
 	}
-	
+
 	return blocks
 }
 
@@ -67,7 +67,7 @@ type CodeBlock struct {
 // ApplyChange applies a file change with backup
 func (e *Editor) ApplyChange(change FileChange) error {
 	fullPath := filepath.Join(e.projectRoot, change.Path)
-	
+
 	// Create backup if file exists
 	if _, err := os.Stat(fullPath); err == nil {
 		content, err := os.ReadFile(fullPath)
@@ -75,13 +75,13 @@ func (e *Editor) ApplyChange(change FileChange) error {
 			return fmt.Errorf("failed to read file for backup: %w", err)
 		}
 		change.Backup = string(content)
-		
+
 		// Save to history
 		if err := e.saveToHistory(change.Path, content); err != nil {
 			return fmt.Errorf("failed to save backup: %w", err)
 		}
 	}
-	
+
 	switch change.Action {
 	case "create", "modify":
 		// Ensure directory exists
@@ -89,20 +89,20 @@ func (e *Editor) ApplyChange(change FileChange) error {
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			return fmt.Errorf("failed to create directory: %w", err)
 		}
-		
+
 		if err := os.WriteFile(fullPath, []byte(change.Content), 0644); err != nil {
 			return fmt.Errorf("failed to write file: %w", err)
 		}
-		
+
 	case "delete":
 		if err := os.Remove(fullPath); err != nil {
 			return fmt.Errorf("failed to delete file: %w", err)
 		}
 	}
-	
+
 	change.Timestamp = time.Now()
 	e.changes = append(e.changes, change)
-	
+
 	return nil
 }
 
@@ -111,7 +111,7 @@ func (e *Editor) saveToHistory(path string, content []byte) error {
 	timestamp := time.Now().Format("20060102_150405")
 	safePath := strings.ReplaceAll(path, "/", "_")
 	historyFile := filepath.Join(e.historyDir, fmt.Sprintf("%s_%s", timestamp, safePath))
-	
+
 	return os.WriteFile(historyFile, content, 0644)
 }
 
@@ -120,11 +120,11 @@ func (e *Editor) Undo(n int) error {
 	if n > len(e.changes) {
 		n = len(e.changes)
 	}
-	
+
 	for i := 0; i < n; i++ {
 		change := e.changes[len(e.changes)-1-i]
 		fullPath := filepath.Join(e.projectRoot, change.Path)
-		
+
 		if change.Backup != "" {
 			// Restore from backup
 			if err := os.WriteFile(fullPath, []byte(change.Backup), 0644); err != nil {
@@ -135,10 +135,10 @@ func (e *Editor) Undo(n int) error {
 			os.Remove(fullPath)
 		}
 	}
-	
+
 	// Remove undone changes from history
 	e.changes = e.changes[:len(e.changes)-n]
-	
+
 	return nil
 }
 
@@ -148,25 +148,25 @@ func (e *Editor) GetHistory() ([]HistoryEntry, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var history []HistoryEntry
 	for _, entry := range entries {
 		if entry.IsDir() {
 			continue
 		}
-		
+
 		info, err := entry.Info()
 		if err != nil {
 			continue
 		}
-		
+
 		history = append(history, HistoryEntry{
 			Filename:  entry.Name(),
 			Timestamp: info.ModTime(),
 			Size:      info.Size(),
 		})
 	}
-	
+
 	return history, nil
 }
 
@@ -184,7 +184,7 @@ func (e *Editor) RestoreFromHistory(historyFile, targetPath string) error {
 	if err != nil {
 		return fmt.Errorf("failed to read history file: %w", err)
 	}
-	
+
 	fullPath := filepath.Join(e.projectRoot, targetPath)
 	return os.WriteFile(fullPath, content, 0644)
 }
@@ -192,23 +192,23 @@ func (e *Editor) RestoreFromHistory(historyFile, targetPath string) error {
 // ApplyDiff applies a unified diff to a file
 func (e *Editor) ApplyDiff(path string, diff string) error {
 	fullPath := filepath.Join(e.projectRoot, path)
-	
+
 	// Read current file
 	content, err := os.ReadFile(fullPath)
 	if err != nil {
 		return fmt.Errorf("failed to read file: %w", err)
 	}
-	
+
 	// Parse and apply diff
 	newContent := applyUnifiedDiff(string(content), diff)
-	
+
 	// Create change
 	change := FileChange{
 		Path:    path,
 		Action:  "modify",
 		Content: newContent,
 	}
-	
+
 	return e.ApplyChange(change)
 }
 
@@ -216,10 +216,10 @@ func (e *Editor) ApplyDiff(path string, diff string) error {
 func applyUnifiedDiff(content, diff string) string {
 	lines := strings.Split(content, "\n")
 	diffLines := strings.Split(diff, "\n")
-	
+
 	var result []string
 	lineIdx := 0
-	
+
 	for _, dline := range diffLines {
 		if strings.HasPrefix(dline, "@@") {
 			// Parse hunk header
@@ -238,37 +238,37 @@ func applyUnifiedDiff(content, diff string) string {
 			}
 		}
 	}
-	
+
 	// Add remaining lines
 	for ; lineIdx < len(lines); lineIdx++ {
 		result = append(result, lines[lineIdx])
 	}
-	
+
 	return strings.Join(result, "\n")
 }
 
 // CreateFromBlocks creates files from parsed code blocks
 func (e *Editor) CreateFromBlocks(blocks []CodeBlock) ([]string, error) {
 	var created []string
-	
+
 	for _, block := range blocks {
 		if block.Filename == "" {
 			continue
 		}
-		
+
 		change := FileChange{
 			Path:    block.Filename,
 			Action:  "create",
 			Content: block.Content,
 		}
-		
+
 		if err := e.ApplyChange(change); err != nil {
 			return created, fmt.Errorf("failed to create %s: %w", block.Filename, err)
 		}
-		
+
 		created = append(created, block.Filename)
 	}
-	
+
 	return created, nil
 }
 

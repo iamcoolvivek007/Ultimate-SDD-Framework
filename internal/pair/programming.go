@@ -11,43 +11,43 @@ import (
 
 // PairSession represents an active pair programming session
 type PairSession struct {
-	ID          string                 `json:"id"`
-	StartTime   time.Time              `json:"start_time"`
-	ActiveFile  string                 `json:"active_file"`
-	Context     *lsp.CodebaseContext   `json:"context"`
-	Agent       *agents.Agent          `json:"agent"`
-	SessionLog  []SessionEntry         `json:"session_log"`
-	Stats       PairingStats           `json:"stats"`
-	IsActive    bool                   `json:"is_active"`
+	ID         string               `json:"id"`
+	StartTime  time.Time            `json:"start_time"`
+	ActiveFile string               `json:"active_file"`
+	Context    *lsp.CodebaseContext `json:"context"`
+	Agent      *agents.Agent        `json:"agent"`
+	SessionLog []SessionEntry       `json:"session_log"`
+	Stats      PairingStats         `json:"stats"`
+	IsActive   bool                 `json:"is_active"`
 }
 
 // SessionEntry represents a single interaction in the session
 type SessionEntry struct {
-	Timestamp   time.Time `json:"timestamp"`
-	Type        string    `json:"type"`        // suggestion, question, code_change, explanation
-	Content     string    `json:"content"`
-	File        string    `json:"file"`
-	Line         int       `json:"line"`
-	UserAction  string    `json:"user_action"` // accepted, rejected, modified, ignored
-	Duration    int       `json:"duration_ms"` // milliseconds spent on this interaction
+	Timestamp  time.Time `json:"timestamp"`
+	Type       string    `json:"type"` // suggestion, question, code_change, explanation
+	Content    string    `json:"content"`
+	File       string    `json:"file"`
+	Line       int       `json:"line"`
+	UserAction string    `json:"user_action"` // accepted, rejected, modified, ignored
+	Duration   int       `json:"duration_ms"` // milliseconds spent on this interaction
 }
 
 // PairingStats tracks session statistics
 type PairingStats struct {
-	TotalInteractions    int           `json:"total_interactions"`
-	AcceptedSuggestions  int           `json:"accepted_suggestions"`
-	RejectedSuggestions  int           `json:"rejected_suggestions"`
-	TimeSpent            time.Duration `json:"time_spent"`
-	FilesTouched         []string      `json:"files_touched"`
-	ProductivityScore    float64       `json:"productivity_score"`
-	LearningOpportunities int          `json:"learning_opportunities"`
+	TotalInteractions     int           `json:"total_interactions"`
+	AcceptedSuggestions   int           `json:"accepted_suggestions"`
+	RejectedSuggestions   int           `json:"rejected_suggestions"`
+	TimeSpent             time.Duration `json:"time_spent"`
+	FilesTouched          []string      `json:"files_touched"`
+	ProductivityScore     float64       `json:"productivity_score"`
+	LearningOpportunities int           `json:"learning_opportunities"`
 }
 
 // PairProgrammer manages pair programming sessions
 type PairProgrammer struct {
-	projectRoot string
-	agentSvc    *agents.AgentService
-	activeSession *PairSession
+	projectRoot    string
+	agentSvc       *agents.AgentService
+	activeSession  *PairSession
 	sessionHistory []PairSession
 }
 
@@ -81,12 +81,12 @@ func (pp *PairProgrammer) StartSession(agentRole string, focusArea string) (*Pai
 	}
 
 	session := &PairSession{
-		ID:        generateSessionID(),
-		StartTime: time.Now(),
-		Context:   lsp.NewCodebaseContext(pp.projectRoot),
-		Agent:     agent,
+		ID:         generateSessionID(),
+		StartTime:  time.Now(),
+		Context:    lsp.NewCodebaseContext(pp.projectRoot),
+		Agent:      agent,
 		SessionLog: []SessionEntry{},
-		IsActive:  true,
+		IsActive:   true,
 	}
 
 	// Initialize context
@@ -179,13 +179,13 @@ func (pp *PairProgrammer) RecordUserAction(action string, suggestionID string) e
 
 // PairSuggestion represents an AI-generated suggestion
 type PairSuggestion struct {
-	ID          string   `json:"id"`
-	Type        string   `json:"type"`        // completion, refactor, explanation, test
-	Content     string   `json:"content"`
-	Explanation string   `json:"explanation"`
-	Confidence  float64  `json:"confidence"`
+	ID           string   `json:"id"`
+	Type         string   `json:"type"` // completion, refactor, explanation, test
+	Content      string   `json:"content"`
+	Explanation  string   `json:"explanation"`
+	Confidence   float64  `json:"confidence"`
 	Alternatives []string `json:"alternatives"`
-	File        string   `json:"file"`
+	File         string   `json:"file"`
 	Line         int      `json:"line"`
 }
 
@@ -194,7 +194,7 @@ func (pp *PairProgrammer) generateSuggestion(filePath string, cursorLine int, co
 	suggestion := &PairSuggestion{
 		ID:         generateSuggestionID(),
 		File:       filePath,
-		Line:        cursorLine,
+		Line:       cursorLine,
 		Type:       requestType,
 		Confidence: 0.8,
 	}
@@ -338,7 +338,7 @@ func (pp *PairProgrammer) generateAlternatives(response string) []string {
 	for _, line := range lines {
 		line = strings.ToLower(line)
 		if strings.Contains(line, "alternative") || strings.Contains(line, "option") ||
-		   strings.Contains(line, "or you could") {
+			strings.Contains(line, "or you could") {
 			alternatives = append(alternatives, strings.TrimSpace(line))
 		}
 	}
@@ -359,8 +359,8 @@ func (pp *PairProgrammer) generateAlternatives(response string) []string {
 func (pp *PairProgrammer) calculateSessionStats(session *PairSession) PairingStats {
 	stats := PairingStats{
 		TotalInteractions: len(session.SessionLog),
-		TimeSpent:        time.Since(session.StartTime),
-		FilesTouched:     []string{},
+		TimeSpent:         time.Since(session.StartTime),
+		FilesTouched:      []string{},
 	}
 
 	// Count interactions and collect files
@@ -407,7 +407,7 @@ func (pp *PairProgrammer) logSessionEntry(entryType, content, file string, line 
 		Type:       entryType,
 		Content:    content,
 		File:       file,
-		Line:        line,
+		Line:       line,
 		UserAction: userAction,
 	}
 

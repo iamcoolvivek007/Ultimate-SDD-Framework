@@ -19,17 +19,17 @@ type VisionAnalyzer struct {
 
 // VisionAnalysisResult contains the analysis of an image
 type VisionAnalysisResult struct {
-	Description   string            `json:"description"`
-	CodeElements  []CodeElement     `json:"code_elements"`
-	Architecture  *ArchitectureSpec `json:"architecture,omitempty"`
-	UIComponents  []UIComponent     `json:"ui_components,omitempty"`
-	Issues        []AnalysisIssue   `json:"issues"`
-	Confidence    float64           `json:"confidence"`
+	Description  string            `json:"description"`
+	CodeElements []CodeElement     `json:"code_elements"`
+	Architecture *ArchitectureSpec `json:"architecture,omitempty"`
+	UIComponents []UIComponent     `json:"ui_components,omitempty"`
+	Issues       []AnalysisIssue   `json:"issues"`
+	Confidence   float64           `json:"confidence"`
 }
 
 // CodeElement represents a code element identified in an image
 type CodeElement struct {
-	Type        string  `json:"type"`        // function, class, component, etc.
+	Type        string  `json:"type"` // function, class, component, etc.
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Code        string  `json:"code,omitempty"`
@@ -46,9 +46,9 @@ type ArchitectureSpec struct {
 
 // ComponentSpec describes a system component
 type ComponentSpec struct {
-	Name        string   `json:"name"`
-	Type        string   `json:"type"`        // service, database, api, ui, etc.
-	Description string   `json:"description"`
+	Name         string   `json:"name"`
+	Type         string   `json:"type"` // service, database, api, ui, etc.
+	Description  string   `json:"description"`
 	Technologies []string `json:"technologies"`
 }
 
@@ -56,23 +56,23 @@ type ComponentSpec struct {
 type Relationship struct {
 	From        string `json:"from"`
 	To          string `json:"to"`
-	Type        string `json:"type"`        // sync, async, database, api, etc.
+	Type        string `json:"type"` // sync, async, database, api, etc.
 	Description string `json:"description"`
 }
 
 // UIComponent represents a UI element identified in designs
 type UIComponent struct {
-	Type        string  `json:"type"`        // button, input, card, etc.
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
+	Type        string                 `json:"type"` // button, input, card, etc.
+	Name        string                 `json:"name"`
+	Description string                 `json:"description"`
 	Properties  map[string]interface{} `json:"properties"`
-	Code        string  `json:"code,omitempty"`
+	Code        string                 `json:"code,omitempty"`
 }
 
 // AnalysisIssue represents potential issues or improvements
 type AnalysisIssue struct {
-	Type        string `json:"type"`        // accessibility, usability, performance, etc.
-	Severity    string `json:"severity"`    // low, medium, high
+	Type        string `json:"type"`     // accessibility, usability, performance, etc.
+	Severity    string `json:"severity"` // low, medium, high
 	Description string `json:"description"`
 	Suggestion  string `json:"suggestion"`
 }
@@ -310,9 +310,9 @@ func (va *VisionAnalyzer) callVisionAPI(base64Image, prompt string) (*VisionAnal
 				Name:        "SubmitButton",
 				Description: "Primary action button",
 				Properties: map[string]interface{}{
-					"color":    "blue",
-					"size":     "medium",
-					"variant":  "contained",
+					"color":   "blue",
+					"size":    "medium",
+					"variant": "contained",
 				},
 			},
 		},
@@ -332,15 +332,15 @@ func (va *VisionAnalyzer) callVisionAPI(base64Image, prompt string) (*VisionAnal
 		mockResult.Architecture = &ArchitectureSpec{
 			Components: []ComponentSpec{
 				{
-					Name:        "WebAPI",
-					Type:        "api",
-					Description: "REST API service",
+					Name:         "WebAPI",
+					Type:         "api",
+					Description:  "REST API service",
 					Technologies: []string{"Node.js", "Express"},
 				},
 				{
-					Name:        "Database",
-					Type:        "database",
-					Description: "Data storage layer",
+					Name:         "Database",
+					Type:         "database",
+					Description:  "Data storage layer",
 					Technologies: []string{"PostgreSQL"},
 				},
 			},
