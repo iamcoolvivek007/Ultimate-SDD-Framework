@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/charmbracelet/bubbles/textinput"
 	"github.com/charmbracelet/bubbles/textarea"
+	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 	"ultimate-sdd-framework/internal/agents"
@@ -13,14 +13,14 @@ import (
 )
 
 type specifyModel struct {
-	agent     *agents.Agent
-	context   string
-	stateMgr  *gates.StateManager
-	textarea  textarea.Model
-	input     textinput.Model
-	step      int // 0: description, 1: requirements, 2: constraints, 3: review
-	specs     map[string]string
-	err       error
+	agent    *agents.Agent
+	context  string
+	stateMgr *gates.StateManager
+	textarea textarea.Model
+	input    textinput.Model
+	step     int // 0: description, 1: requirements, 2: constraints, 3: review
+	specs    map[string]string
+	err      error
 }
 
 func RunSpecifyTUI(agent *agents.Agent, context string, stateMgr *gates.StateManager) error {

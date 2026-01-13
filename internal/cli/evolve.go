@@ -83,19 +83,19 @@ Examples:
 }
 
 type RuleEvolution struct {
-	BugAnalysis    BugAnalysis
-	RuleUpdates    []RuleUpdate
+	BugAnalysis     BugAnalysis
+	RuleUpdates     []RuleUpdate
 	PreventionRules []PreventionRule
-	TestCases      []string
+	TestCases       []string
 }
 
 type BugAnalysis struct {
-	Description   string
-	RootCause     string
-	Category      string
-	Severity      string
+	Description     string
+	RootCause       string
+	Category        string
+	Severity        string
 	Reproducibility string
-	Impact        string
+	Impact          string
 }
 
 type RuleUpdate struct {

@@ -11,10 +11,10 @@ import (
 )
 
 var (
-	imagePath     string
-	analysisType  string
-	outputFormat  string
-	framework     string
+	imagePath    string
+	analysisType string
+	outputFormat string
+	framework    string
 )
 
 func NewVisionCmd() *cobra.Command {

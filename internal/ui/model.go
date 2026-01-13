@@ -44,8 +44,8 @@ type SDDModel struct {
 	SkillList list.Model
 
 	// Data
-	Skills   []string // Currently equipped skills
-	Thoughts []string // Stream of thoughts
+	Skills   []string  // Currently equipped skills
+	Thoughts []string  // Stream of thoughts
 	GSDTasks []GSDTask // GSD Checklist
 
 	// Window size

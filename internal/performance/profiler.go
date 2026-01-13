@@ -20,20 +20,20 @@ type PerformanceProfiler struct {
 
 // PerformanceReport contains comprehensive performance analysis
 type PerformanceReport struct {
-	OverallScore     float64               `json:"overall_score"`
-	Bottlenecks      []Bottleneck          `json:"bottlenecks"`
-	Optimizations    []Optimization        `json:"optimizations"`
-	ComplexityAnalysis ComplexityMetrics   `json:"complexity_analysis"`
-	MemoryAnalysis  MemoryMetrics        `json:"memory_analysis"`
-	RuntimeAnalysis RuntimeMetrics       `json:"runtime_analysis"`
-	Recommendations []string             `json:"recommendations"`
+	OverallScore       float64           `json:"overall_score"`
+	Bottlenecks        []Bottleneck      `json:"bottlenecks"`
+	Optimizations      []Optimization    `json:"optimizations"`
+	ComplexityAnalysis ComplexityMetrics `json:"complexity_analysis"`
+	MemoryAnalysis     MemoryMetrics     `json:"memory_analysis"`
+	RuntimeAnalysis    RuntimeMetrics    `json:"runtime_analysis"`
+	Recommendations    []string          `json:"recommendations"`
 }
 
 // Bottleneck represents a performance bottleneck
 type Bottleneck struct {
-	Type        string  `json:"type"`        // cpu, memory, io, algorithm
-	Severity    string  `json:"severity"`    // low, medium, high, critical
-	Location    string  `json:"location"`    // file:function:line
+	Type        string  `json:"type"`     // cpu, memory, io, algorithm
+	Severity    string  `json:"severity"` // low, medium, high, critical
+	Location    string  `json:"location"` // file:function:line
 	Description string  `json:"description"`
 	Impact      string  `json:"impact"`
 	Solution    string  `json:"solution"`
@@ -42,12 +42,12 @@ type Bottleneck struct {
 
 // Optimization represents a performance optimization opportunity
 type Optimization struct {
-	Type        string  `json:"type"`        // algorithm, caching, parallelization, etc.
-	Location    string  `json:"location"`
-	Description string  `json:"description"`
+	Type          string  `json:"type"` // algorithm, caching, parallelization, etc.
+	Location      string  `json:"location"`
+	Description   string  `json:"description"`
 	PotentialGain float64 `json:"potential_gain"` // percentage improvement
-	Effort      string  `json:"effort"`      // low, medium, high
-	Code        string  `json:"code,omitempty"`
+	Effort        string  `json:"effort"`         // low, medium, high
+	Code          string  `json:"code,omitempty"`
 }
 
 // ComplexityMetrics contains code complexity analysis
@@ -61,27 +61,27 @@ type ComplexityMetrics struct {
 
 // FunctionMetrics contains metrics for individual functions
 type FunctionMetrics struct {
-	Name              string  `json:"name"`
-	File              string  `json:"file"`
-	Complexity        int     `json:"complexity"`
-	Lines             int     `json:"lines"`
-	Parameters        int     `json:"parameters"`
-	NestedDepth       int     `json:"nested_depth"`
-	CognitiveLoad     int     `json:"cognitive_load"`
-	Performance       float64 `json:"performance_score"`
+	Name          string  `json:"name"`
+	File          string  `json:"file"`
+	Complexity    int     `json:"complexity"`
+	Lines         int     `json:"lines"`
+	Parameters    int     `json:"parameters"`
+	NestedDepth   int     `json:"nested_depth"`
+	CognitiveLoad int     `json:"cognitive_load"`
+	Performance   float64 `json:"performance_score"`
 }
 
 // MemoryMetrics contains memory usage analysis
 type MemoryMetrics struct {
-	MemoryLeaks         []LeakDetection   `json:"memory_leaks"`
-	AllocationPatterns  []AllocationPattern `json:"allocation_patterns"`
-	GarbageCollection   GCImpact         `json:"garbage_collection"`
-	MemoryEfficiency    float64          `json:"memory_efficiency"`
+	MemoryLeaks        []LeakDetection     `json:"memory_leaks"`
+	AllocationPatterns []AllocationPattern `json:"allocation_patterns"`
+	GarbageCollection  GCImpact            `json:"garbage_collection"`
+	MemoryEfficiency   float64             `json:"memory_efficiency"`
 }
 
 // LeakDetection represents potential memory leaks
 type LeakDetection struct {
-	Type        string `json:"type"`        // goroutine, slice, map, etc.
+	Type        string `json:"type"` // goroutine, slice, map, etc.
 	Location    string `json:"location"`
 	Description string `json:"description"`
 	Severity    string `json:"severity"`
@@ -89,33 +89,33 @@ type LeakDetection struct {
 
 // AllocationPattern represents memory allocation patterns
 type AllocationPattern struct {
-	Pattern     string  `json:"pattern"`     // frequent allocations, large objects, etc.
-	Frequency   int     `json:"frequency"`
-	Location    string  `json:"location"`
-	Impact      string  `json:"impact"`
-	Suggestion  string  `json:"suggestion"`
+	Pattern    string `json:"pattern"` // frequent allocations, large objects, etc.
+	Frequency  int    `json:"frequency"`
+	Location   string `json:"location"`
+	Impact     string `json:"impact"`
+	Suggestion string `json:"suggestion"`
 }
 
 // GCImpact represents garbage collection impact
 type GCImpact struct {
-	PauseFrequency  float64 `json:"pause_frequency"`  // pauses per second
-	AveragePause    float64 `json:"average_pause"`    // milliseconds
-	MaxPause        float64 `json:"max_pause"`        // milliseconds
-	TotalPauseTime  float64 `json:"total_pause_time"` // percentage of runtime
-	Recommendation  string  `json:"recommendation"`
+	PauseFrequency float64 `json:"pause_frequency"`  // pauses per second
+	AveragePause   float64 `json:"average_pause"`    // milliseconds
+	MaxPause       float64 `json:"max_pause"`        // milliseconds
+	TotalPauseTime float64 `json:"total_pause_time"` // percentage of runtime
+	Recommendation string  `json:"recommendation"`
 }
 
 // RuntimeMetrics contains runtime performance analysis
 type RuntimeMetrics struct {
-	ConcurrentAccess   []ConcurrencyIssue `json:"concurrent_access"`
-	IOPatterns        []IOPattern       `json:"io_patterns"`
-	NetworkUsage      NetworkMetrics    `json:"network_usage"`
-	CPUUsage         CPUAnalysis      `json:"cpu_usage"`
+	ConcurrentAccess []ConcurrencyIssue `json:"concurrent_access"`
+	IOPatterns       []IOPattern        `json:"io_patterns"`
+	NetworkUsage     NetworkMetrics     `json:"network_usage"`
+	CPUUsage         CPUAnalysis        `json:"cpu_usage"`
 }
 
 // ConcurrencyIssue represents concurrency-related performance issues
 type ConcurrencyIssue struct {
-	Type        string `json:"type"`        // race_condition, deadlock, starvation
+	Type        string `json:"type"` // race_condition, deadlock, starvation
 	Location    string `json:"location"`
 	Description string `json:"description"`
 	Risk        string `json:"risk"`
@@ -124,52 +124,52 @@ type ConcurrencyIssue struct {
 
 // IOPattern represents I/O operation patterns
 type IOPattern struct {
-	Type        string  `json:"type"`        // file, network, database
-	Pattern     string  `json:"pattern"`     // synchronous, batch, streaming
-	Frequency   int     `json:"frequency"`
-	Bottleneck  bool    `json:"bottleneck"`
-	Suggestion  string  `json:"suggestion"`
+	Type       string `json:"type"`    // file, network, database
+	Pattern    string `json:"pattern"` // synchronous, batch, streaming
+	Frequency  int    `json:"frequency"`
+	Bottleneck bool   `json:"bottleneck"`
+	Suggestion string `json:"suggestion"`
 }
 
 // NetworkMetrics contains network performance analysis
 type NetworkMetrics struct {
-	RequestLatency   float64 `json:"request_latency"`   // milliseconds
-	Throughput       float64 `json:"throughput"`        // requests/second
-	ConnectionPool   float64 `json:"connection_pool"`   // utilization
-	ErrorRate        float64 `json:"error_rate"`        // percentage
-	Optimization     string  `json:"optimization"`
+	RequestLatency float64 `json:"request_latency"` // milliseconds
+	Throughput     float64 `json:"throughput"`      // requests/second
+	ConnectionPool float64 `json:"connection_pool"` // utilization
+	ErrorRate      float64 `json:"error_rate"`      // percentage
+	Optimization   string  `json:"optimization"`
 }
 
 // CPUAnalysis contains CPU usage analysis
 type CPUAnalysis struct {
-	Hotspots          []Hotspot       `json:"hotspots"`
-	AlgorithmicComplexity []ComplexityIssue `json:"algorithmic_complexity"`
-	Parallelization   []ParallelizationOpp `json:"parallelization"`
-	OverallEfficiency float64        `json:"overall_efficiency"`
+	Hotspots              []Hotspot            `json:"hotspots"`
+	AlgorithmicComplexity []ComplexityIssue    `json:"algorithmic_complexity"`
+	Parallelization       []ParallelizationOpp `json:"parallelization"`
+	OverallEfficiency     float64              `json:"overall_efficiency"`
 }
 
 // Hotspot represents CPU-intensive code sections
 type Hotspot struct {
 	Location    string  `json:"location"`
 	Function    string  `json:"function"`
-	Percentage  float64 `json:"percentage"`  // CPU time percentage
+	Percentage  float64 `json:"percentage"` // CPU time percentage
 	Description string  `json:"description"`
 }
 
 // ComplexityIssue represents algorithmic complexity issues
 type ComplexityIssue struct {
-	Algorithm   string `json:"algorithm"`   // O(n^2), O(2^n), etc.
-	Location    string `json:"location"`
-	Impact      string `json:"impact"`
+	Algorithm    string `json:"algorithm"` // O(n^2), O(2^n), etc.
+	Location     string `json:"location"`
+	Impact       string `json:"impact"`
 	Optimization string `json:"optimization"`
 }
 
 // ParallelizationOpp represents parallelization opportunities
 type ParallelizationOpp struct {
-	Type        string  `json:"type"`        // data_parallelism, task_parallelism
-	Location    string  `json:"location"`
-	Potential   float64 `json:"potential"`   // speedup factor
-	Effort      string  `json:"effort"`
+	Type      string  `json:"type"` // data_parallelism, task_parallelism
+	Location  string  `json:"location"`
+	Potential float64 `json:"potential"` // speedup factor
+	Effort    string  `json:"effort"`
 }
 
 // NewPerformanceProfiler creates a new performance profiler
@@ -183,10 +183,10 @@ func NewPerformanceProfiler(projectRoot string) *PerformanceProfiler {
 func (pp *PerformanceProfiler) AnalyzeProject() (*PerformanceReport, error) {
 	// Create performance report
 	perfReport := &PerformanceReport{
-		OverallScore:     85.0, // Placeholder - would be calculated
-		Bottlenecks:      []Bottleneck{},
-		Optimizations:    []Optimization{},
-		Recommendations:  []string{},
+		OverallScore:    85.0, // Placeholder - would be calculated
+		Bottlenecks:     []Bottleneck{},
+		Optimizations:   []Optimization{},
+		Recommendations: []string{},
 	}
 
 	// Analyze complexity
@@ -303,9 +303,9 @@ func (pp *PerformanceProfiler) analyzeGoFileComplexity(filePath string, complexi
 // calculateFunctionMetrics calculates metrics for a function
 func (pp *PerformanceProfiler) calculateFunctionMetrics(fn *ast.FuncDecl, fset *token.FileSet, filePath string) FunctionMetrics {
 	metrics := FunctionMetrics{
-		Name:   fn.Name.Name,
-		File:   filePath,
-		Lines:  pp.calculateFunctionLines(fn, fset),
+		Name:       fn.Name.Name,
+		File:       filePath,
+		Lines:      pp.calculateFunctionLines(fn, fset),
 		Parameters: len(fn.Type.Params.List),
 	}
 
@@ -467,11 +467,11 @@ func (pp *PerformanceProfiler) analyzeRuntimePatterns() (*RuntimeMetrics, error)
 
 	// Analyze network usage (simplified)
 	metrics.NetworkUsage = NetworkMetrics{
-		RequestLatency:  100.0, // ms
-		Throughput:      1000.0, // req/sec
-		ConnectionPool:  80.0,   // utilization %
-		ErrorRate:       0.1,    // %
-		Optimization:    "Consider connection pooling improvements",
+		RequestLatency: 100.0,  // ms
+		Throughput:     1000.0, // req/sec
+		ConnectionPool: 80.0,   // utilization %
+		ErrorRate:      0.1,    // %
+		Optimization:   "Consider connection pooling improvements",
 	}
 
 	// Analyze CPU usage
@@ -573,9 +573,9 @@ func (pp *PerformanceProfiler) analyzeCPUUsage() CPUAnalysis {
 		nestedLoopPattern := regexp.MustCompile(`for.*\{\s*for`)
 		if nestedLoopPattern.MatchString(contentStr) {
 			complexityIssues = append(complexityIssues, ComplexityIssue{
-				Algorithm:   "O(n²)",
-				Location:    path,
-				Impact:      "High CPU usage with large datasets",
+				Algorithm:    "O(n²)",
+				Location:     path,
+				Impact:       "High CPU usage with large datasets",
 				Optimization: "Consider algorithm optimization or data structure changes",
 			})
 		}

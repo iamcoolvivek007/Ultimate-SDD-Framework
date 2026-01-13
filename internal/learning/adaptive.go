@@ -14,23 +14,23 @@ import (
 
 // LearningData represents accumulated learning from development sessions
 type LearningData struct {
-	UserPreferences   UserPreferences     `json:"user_preferences"`
-	CodePatterns      []CodePattern       `json:"code_patterns"`
-	SuccessMetrics    []SuccessMetric     `json:"success_metrics"`
-	FailurePatterns   []FailurePattern    `json:"failure_patterns"`
-	RuleEvolutions    []RuleEvolution     `json:"rule_evolutions"`
-	LastUpdated       time.Time           `json:"last_updated"`
+	UserPreferences UserPreferences  `json:"user_preferences"`
+	CodePatterns    []CodePattern    `json:"code_patterns"`
+	SuccessMetrics  []SuccessMetric  `json:"success_metrics"`
+	FailurePatterns []FailurePattern `json:"failure_patterns"`
+	RuleEvolutions  []RuleEvolution  `json:"rule_evolutions"`
+	LastUpdated     time.Time        `json:"last_updated"`
 }
 
 // UserPreferences captures developer preferences and habits
 type UserPreferences struct {
-	PreferredLanguages   []string          `json:"preferred_languages"`
-	CodingStyle          map[string]string `json:"coding_style"`
-	TestingPreferences   []string          `json:"testing_preferences"`
-	ErrorHandlingStyle   string            `json:"error_handling_style"`
-	NamingConventions    map[string]string `json:"naming_conventions"`
-	FavoriteLibraries    []string          `json:"favorite_libraries"`
-	AvoidedPatterns      []string          `json:"avoided_patterns"`
+	PreferredLanguages []string          `json:"preferred_languages"`
+	CodingStyle        map[string]string `json:"coding_style"`
+	TestingPreferences []string          `json:"testing_preferences"`
+	ErrorHandlingStyle string            `json:"error_handling_style"`
+	NamingConventions  map[string]string `json:"naming_conventions"`
+	FavoriteLibraries  []string          `json:"favorite_libraries"`
+	AvoidedPatterns    []string          `json:"avoided_patterns"`
 }
 
 // CodePattern represents learned code patterns and best practices
@@ -47,12 +47,12 @@ type CodePattern struct {
 
 // SuccessMetric tracks successful patterns and approaches
 type SuccessMetric struct {
-	Action       string    `json:"action"`
-	Context      string    `json:"context"`
-	Outcome      string    `json:"outcome"`
-	Score        float64   `json:"score"`
-	Timestamp    time.Time `json:"timestamp"`
-	Duration     int       `json:"duration_ms"`
+	Action    string    `json:"action"`
+	Context   string    `json:"context"`
+	Outcome   string    `json:"outcome"`
+	Score     float64   `json:"score"`
+	Timestamp time.Time `json:"timestamp"`
+	Duration  int       `json:"duration_ms"`
 }
 
 // FailurePattern tracks patterns that lead to issues
@@ -249,12 +249,12 @@ func (al *AdaptiveLearner) EvolveRules() ([]RuleEvolutionSuggestion, error) {
 	for _, failure := range al.learningData.FailurePatterns {
 		if failure.Frequency >= 3 { // Pattern occurs frequently
 			suggestion := RuleEvolutionSuggestion{
-				CurrentRule:  fmt.Sprintf("Avoid: %s", failure.Pattern),
+				CurrentRule:   fmt.Sprintf("Avoid: %s", failure.Pattern),
 				SuggestedRule: fmt.Sprintf("Proactively prevent: %s", failure.Pattern),
-				Reason:       fmt.Sprintf("This pattern has caused issues %d times", failure.Frequency),
-				Evidence:     failure.Consequence,
-				Mitigation:   failure.Mitigation,
-				Confidence:   0.8,
+				Reason:        fmt.Sprintf("This pattern has caused issues %d times", failure.Frequency),
+				Evidence:      failure.Consequence,
+				Mitigation:    failure.Mitigation,
+				Confidence:    0.8,
 			}
 			suggestions = append(suggestions, suggestion)
 		}
@@ -265,11 +265,11 @@ func (al *AdaptiveLearner) EvolveRules() ([]RuleEvolutionSuggestion, error) {
 	for _, pattern := range successPatterns {
 		if pattern.SuccessRate > 0.9 && len(pattern.Examples) >= 3 {
 			suggestion := RuleEvolutionSuggestion{
-				CurrentRule:  "No specific rule",
+				CurrentRule:   "No specific rule",
 				SuggestedRule: fmt.Sprintf("Best Practice: %s", pattern.Pattern),
-				Reason:       fmt.Sprintf("Highly successful pattern with %.1f%% success rate", pattern.SuccessRate*100),
-				Evidence:     fmt.Sprintf("Successfully applied %d times", len(pattern.Examples)),
-				Confidence:   pattern.Confidence,
+				Reason:        fmt.Sprintf("Highly successful pattern with %.1f%% success rate", pattern.SuccessRate*100),
+				Evidence:      fmt.Sprintf("Successfully applied %d times", len(pattern.Examples)),
+				Confidence:    pattern.Confidence,
 			}
 			suggestions = append(suggestions, suggestion)
 		}
@@ -280,7 +280,7 @@ func (al *AdaptiveLearner) EvolveRules() ([]RuleEvolutionSuggestion, error) {
 
 // PersonalizedSuggestion represents a personalized recommendation
 type PersonalizedSuggestion struct {
-	Type        string   `json:"type"`        // pattern, preference, avoidance
+	Type        string   `json:"type"` // pattern, preference, avoidance
 	Title       string   `json:"title"`
 	Description string   `json:"description"`
 	Confidence  float64  `json:"confidence"`
@@ -290,12 +290,12 @@ type PersonalizedSuggestion struct {
 
 // RuleEvolutionSuggestion represents a suggested rule improvement
 type RuleEvolutionSuggestion struct {
-	CurrentRule  string  `json:"current_rule"`
+	CurrentRule   string  `json:"current_rule"`
 	SuggestedRule string  `json:"suggested_rule"`
-	Reason       string  `json:"reason"`
-	Evidence     string  `json:"evidence"`
-	Mitigation   string  `json:"mitigation"`
-	Confidence   float64 `json:"confidence"`
+	Reason        string  `json:"reason"`
+	Evidence      string  `json:"evidence"`
+	Mitigation    string  `json:"mitigation"`
+	Confidence    float64 `json:"confidence"`
 }
 
 // Private methods
@@ -421,7 +421,7 @@ func (al *AdaptiveLearner) getRelevantPatterns(context, taskType string) []CodeP
 	for _, pattern := range al.learningData.CodePatterns {
 		// Match context and task type
 		if strings.Contains(strings.ToLower(context), strings.ToLower(pattern.Language)) ||
-		   strings.Contains(strings.ToLower(taskType), strings.ToLower(pattern.Category)) {
+			strings.Contains(strings.ToLower(taskType), strings.ToLower(pattern.Category)) {
 			relevant = append(relevant, pattern)
 		}
 	}
@@ -532,7 +532,7 @@ func (al *AdaptiveLearner) detectLanguageFromContext(context string) string {
 		return "go"
 	}
 	if strings.Contains(context, "javascript") || strings.Contains(context, "typescript") ||
-	   strings.Contains(context, ".js") || strings.Contains(context, ".ts") {
+		strings.Contains(context, ".js") || strings.Contains(context, ".ts") {
 		return "javascript"
 	}
 	if strings.Contains(context, "python") || strings.Contains(context, ".py") {

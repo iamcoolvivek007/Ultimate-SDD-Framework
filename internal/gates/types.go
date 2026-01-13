@@ -21,11 +21,11 @@ const (
 type Status string
 
 const (
-	StatusPending   Status = "pending"   // Not yet started
+	StatusPending    Status = "pending"     // Not yet started
 	StatusInProgress Status = "in_progress" // Currently working
-	StatusApproved  Status = "approved"  // Approved to proceed
-	StatusRejected  Status = "rejected"  // Needs revision
-	StatusBlocked   Status = "blocked"   // Cannot proceed
+	StatusApproved   Status = "approved"    // Approved to proceed
+	StatusRejected   Status = "rejected"    // Needs revision
+	StatusBlocked    Status = "blocked"     // Cannot proceed
 )
 
 // Approval represents an approval record
@@ -37,8 +37,8 @@ type Approval struct {
 
 // PhaseState represents the state of a single phase
 type PhaseState struct {
-	Phase       Phase     `yaml:"phase"`
-	Status      Status    `yaml:"status"`
+	Phase       Phase      `yaml:"phase"`
+	Status      Status     `yaml:"status"`
 	StartedAt   *time.Time `yaml:"started_at,omitempty"`
 	CompletedAt *time.Time `yaml:"completed_at,omitempty"`
 	Approvals   []Approval `yaml:"approvals,omitempty"`
@@ -48,19 +48,19 @@ type PhaseState struct {
 
 // ProjectState represents the overall state of an SDD project
 type ProjectState struct {
-	ProjectID   string                 `yaml:"project_id"`
-	ProjectName string                 `yaml:"project_name"`
-	CreatedAt   time.Time              `yaml:"created_at"`
-	UpdatedAt   time.Time              `yaml:"updated_at"`
-	CurrentPhase Phase                 `yaml:"current_phase"`
-	Phases       map[Phase]PhaseState  `yaml:"phases"`
+	ProjectID    string                 `yaml:"project_id"`
+	ProjectName  string                 `yaml:"project_name"`
+	CreatedAt    time.Time              `yaml:"created_at"`
+	UpdatedAt    time.Time              `yaml:"updated_at"`
+	CurrentPhase Phase                  `yaml:"current_phase"`
+	Phases       map[Phase]PhaseState   `yaml:"phases"`
 	Metadata     map[string]interface{} `yaml:"metadata,omitempty"`
 }
 
 // PhaseTransition represents a valid phase transition
 type PhaseTransition struct {
-	From Phase
-	To   Phase
+	From             Phase
+	To               Phase
 	RequiresApproval bool
 }
 

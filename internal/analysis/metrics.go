@@ -25,10 +25,10 @@ type CodeMetrics struct {
 
 // QualityReport represents a comprehensive code quality analysis
 type QualityReport struct {
-	Metrics       CodeMetrics            `json:"metrics"`
-	Issues        []QualityIssue         `json:"issues"`
+	Metrics         CodeMetrics             `json:"metrics"`
+	Issues          []QualityIssue          `json:"issues"`
 	Recommendations []QualityRecommendation `json:"recommendations"`
-	Score         QualityScore           `json:"score"`
+	Score           QualityScore            `json:"score"`
 }
 
 // QualityIssue represents a specific code quality issue
@@ -53,13 +53,13 @@ type QualityRecommendation struct {
 
 // QualityScore represents overall quality assessment
 type QualityScore struct {
-	Overall     float64 `json:"overall"`      // 0-100
-	CodeQuality float64 `json:"code_quality"` // 0-100
+	Overall         float64 `json:"overall"`         // 0-100
+	CodeQuality     float64 `json:"code_quality"`    // 0-100
 	Maintainability float64 `json:"maintainability"` // 0-100
-	TestQuality float64 `json:"test_quality"` // 0-100
-	Security    float64 `json:"security"`     // 0-100
-	Performance float64 `json:"performance"` // 0-100
-	Grade       string  `json:"grade"`        // A+, A, B, C, D, F
+	TestQuality     float64 `json:"test_quality"`    // 0-100
+	Security        float64 `json:"security"`        // 0-100
+	Performance     float64 `json:"performance"`     // 0-100
+	Grade           string  `json:"grade"`           // A+, A, B, C, D, F
 }
 
 // CodeAnalyzer performs comprehensive code analysis
@@ -108,10 +108,10 @@ func (ca *CodeAnalyzer) Analyze() (*QualityReport, error) {
 	score := ca.calculateQualityScore()
 
 	report := &QualityReport{
-		Metrics:        ca.Metrics,
-		Issues:         ca.Issues,
+		Metrics:         ca.Metrics,
+		Issues:          ca.Issues,
 		Recommendations: recommendations,
-		Score:          score,
+		Score:           score,
 	}
 
 	return report, nil
@@ -145,7 +145,7 @@ func (ca *CodeAnalyzer) analyzeFile(filePath string) error {
 	if strings.HasSuffix(filePath, ".go") {
 		return ca.analyzeGoFile(filePath, content)
 	} else if strings.HasSuffix(filePath, ".ts") || strings.HasSuffix(filePath, ".tsx") ||
-	          strings.HasSuffix(filePath, ".js") || strings.HasSuffix(filePath, ".jsx") {
+		strings.HasSuffix(filePath, ".js") || strings.HasSuffix(filePath, ".jsx") {
 		return ca.analyzeTypeScriptFile(filePath, content)
 	}
 

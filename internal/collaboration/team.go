@@ -14,25 +14,25 @@ import (
 
 // Team represents a collaborative development team
 type Team struct {
-	ID          string            `json:"id"`
-	Name        string            `json:"name"`
-	Description string            `json:"description"`
-	Members     []TeamMember      `json:"members"`
-	Rules       TeamRules         `json:"rules"`
-	Projects    []TeamProject     `json:"projects"`
-	Knowledge   TeamKnowledge     `json:"knowledge"`
-	Created     time.Time         `json:"created"`
-	LastUpdated time.Time         `json:"last_updated"`
+	ID          string        `json:"id"`
+	Name        string        `json:"name"`
+	Description string        `json:"description"`
+	Members     []TeamMember  `json:"members"`
+	Rules       TeamRules     `json:"rules"`
+	Projects    []TeamProject `json:"projects"`
+	Knowledge   TeamKnowledge `json:"knowledge"`
+	Created     time.Time     `json:"created"`
+	LastUpdated time.Time     `json:"last_updated"`
 }
 
 // TeamMember represents a team member
 type TeamMember struct {
-	ID       string    `json:"id"`
-	Name     string    `json:"name"`
-	Email    string    `json:"email"`
-	Role     string    `json:"role"`     // lead, senior, junior, qa, etc.
-	Skills   []string  `json:"skills"`
-	Joined   time.Time `json:"joined"`
+	ID         string    `json:"id"`
+	Name       string    `json:"name"`
+	Email      string    `json:"email"`
+	Role       string    `json:"role"` // lead, senior, junior, qa, etc.
+	Skills     []string  `json:"skills"`
+	Joined     time.Time `json:"joined"`
 	LastActive time.Time `json:"last_active"`
 }
 
@@ -62,15 +62,15 @@ type RuleDefinition struct {
 
 // TeamProject represents a project within the team
 type TeamProject struct {
-	ID          string            `json:"id"`
-	Name        string            `json:"name"`
-	Description string            `json:"description"`
-	Path        string            `json:"path"`
-	TechStack   []string          `json:"tech_stack"`
-	Status      string            `json:"status"` // active, archived, planning
-	Members     []string          `json:"members"` // member IDs
-	Created     time.Time         `json:"created"`
-	LastCommit  time.Time         `json:"last_commit"`
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Path        string    `json:"path"`
+	TechStack   []string  `json:"tech_stack"`
+	Status      string    `json:"status"`  // active, archived, planning
+	Members     []string  `json:"members"` // member IDs
+	Created     time.Time `json:"created"`
+	LastCommit  time.Time `json:"last_commit"`
 }
 
 // TeamKnowledge represents shared knowledge base
@@ -84,16 +84,16 @@ type TeamKnowledge struct {
 
 // KnowledgeItem represents a piece of team knowledge
 type KnowledgeItem struct {
-	ID          string    `json:"id"`
-	Title       string    `json:"title"`
-	Content     string    `json:"content"`
-	Category    string    `json:"category"`
-	Tags        []string  `json:"tags"`
-	Author      string    `json:"author"`
-	Created     time.Time `json:"created"`
-	Updated     time.Time `json:"updated"`
-	Views       int       `json:"views"`
-	Helpful     int       `json:"helpful"`
+	ID       string    `json:"id"`
+	Title    string    `json:"title"`
+	Content  string    `json:"content"`
+	Category string    `json:"category"`
+	Tags     []string  `json:"tags"`
+	Author   string    `json:"author"`
+	Created  time.Time `json:"created"`
+	Updated  time.Time `json:"updated"`
+	Views    int       `json:"views"`
+	Helpful  int       `json:"helpful"`
 }
 
 // CodePattern represents a reusable code pattern
@@ -111,15 +111,15 @@ type CodePattern struct {
 
 // Decision represents an architectural or important decision
 type Decision struct {
-	ID          string    `json:"id"`
-	Title       string    `json:"title"`
-	Context     string    `json:"context"`
-	Decision    string    `json:"decision"`
-	Alternatives []string `json:"alternatives"`
-	Consequences string   `json:"consequences"`
-	MadeBy      string    `json:"made_by"`
-	Date        time.Time `json:"date"`
-	Status      string    `json:"status"` // implemented, pending, rejected
+	ID           string    `json:"id"`
+	Title        string    `json:"title"`
+	Context      string    `json:"context"`
+	Decision     string    `json:"decision"`
+	Alternatives []string  `json:"alternatives"`
+	Consequences string    `json:"consequences"`
+	MadeBy       string    `json:"made_by"`
+	Date         time.Time `json:"date"`
+	Status       string    `json:"status"` // implemented, pending, rejected
 }
 
 // TeamCollaboration manages team-based development
@@ -319,8 +319,8 @@ func (tc *TeamCollaboration) SearchKnowledge(query string, category string) []Kn
 	searchInItems := func(items []KnowledgeItem) {
 		for _, item := range items {
 			if (category == "" || item.Category == category) &&
-			   (strings.Contains(strings.ToLower(item.Title), query) ||
-			    strings.Contains(strings.ToLower(item.Content), query)) {
+				(strings.Contains(strings.ToLower(item.Title), query) ||
+					strings.Contains(strings.ToLower(item.Content), query)) {
 				results = append(results, item)
 			}
 		}
@@ -346,7 +346,7 @@ func (tc *TeamCollaboration) GetCodePatterns(language, useCase string) []CodePat
 
 	for _, pattern := range tc.teamData.Knowledge.CodePatterns {
 		if (language == "" || pattern.Language == language) &&
-		   (useCase == "" || strings.Contains(strings.ToLower(pattern.UseCase), strings.ToLower(useCase))) {
+			(useCase == "" || strings.Contains(strings.ToLower(pattern.UseCase), strings.ToLower(useCase))) {
 			patterns = append(patterns, pattern)
 		}
 	}
@@ -385,8 +385,8 @@ func (tc *TeamCollaboration) GenerateTeamReport() string {
 
 	// Team Rules Summary
 	totalRules := len(tc.teamData.Rules.CodingStandards) + len(tc.teamData.Rules.CodeReviewRules) +
-	              len(tc.teamData.Rules.TestingStandards) + len(tc.teamData.Rules.SecurityPolicies) +
-	              len(tc.teamData.Rules.PerformanceRules) + len(tc.teamData.Rules.DocumentationRules)
+		len(tc.teamData.Rules.TestingStandards) + len(tc.teamData.Rules.SecurityPolicies) +
+		len(tc.teamData.Rules.PerformanceRules) + len(tc.teamData.Rules.DocumentationRules)
 
 	if totalRules > 0 {
 		report.WriteString("## 📋 Team Rules\n\n")
@@ -414,8 +414,8 @@ func (tc *TeamCollaboration) GenerateTeamReport() string {
 
 	// Knowledge Base Summary
 	totalKnowledge := len(tc.teamData.Knowledge.BestPractices) + len(tc.teamData.Knowledge.CommonIssues) +
-	                  len(tc.teamData.Knowledge.ArchitectureDocs) + len(tc.teamData.Knowledge.CodePatterns) +
-	                  len(tc.teamData.Knowledge.DecisionLog)
+		len(tc.teamData.Knowledge.ArchitectureDocs) + len(tc.teamData.Knowledge.CodePatterns) +
+		len(tc.teamData.Knowledge.DecisionLog)
 
 	if totalKnowledge > 0 {
 		report.WriteString("## 🧠 Knowledge Base\n\n")

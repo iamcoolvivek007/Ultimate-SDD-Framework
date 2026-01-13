@@ -12,17 +12,17 @@ import (
 
 var (
 	mcpStyle = lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.Color("39"))
+			Bold(true).
+			Foreground(lipgloss.Color("39"))
 
 	successStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("46"))
+			Foreground(lipgloss.Color("46"))
 
 	errorStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("196"))
+			Foreground(lipgloss.Color("196"))
 
 	infoStyle = lipgloss.NewStyle().
-		Foreground(lipgloss.Color("33"))
+			Foreground(lipgloss.Color("33"))
 )
 
 func NewMCPCommand() *cobra.Command {
@@ -46,9 +46,9 @@ Supports multiple providers: OpenAI, Anthropic, Google Gemini, Ollama, and Azure
 
 func NewMCPAddCmd() *cobra.Command {
 	var (
-		provider string
-		model    string
-		baseURL  string
+		provider   string
+		model      string
+		baseURL    string
 		setDefault bool
 	)
 
@@ -286,9 +286,9 @@ If no provider name is specified, tests the default provider.`,
 
 func NewMCPChatCmd() *cobra.Command {
 	var (
-		provider string
-		model    string
-		temp     float64
+		provider  string
+		model     string
+		temp      float64
 		maxTokens int
 	)
 
