@@ -33,16 +33,16 @@ type FileIndex struct {
 
 // ProjectIndex represents the entire project index
 type ProjectIndex struct {
-	Root       string
-	Files      map[string]*FileIndex
-	SymbolMap  map[string][]Symbol // symbol name -> locations
-	mu         sync.RWMutex
+	Root      string
+	Files     map[string]*FileIndex
+	SymbolMap map[string][]Symbol // symbol name -> locations
+	mu        sync.RWMutex
 }
 
 // Indexer handles codebase indexing
 type Indexer struct {
-	projectRoot string
-	index       *ProjectIndex
+	projectRoot    string
+	index          *ProjectIndex
 	ignorePatterns []string
 }
 
@@ -68,7 +68,7 @@ func (i *Indexer) Index() error {
 		if err != nil {
 			return nil // Skip errors
 		}
-		
+
 		// Skip ignored directories
 		if info.IsDir() {
 			for _, pattern := range i.ignorePatterns {
@@ -78,13 +78,13 @@ func (i *Indexer) Index() error {
 			}
 			return nil
 		}
-		
+
 		// Only index source files
 		lang := detectLanguage(path)
 		if lang == "" {
 			return nil
 		}
-		
+
 		return i.indexFile(path, lang)
 	})
 }
@@ -95,21 +95,21 @@ func (i *Indexer) indexFile(path, lang string) error {
 	if err != nil {
 		return err
 	}
-	
+
 	info, err := os.Stat(path)
 	if err != nil {
 		return err
 	}
-	
+
 	relPath, _ := filepath.Rel(i.projectRoot, path)
-	
+
 	fileIndex := &FileIndex{
 		Path:     relPath,
 		Language: lang,
 		Size:     info.Size(),
 		Modified: info.ModTime().Unix(),
 	}
-	
+
 	// Parse symbols based on language
 	switch lang {
 	case "go":
@@ -124,7 +124,7 @@ func (i *Indexer) indexFile(path, lang string) error {
 	case "rust":
 		fileIndex.Symbols = parseRustSymbols(string(content), relPath)
 	}
-	
+
 	// Update index
 	i.index.mu.Lock()
 	i.index.Files[relPath] = fileIndex
@@ -132,7 +132,7 @@ func (i *Indexer) indexFile(path, lang string) error {
 		i.index.SymbolMap[sym.Name] = append(i.index.SymbolMap[sym.Name], sym)
 	}
 	i.index.mu.Unlock()
-	
+
 	return nil
 }
 
@@ -140,16 +140,16 @@ func (i *Indexer) indexFile(path, lang string) error {
 func (i *Indexer) Search(query string) []Symbol {
 	i.index.mu.RLock()
 	defer i.index.mu.RUnlock()
-	
+
 	var results []Symbol
 	query = strings.ToLower(query)
-	
+
 	for name, symbols := range i.index.SymbolMap {
 		if strings.Contains(strings.ToLower(name), query) {
 			results = append(results, symbols...)
 		}
 	}
-	
+
 	return results
 }
 
@@ -157,7 +157,7 @@ func (i *Indexer) Search(query string) []Symbol {
 func (i *Indexer) GetFileSymbols(path string) []Symbol {
 	i.index.mu.RLock()
 	defer i.index.mu.RUnlock()
-	
+
 	if file, ok := i.index.Files[path]; ok {
 		return file.Symbols
 	}
@@ -168,17 +168,17 @@ func (i *Indexer) GetFileSymbols(path string) []Symbol {
 func (i *Indexer) GetContext(maxSize int) string {
 	i.index.mu.RLock()
 	defer i.index.mu.RUnlock()
-	
+
 	var context strings.Builder
 	context.WriteString("## Project Structure\n\n")
-	
+
 	// Group by directory
 	dirs := make(map[string][]string)
 	for path := range i.index.Files {
 		dir := filepath.Dir(path)
 		dirs[dir] = append(dirs[dir], filepath.Base(path))
 	}
-	
+
 	for dir, files := range dirs {
 		context.WriteString(fmt.Sprintf("### %s/\n", dir))
 		for _, f := range files {
@@ -186,9 +186,9 @@ func (i *Indexer) GetContext(maxSize int) string {
 		}
 		context.WriteString("\n")
 	}
-	
+
 	context.WriteString("## Key Symbols\n\n")
-	
+
 	// Add top symbols
 	count := 0
 	for name, symbols := range i.index.SymbolMap {
@@ -206,12 +206,12 @@ func (i *Indexer) GetContext(maxSize int) string {
 			}
 		}
 	}
-	
+
 	result := context.String()
 	if len(result) > maxSize {
 		result = result[:maxSize] + "\n...(truncated)"
 	}
-	
+
 	return result
 }
 
@@ -219,26 +219,49 @@ func (i *Indexer) GetContext(maxSize int) string {
 func (i *Indexer) GetStats() map[string]int {
 	i.index.mu.RLock()
 	defer i.index.mu.RUnlock()
-	
+
 	stats := map[string]int{
 		"files":   len(i.index.Files),
 		"symbols": 0,
 	}
-	
+
 	for _, syms := range i.index.SymbolMap {
 		stats["symbols"] += len(syms)
 	}
-	
+
 	// Count by language
 	for _, file := range i.index.Files {
 		key := "lang_" + file.Language
 		stats[key]++
 	}
-	
+
 	return stats
 }
 
 // Helper functions
+
+// Pre-compiled regex patterns to avoid recompilation in loops
+var (
+	// Go patterns
+	goFuncPattern   = regexp.MustCompile(`^func\s+(?:\((\w+)\s+\*?(\w+)\)\s+)?(\w+)\s*\(([^)]*)\)`)
+	goTypePattern   = regexp.MustCompile(`^type\s+(\w+)\s+(struct|interface)`)
+	goImportPattern = regexp.MustCompile(`import\s+(?:\(\s*([\s\S]*?)\s*\)|"([^"]+)")`)
+
+	// JS patterns
+	jsFuncPattern   = regexp.MustCompile(`(?:function|const|let|var)\s+(\w+)\s*(?:=\s*(?:async\s*)?\([^)]*\)\s*=>|\([^)]*\))`)
+	jsClassPattern  = regexp.MustCompile(`class\s+(\w+)`)
+	jsExportPattern = regexp.MustCompile(`export\s+(?:default\s+)?(?:function|class|const|let|var)\s+(\w+)`)
+	jsImportPattern = regexp.MustCompile(`(?:import|require)\s*\(?['"]([^'"]+)['"]`)
+
+	// Python patterns
+	pyFuncPattern  = regexp.MustCompile(`^(\s*)def\s+(\w+)\s*\(([^)]*)\)`)
+	pyClassPattern = regexp.MustCompile(`^class\s+(\w+)`)
+
+	// Rust patterns
+	rsFuncPattern   = regexp.MustCompile(`(?:pub\s+)?fn\s+(\w+)`)
+	rsStructPattern = regexp.MustCompile(`(?:pub\s+)?struct\s+(\w+)`)
+	rsImplPattern   = regexp.MustCompile(`impl(?:<[^>]+>)?\s+(\w+)`)
+)
 
 func detectLanguage(path string) string {
 	ext := strings.ToLower(filepath.Ext(path))
@@ -267,14 +290,11 @@ func detectLanguage(path string) string {
 func parseGoSymbols(content, file string) []Symbol {
 	var symbols []Symbol
 	lines := strings.Split(content, "\n")
-	
-	funcPattern := regexp.MustCompile(`^func\s+(?:\((\w+)\s+\*?(\w+)\)\s+)?(\w+)\s*\(([^)]*)\)`)
-	typePattern := regexp.MustCompile(`^type\s+(\w+)\s+(struct|interface)`)
-	
+
 	for lineNum, line := range lines {
 		line = strings.TrimSpace(line)
-		
-		if matches := funcPattern.FindStringSubmatch(line); matches != nil {
+
+		if matches := goFuncPattern.FindStringSubmatch(line); matches != nil {
 			sym := Symbol{
 				Name:      matches[3],
 				Kind:      "function",
@@ -288,8 +308,8 @@ func parseGoSymbols(content, file string) []Symbol {
 			}
 			symbols = append(symbols, sym)
 		}
-		
-		if matches := typePattern.FindStringSubmatch(line); matches != nil {
+
+		if matches := goTypePattern.FindStringSubmatch(line); matches != nil {
 			symbols = append(symbols, Symbol{
 				Name: matches[1],
 				Kind: matches[2],
@@ -298,15 +318,14 @@ func parseGoSymbols(content, file string) []Symbol {
 			})
 		}
 	}
-	
+
 	return symbols
 }
 
 func parseGoImports(content string) []string {
 	var imports []string
-	pattern := regexp.MustCompile(`import\s+(?:\(\s*([\s\S]*?)\s*\)|"([^"]+)")`)
-	
-	matches := pattern.FindAllStringSubmatch(content, -1)
+
+	matches := goImportPattern.FindAllStringSubmatch(content, -1)
 	for _, match := range matches {
 		if match[1] != "" {
 			// Multi-import
@@ -327,20 +346,16 @@ func parseGoImports(content string) []string {
 			imports = append(imports, match[2])
 		}
 	}
-	
+
 	return imports
 }
 
 func parseJSSymbols(content, file string) []Symbol {
 	var symbols []Symbol
 	lines := strings.Split(content, "\n")
-	
-	funcPattern := regexp.MustCompile(`(?:function|const|let|var)\s+(\w+)\s*(?:=\s*(?:async\s*)?\([^)]*\)\s*=>|\([^)]*\))`)
-	classPattern := regexp.MustCompile(`class\s+(\w+)`)
-	exportPattern := regexp.MustCompile(`export\s+(?:default\s+)?(?:function|class|const|let|var)\s+(\w+)`)
-	
+
 	for lineNum, line := range lines {
-		if matches := funcPattern.FindStringSubmatch(line); matches != nil {
+		if matches := jsFuncPattern.FindStringSubmatch(line); matches != nil {
 			symbols = append(symbols, Symbol{
 				Name: matches[1],
 				Kind: "function",
@@ -348,8 +363,8 @@ func parseJSSymbols(content, file string) []Symbol {
 				Line: lineNum + 1,
 			})
 		}
-		
-		if matches := classPattern.FindStringSubmatch(line); matches != nil {
+
+		if matches := jsClassPattern.FindStringSubmatch(line); matches != nil {
 			symbols = append(symbols, Symbol{
 				Name: matches[1],
 				Kind: "class",
@@ -357,8 +372,8 @@ func parseJSSymbols(content, file string) []Symbol {
 				Line: lineNum + 1,
 			})
 		}
-		
-		if matches := exportPattern.FindStringSubmatch(line); matches != nil {
+
+		if matches := jsExportPattern.FindStringSubmatch(line); matches != nil {
 			// Already captured above, but mark as exported
 			for i := range symbols {
 				if symbols[i].Name == matches[1] && symbols[i].File == file {
@@ -367,33 +382,29 @@ func parseJSSymbols(content, file string) []Symbol {
 			}
 		}
 	}
-	
+
 	return symbols
 }
 
 func parseJSImports(content string) []string {
 	var imports []string
-	pattern := regexp.MustCompile(`(?:import|require)\s*\(?['"]([^'"]+)['"]`)
-	
-	matches := pattern.FindAllStringSubmatch(content, -1)
+
+	matches := jsImportPattern.FindAllStringSubmatch(content, -1)
 	for _, match := range matches {
 		imports = append(imports, match[1])
 	}
-	
+
 	return imports
 }
 
 func parsePythonSymbols(content, file string) []Symbol {
 	var symbols []Symbol
 	lines := strings.Split(content, "\n")
-	
-	funcPattern := regexp.MustCompile(`^(\s*)def\s+(\w+)\s*\(([^)]*)\)`)
-	classPattern := regexp.MustCompile(`^class\s+(\w+)`)
-	
+
 	var currentClass string
-	
+
 	for lineNum, line := range lines {
-		if matches := classPattern.FindStringSubmatch(line); matches != nil {
+		if matches := pyClassPattern.FindStringSubmatch(line); matches != nil {
 			currentClass = matches[1]
 			symbols = append(symbols, Symbol{
 				Name: matches[1],
@@ -402,8 +413,8 @@ func parsePythonSymbols(content, file string) []Symbol {
 				Line: lineNum + 1,
 			})
 		}
-		
-		if matches := funcPattern.FindStringSubmatch(line); matches != nil {
+
+		if matches := pyFuncPattern.FindStringSubmatch(line); matches != nil {
 			indent := len(matches[1])
 			sym := Symbol{
 				Name:      matches[2],
@@ -412,7 +423,7 @@ func parsePythonSymbols(content, file string) []Symbol {
 				Line:      lineNum + 1,
 				Signature: fmt.Sprintf("def %s(%s)", matches[2], matches[3]),
 			}
-			
+
 			// If indented under a class, it's a method
 			if indent > 0 && currentClass != "" {
 				sym.Kind = "method"
@@ -420,17 +431,17 @@ func parsePythonSymbols(content, file string) []Symbol {
 			} else {
 				currentClass = ""
 			}
-			
+
 			symbols = append(symbols, sym)
 		}
 	}
-	
+
 	return symbols
 }
 
 func parsePythonImports(content string) []string {
 	var imports []string
-	
+
 	scanner := bufio.NewScanner(strings.NewReader(content))
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
@@ -446,26 +457,22 @@ func parsePythonImports(content string) []string {
 			}
 		}
 	}
-	
+
 	return imports
 }
 
 func parseRustSymbols(content, file string) []Symbol {
 	var symbols []Symbol
 	lines := strings.Split(content, "\n")
-	
-	funcPattern := regexp.MustCompile(`(?:pub\s+)?fn\s+(\w+)`)
-	structPattern := regexp.MustCompile(`(?:pub\s+)?struct\s+(\w+)`)
-	implPattern := regexp.MustCompile(`impl(?:<[^>]+>)?\s+(\w+)`)
-	
+
 	var currentImpl string
-	
+
 	for lineNum, line := range lines {
-		if matches := implPattern.FindStringSubmatch(line); matches != nil {
+		if matches := rsImplPattern.FindStringSubmatch(line); matches != nil {
 			currentImpl = matches[1]
 		}
-		
-		if matches := structPattern.FindStringSubmatch(line); matches != nil {
+
+		if matches := rsStructPattern.FindStringSubmatch(line); matches != nil {
 			symbols = append(symbols, Symbol{
 				Name: matches[1],
 				Kind: "struct",
@@ -473,8 +480,8 @@ func parseRustSymbols(content, file string) []Symbol {
 				Line: lineNum + 1,
 			})
 		}
-		
-		if matches := funcPattern.FindStringSubmatch(line); matches != nil {
+
+		if matches := rsFuncPattern.FindStringSubmatch(line); matches != nil {
 			sym := Symbol{
 				Name: matches[1],
 				Kind: "function",
@@ -488,6 +495,6 @@ func parseRustSymbols(content, file string) []Symbol {
 			symbols = append(symbols, sym)
 		}
 	}
-	
+
 	return symbols
 }
