@@ -192,8 +192,7 @@ This guide will help you build your first app with Viki. Let's get started!
 
 Ready to build something amazing? Let's go! 🚀
 
-Start with: viki init "your-first-app"
-`)
+Start with: viki init "your-first-app"`)
 		},
 	}
 }
