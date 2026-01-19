@@ -132,7 +132,8 @@ func setupAIProvider() {
 func runQuickDemo() {
 	prompts.Header("⚡ Quick Demo")
 
-	fmt.Println("Let's build a simple TODO app in 5 minutes!\n")
+	fmt.Println("Let's build a simple TODO app in 5 minutes!")
+	fmt.Println()
 
 	if !prompts.Confirm("Ready to start?", true) {
 		return

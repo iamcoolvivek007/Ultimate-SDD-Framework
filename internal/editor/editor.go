@@ -37,13 +37,14 @@ func NewEditor(projectRoot string) *Editor {
 	}
 }
 
+var codeBlockPattern = regexp.MustCompile("(?s)```(\\w+)?(?::|\\s+)?([^\\n]*)?\\n(.*?)```")
+
 // ParseCodeBlocks extracts code blocks from AI response
 func (e *Editor) ParseCodeBlocks(response string) []CodeBlock {
 	var blocks []CodeBlock
 	
 	// Pattern: ```language:filename or ```language filename
-	pattern := regexp.MustCompile("(?s)```(\\w+)?(?::|\\s+)?([^\\n]*)?\\n(.*?)```")
-	matches := pattern.FindAllStringSubmatch(response, -1)
+	matches := codeBlockPattern.FindAllStringSubmatch(response, -1)
 	
 	for _, match := range matches {
 		block := CodeBlock{
