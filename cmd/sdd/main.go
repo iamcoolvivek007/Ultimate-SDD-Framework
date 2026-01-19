@@ -131,7 +131,7 @@ func newGuideCmd() *cobra.Command {
 		Short: "📚 Step-by-step guide for new users",
 		Long:  "Get a friendly, step-by-step guide to start using Viki",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println(`🎉 Welcome to Viki - Your AI Development Guide!
+			fmt.Print(`🎉 Welcome to Viki - Your AI Development Guide!
 
 This guide will help you build your first app with Viki. Let's get started!
 
