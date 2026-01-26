@@ -46,6 +46,29 @@ type Indexer struct {
 	ignorePatterns []string
 }
 
+// Regex patterns compiled once
+var (
+	// Go
+	goFuncPattern = regexp.MustCompile(`^func\s+(?:\((\w+)\s+\*?(\w+)\)\s+)?(\w+)\s*\(([^)]*)\)`)
+	goTypePattern = regexp.MustCompile(`^type\s+(\w+)\s+(struct|interface)`)
+	goImportPattern = regexp.MustCompile(`import\s+(?:\(\s*([\s\S]*?)\s*\)|"([^"]+)")`)
+
+	// JavaScript / TypeScript
+	jsFuncPattern = regexp.MustCompile(`(?:function|const|let|var)\s+(\w+)\s*(?:=\s*(?:async\s*)?\([^)]*\)\s*=>|\([^)]*\))`)
+	jsClassPattern = regexp.MustCompile(`class\s+(\w+)`)
+	jsExportPattern = regexp.MustCompile(`export\s+(?:default\s+)?(?:function|class|const|let|var)\s+(\w+)`)
+	jsImportPattern = regexp.MustCompile(`(?:import|require)\s*\(?['"]([^'"]+)['"]`)
+
+	// Python
+	pyFuncPattern = regexp.MustCompile(`^(\s*)def\s+(\w+)\s*\(([^)]*)\)`)
+	pyClassPattern = regexp.MustCompile(`^class\s+(\w+)`)
+
+	// Rust
+	rustFuncPattern = regexp.MustCompile(`(?:pub\s+)?fn\s+(\w+)`)
+	rustStructPattern = regexp.MustCompile(`(?:pub\s+)?struct\s+(\w+)`)
+	rustImplPattern = regexp.MustCompile(`impl(?:<[^>]+>)?\s+(\w+)`)
+)
+
 // NewIndexer creates a new codebase indexer
 func NewIndexer(projectRoot string) *Indexer {
 	return &Indexer{
@@ -268,13 +291,10 @@ func parseGoSymbols(content, file string) []Symbol {
 	var symbols []Symbol
 	lines := strings.Split(content, "\n")
 	
-	funcPattern := regexp.MustCompile(`^func\s+(?:\((\w+)\s+\*?(\w+)\)\s+)?(\w+)\s*\(([^)]*)\)`)
-	typePattern := regexp.MustCompile(`^type\s+(\w+)\s+(struct|interface)`)
-	
 	for lineNum, line := range lines {
 		line = strings.TrimSpace(line)
 		
-		if matches := funcPattern.FindStringSubmatch(line); matches != nil {
+		if matches := goFuncPattern.FindStringSubmatch(line); matches != nil {
 			sym := Symbol{
 				Name:      matches[3],
 				Kind:      "function",
@@ -289,7 +309,7 @@ func parseGoSymbols(content, file string) []Symbol {
 			symbols = append(symbols, sym)
 		}
 		
-		if matches := typePattern.FindStringSubmatch(line); matches != nil {
+		if matches := goTypePattern.FindStringSubmatch(line); matches != nil {
 			symbols = append(symbols, Symbol{
 				Name: matches[1],
 				Kind: matches[2],
@@ -304,9 +324,8 @@ func parseGoSymbols(content, file string) []Symbol {
 
 func parseGoImports(content string) []string {
 	var imports []string
-	pattern := regexp.MustCompile(`import\s+(?:\(\s*([\s\S]*?)\s*\)|"([^"]+)")`)
 	
-	matches := pattern.FindAllStringSubmatch(content, -1)
+	matches := goImportPattern.FindAllStringSubmatch(content, -1)
 	for _, match := range matches {
 		if match[1] != "" {
 			// Multi-import
@@ -335,12 +354,8 @@ func parseJSSymbols(content, file string) []Symbol {
 	var symbols []Symbol
 	lines := strings.Split(content, "\n")
 	
-	funcPattern := regexp.MustCompile(`(?:function|const|let|var)\s+(\w+)\s*(?:=\s*(?:async\s*)?\([^)]*\)\s*=>|\([^)]*\))`)
-	classPattern := regexp.MustCompile(`class\s+(\w+)`)
-	exportPattern := regexp.MustCompile(`export\s+(?:default\s+)?(?:function|class|const|let|var)\s+(\w+)`)
-	
 	for lineNum, line := range lines {
-		if matches := funcPattern.FindStringSubmatch(line); matches != nil {
+		if matches := jsFuncPattern.FindStringSubmatch(line); matches != nil {
 			symbols = append(symbols, Symbol{
 				Name: matches[1],
 				Kind: "function",
@@ -349,7 +364,7 @@ func parseJSSymbols(content, file string) []Symbol {
 			})
 		}
 		
-		if matches := classPattern.FindStringSubmatch(line); matches != nil {
+		if matches := jsClassPattern.FindStringSubmatch(line); matches != nil {
 			symbols = append(symbols, Symbol{
 				Name: matches[1],
 				Kind: "class",
@@ -358,7 +373,7 @@ func parseJSSymbols(content, file string) []Symbol {
 			})
 		}
 		
-		if matches := exportPattern.FindStringSubmatch(line); matches != nil {
+		if matches := jsExportPattern.FindStringSubmatch(line); matches != nil {
 			// Already captured above, but mark as exported
 			for i := range symbols {
 				if symbols[i].Name == matches[1] && symbols[i].File == file {
@@ -373,9 +388,8 @@ func parseJSSymbols(content, file string) []Symbol {
 
 func parseJSImports(content string) []string {
 	var imports []string
-	pattern := regexp.MustCompile(`(?:import|require)\s*\(?['"]([^'"]+)['"]`)
 	
-	matches := pattern.FindAllStringSubmatch(content, -1)
+	matches := jsImportPattern.FindAllStringSubmatch(content, -1)
 	for _, match := range matches {
 		imports = append(imports, match[1])
 	}
@@ -387,13 +401,10 @@ func parsePythonSymbols(content, file string) []Symbol {
 	var symbols []Symbol
 	lines := strings.Split(content, "\n")
 	
-	funcPattern := regexp.MustCompile(`^(\s*)def\s+(\w+)\s*\(([^)]*)\)`)
-	classPattern := regexp.MustCompile(`^class\s+(\w+)`)
-	
 	var currentClass string
 	
 	for lineNum, line := range lines {
-		if matches := classPattern.FindStringSubmatch(line); matches != nil {
+		if matches := pyClassPattern.FindStringSubmatch(line); matches != nil {
 			currentClass = matches[1]
 			symbols = append(symbols, Symbol{
 				Name: matches[1],
@@ -403,7 +414,7 @@ func parsePythonSymbols(content, file string) []Symbol {
 			})
 		}
 		
-		if matches := funcPattern.FindStringSubmatch(line); matches != nil {
+		if matches := pyFuncPattern.FindStringSubmatch(line); matches != nil {
 			indent := len(matches[1])
 			sym := Symbol{
 				Name:      matches[2],
@@ -454,18 +465,14 @@ func parseRustSymbols(content, file string) []Symbol {
 	var symbols []Symbol
 	lines := strings.Split(content, "\n")
 	
-	funcPattern := regexp.MustCompile(`(?:pub\s+)?fn\s+(\w+)`)
-	structPattern := regexp.MustCompile(`(?:pub\s+)?struct\s+(\w+)`)
-	implPattern := regexp.MustCompile(`impl(?:<[^>]+>)?\s+(\w+)`)
-	
 	var currentImpl string
 	
 	for lineNum, line := range lines {
-		if matches := implPattern.FindStringSubmatch(line); matches != nil {
+		if matches := rustImplPattern.FindStringSubmatch(line); matches != nil {
 			currentImpl = matches[1]
 		}
 		
-		if matches := structPattern.FindStringSubmatch(line); matches != nil {
+		if matches := rustStructPattern.FindStringSubmatch(line); matches != nil {
 			symbols = append(symbols, Symbol{
 				Name: matches[1],
 				Kind: "struct",
@@ -474,7 +481,7 @@ func parseRustSymbols(content, file string) []Symbol {
 			})
 		}
 		
-		if matches := funcPattern.FindStringSubmatch(line); matches != nil {
+		if matches := rustFuncPattern.FindStringSubmatch(line); matches != nil {
 			sym := Symbol{
 				Name: matches[1],
 				Kind: "function",
