@@ -43,7 +43,7 @@ Ready to build something amazing? Let's get started! 🚀`,
 
 	// Check if this is first run and show welcome message
 	if len(os.Args) == 1 {
-		fmt.Println(`🤖 Welcome to Viki v3.0 - The Ultimate AI Development Framework!
+		fmt.Print(`🤖 Welcome to Viki v3.0 - The Ultimate AI Development Framework!
 
 ✨ Viki helps you build software using AI with 21+ specialized agents.
 
@@ -62,8 +62,8 @@ Ready to build something amazing? Let's get started! 🚀`,
 
 Run 'viki --help' for all commands!
 
-Available commands:`)
-		fmt.Println()
+Available commands:
+`)
 	}
 
 	// Core SDD commands
